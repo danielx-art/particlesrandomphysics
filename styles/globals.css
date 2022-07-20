@@ -2,10 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&display=swap');
+
 html, body, canvas {
     height: 100%;
 }
 
 #__next {
     height: 100%;
+}
+
+@layer base {
+    @font-face {
+        font-family: 'Mochiy Pop One', sans-serif;
+    }
 }

@@ -62,7 +62,7 @@ const Particles = () => {
         <>
         <pointLight ref={light} distance={40} intensity={3} color="lightblue" />
             <instancedMesh ref={mesh} args={[, , count]}>
-                <dodecahedronBufferGeometry args={[0.2, 0]} />
+                <tetrahedronBufferGeometry args={[0.2, 0]} />
                 <meshPhongMaterial color="#2596be" />
             </instancedMesh>
         </>
