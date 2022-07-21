@@ -1,5 +1,6 @@
 import defaultSystemParameters from "./default_parameters";
 import octaTree from "./octaTree";
+import { sphere } from "./shapes";
 
 export default createParticleSystem = function (args = {}) {
   const {
@@ -79,19 +80,11 @@ export default createParticleSystem = function (args = {}) {
   self.update = () => {
     if (movement == "dynamic") {
       for (let i = 0; i < num; i++) {
-        let safeRange = circle(
-          self.particles[i].x,
-          self.particles[i].y,
-          safeRadius
-        );
+        let safeRange = sphere(self.particles[i].pos.copy(), safeRadius);
         let forMerge = self.collisionDetection.query(safeRange);
         let indexThis = forMerge.indexOf(self.particles[i]);
         if (indexThis > -1) {
-          let range = circle(
-            self.particles[i].x,
-            self.particles[i].y,
-            queryRadius
-          );
+          let range = sphere(self.particles[i].pos, queryRadius);
           let inRange = self.collisionDetection.query(range);
           forMerge.splice(indexThis, 1);
           let agents = inRange.filter((x) => !forMerge.includes(x));
@@ -105,17 +98,6 @@ export default createParticleSystem = function (args = {}) {
   self.move = () => {
     if (movement == "dynamic") {
       for (let i = 0; i < num; i++) {
-        let safeRange = circle(
-          self.particles[i].x,
-          self.particles[i].y,
-          safeRadius
-        );
-        let forMerge = self.collisionDetection.query(safeRange);
-        let indexThis = forMerge.indexOf(self.particles[i]);
-        if (indexThis > -1) {
-          forMerge.splice(indexThis, 1);
-        }
-
         self.particles[i].move();
 
         /*-------------------------
@@ -148,7 +130,14 @@ export default createParticleSystem = function (args = {}) {
         /*-------------------
         ----Merging stuff----
         --------------------*/
+
         if (merge == true) {
+          let safeRange = sphere(self.particles[i].pos, safeRadius);
+          let forMerge = self.collisionDetection.query(safeRange);
+          let indexThis = forMerge.indexOf(self.particles[i]);
+          if (indexThis > -1) {
+            forMerge.splice(indexThis, 1);
+          }
           let numMerge = forMerge.length;
 
           for (let j = 0; j < numMerge; j++) {
@@ -177,20 +166,6 @@ export default createParticleSystem = function (args = {}) {
       }
     }
   };
-
-  /*think I dont need this with three js*/
-  // self.display = (
-  //   p5inst,
-  //   particles = true,
-  //   forces = false,
-  //   direction = false
-  // ) => {
-  //   for (p of self.particles) {
-  //     particles ? p.display.show(p5inst) : null;
-  //     forces ? p.display.force(p5inst) : null;
-  //     direction ? p.display.direction(p5inst) : null;
-  //   }
-  // };
 
   return self;
 };
