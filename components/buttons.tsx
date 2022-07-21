@@ -1,6 +1,9 @@
 import { NextPage } from "next";
+import { usePconfig } from "../context/context";
 
 const Buttons: NextPage = () => {
+  const {} = usePconfig();
+
   return (
     <>
       <div className="text-2xl w-full text-center z-10 absolute bottom-5 p-2 flex flex-row justify-center items-center gap-x-1 ">

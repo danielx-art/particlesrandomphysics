@@ -1,0 +1,39 @@
+export function pickRandom(array, num) {
+  if (!Array.isArray(array) || num <= 0) {
+    return false;
+  }
+  let copy = [...array];
+  if (num == 1) {
+    return copy[Math.floor(Math.random() * copy.length)];
+  } else {
+    let randomList = [];
+    for (let i = 0; i < num; i++) {
+      let index = Math.floor(Math.random() * copy.length);
+      let newItem = copy.splice(index, 1);
+      randomList.push(...newItem);
+    }
+    return randomList;
+  }
+}
+
+export function lerpStretchClamp(value, fromMin, fromMax, min, max) {
+  if (value < fromMin) {
+    return min;
+  }
+  if (value > fromMax) {
+    return max;
+  }
+  return ((max - min) / (fromMax - fromMin)) * (value - fromMin) + min;
+}
+
+export function executeFunctionByName(functionName, context /*, args */) {
+  var args = Array.prototype.slice.call(arguments, 2);
+  var namespaces = functionName.split(".");
+  var func = namespaces.pop();
+
+  //get deeper into nested contexts
+  for (var i = 0; i < namespaces.length; i++) {
+    context = context[namespaces[i]];
+  }
+  return context[func].apply(context, args);
+}

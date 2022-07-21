@@ -1,5 +1,5 @@
 import defaultSystemParameters from "./default_parameters";
-import FUNC_ARRAY_VALUE from "../helpers";
+import octaTree from "./octaTree";
 
 export default createParticleSystem = function (args = {}) {
   const {
@@ -19,7 +19,6 @@ export default createParticleSystem = function (args = {}) {
     translationDamping,
     rotationDamping,
     wrap,
-    collisionDetection,
     queryRadius,
     safeRadius,
     merge,
@@ -38,15 +37,15 @@ export default createParticleSystem = function (args = {}) {
     particles: [],
   };
 
-  for (let i = 0; i < num; i++) {
-    function FUNC_ARRAY_VALUE(obj, arg) {
-      return obj instanceof Function
-        ? func(obj)
-        : Array.isArray(obj)
-        ? obj[arg]
-        : obj;
-    }
+  let FUNC_ARRAY_VALUE = function (obj, arg) {
+    return obj instanceof Function
+      ? func(obj)
+      : Array.isArray(obj)
+      ? obj[arg]
+      : obj;
+  };
 
+  for (let i = 0; i < num; i++) {
     let newParticle = createParticle({
       position: FUNC_ARRAY_VALUE(posGenerator, i),
       direction: FUNC_ARRAY_VALUE(dirGenerator, i),
@@ -72,12 +71,8 @@ export default createParticleSystem = function (args = {}) {
     self.particles.push(newParticle);
 
     //Collision Detection
-    if (collisionDetection == "SPACE_HASH_2D") {
-    }
-    if (collisionDetection == "QUADTREE") {
-      self.collisionDetection = quadTree(boundary, 8);
-      self.collisionDetection.insert(newParticle);
-    }
+    self.collisionDetection = octaTree(boundary, 8);
+    self.collisionDetection.insert(newParticle);
   }
 
   //interactions
@@ -124,16 +119,14 @@ export default createParticleSystem = function (args = {}) {
         self.particles[i].move();
 
         /*-------------------------
-                ----fake wrapping stuff----
-                --------------------------*/
+        ----fake wrapping stuff----
+        --------------------------*/
         let bottomWall = self.boundary.y + self.boundary.height / 2;
         let topWall = self.boundary.y - self.boundary.height / 2;
         let rightWall = self.boundary.x + self.boundary.width / 2;
         let leftWall = self.boundary.x - self.boundary.width / 2;
 
         if (wrap == "torus") {
-          /*something is fishy here, why particles not changing pos when
-                    going through the right and bottom? */
           if (self.particles[i].pos.x >= rightWall)
             self.particles[i].pos.x = leftWall + 1;
           if (self.particles[i].pos.y >= bottomWall)
@@ -153,8 +146,8 @@ export default createParticleSystem = function (args = {}) {
         }
 
         /*-------------------
-                ----Merging stuff----
-                --------------------*/
+        ----Merging stuff----
+        --------------------*/
         if (merge == true) {
           let numMerge = forMerge.length;
 
@@ -185,18 +178,19 @@ export default createParticleSystem = function (args = {}) {
     }
   };
 
-  self.display = (
-    p5inst,
-    particles = true,
-    forces = false,
-    direction = false
-  ) => {
-    for (p of self.particles) {
-      particles ? p.display.show(p5inst) : null;
-      forces ? p.display.force(p5inst) : null;
-      direction ? p.display.direction(p5inst) : null;
-    }
-  };
+  /*think I dont need this with three js*/
+  // self.display = (
+  //   p5inst,
+  //   particles = true,
+  //   forces = false,
+  //   direction = false
+  // ) => {
+  //   for (p of self.particles) {
+  //     particles ? p.display.show(p5inst) : null;
+  //     forces ? p.display.force(p5inst) : null;
+  //     direction ? p.display.direction(p5inst) : null;
+  //   }
+  // };
 
   return self;
 };
