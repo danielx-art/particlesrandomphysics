@@ -71,11 +71,8 @@ export default defaultSystemParameters = {
   behaviours: (i) => {
     return [
       {
-        type: "externalForce",
-        intensity: 10,
-        field: () => {
-          return vec(0, 1);
-        }, //just a constant vertical gravity
+        type: "gravity",
+        G: 10,
       },
     ];
   },
