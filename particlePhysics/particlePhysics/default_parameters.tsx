@@ -1,46 +1,47 @@
 import * as THREE from "three";
-import { Vector3 } from 'three';
+import { Vector3 } from "three";
 import { parallelepiped } from "./shapes";
+import vec from "./vetores"
 
-export type parametersT = {
-  num: Number,
-  boundary: {},
-  posGenerator: (a: Number) =>  Vector3 ,
-  dirGenerator: (a: Number) => Vector3,
-  inertialMass: Number |((a: Number) => Number),
-  momentInertia: Number |((a: Number) => Number),
-  movement: String,
-  initialVelocity: (a: Number) =>  Vector3,
-  initialAngularVelocity: (a: Number) =>  Vector3,
-  maxForce: Number |((a: Number) => Number),
-  maxTorque: Number |((a: Number) => Number),
-  maxSpeed: Number |((a: Number) => Number),
-  maxAngVel: Number |((a: Number) => Number),
-  translationDamping: Number |((a: Number) => Number),
-  rotationDamping: Number |((a: Number) => Number),
-  wrap: String,
-  queryRadius: Number,
-  safeRadius: Number,
+type vectorGeneratorType = (( a: number | Array<number> ) => Vector3) | number | Array<number>;
+
+type scalarGeneratorType = (( a: number | Array<number> ) => number) | number;
+
+export type parametersType = {
+  num: number,
+  boundary: object,
+  posGenerator: vectorGeneratorType ,
+  dirGenerator: vectorGeneratorType
+  inertialMass: scalarGeneratorType,
+  momentInertia: scalarGeneratorType,
+  movement: string,
+  initialVelocity: vectorGeneratorType,
+  initialAngularVelocity: vectorGeneratorType,
+  maxForce: scalarGeneratorType,
+  maxTorque: scalarGeneratorType,
+  maxSpeed: scalarGeneratorType,
+  maxAngVel: scalarGeneratorType,
+  translationDamping: scalarGeneratorType,
+  rotationDamping: scalarGeneratorType,
+  wrap: string,
+  queryRadius: number,
+  safeRadius: number,
   merge: boolean,
-  behaviours:  (a: Number) => Array<any>,
+  behaviours:  (a: number) => Array<any>,
   display: null,
 }; 
 
-export const defaultSystemParameters = {
+export const defaultSystemParameters: parametersType = {
   num: 3,
 
-  boundary: parallelepiped()), //should take a look at the size of the viweport in the coords of three js canvas
+  boundary: parallelepiped(vec(), 100,100,100),
 
   posGenerator: (i) => {
-    return new THREE.Vector3(
-      Math.random() * (this.boundary.width - 200) + 100,
-      Math.random() * (this.height - 200) + 100,
-      Math.random() * (this.depth - 200) + 100
-    );
+    return vec();
   },
 
   dirGenerator: (i) => {
-    return new THREE.Vector3.randomUnitVector();
+    return vec();
   },
 
   inertialMass: (i) => {
@@ -53,10 +54,10 @@ export const defaultSystemParameters = {
   movement: "dynamic",
 
   initialVelocity: (i) => {
-    return new THREE.Vector3.randomUnitVector();
+    return vec();
   },
   initialAngularVelocity: (i) => {
-    return new THREE.Vector3.randomUnitVector();
+    return vec();
   },
   maxForce: (i) => {
     return 10;

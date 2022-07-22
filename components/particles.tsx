@@ -14,32 +14,6 @@ const Particles = () => {
   const mesh = useRef<THREE.InstancedMesh>(null);
   const light = useRef<THREE.PointLight>(null);
 
-  const particlesystem = useMemo(() => {
-    const psystem = createParticleSystem({
-      num: number,
-      boundary: ,
-      posGenerator: ,
-      movement: "dynamic",
-      initialVelocity: (i) => { },
-      maxForce,
-      maxSpeed,
-      queryRadius: 400,
-      safeRadius: 20, //bug
-      merge,
-      behaviours: (i) => {
-        return [
-          {
-            type: "gravity",
-            G: 90,
-          },
-          // ,
-        ];
-      },
-    });
-
-    return psystem;
-  }, [number]);
-
   const dummy = useMemo(() => new THREE.Object3D(), []);
 
   useFrame(() => {

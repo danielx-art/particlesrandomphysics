@@ -1,8 +1,16 @@
 import { NextPage } from "next";
 import { usePconfig } from "../context/context";
+import { useCallback } from "react";
 
 const Buttons: NextPage = () => {
   const { pconfig, setPconfig } = usePconfig();
+  const handleRandomConfig = useCallback(()=>{
+    //pick random stuff for the state
+    //setPconfig to this new config
+    
+
+  },[]);
+
 
   return (
     <>

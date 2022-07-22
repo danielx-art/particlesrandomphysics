@@ -38,18 +38,18 @@ export default createParticleSystem = function (args = {}) {
     particles: [],
   };
 
-  let FUNC_ARRAY_VALUE = function (obj, arg) {
+  let FUNC_ARRAY_VALUE = function (obj, ...args) {
     return obj instanceof Function
-      ? func(obj)
+      ? obj(args)
       : Array.isArray(obj)
-      ? obj[arg]
+      ? obj[args[0]]
       : obj;
   };
 
   for (let i = 0; i < num; i++) {
     let newParticle = createParticle({
-      position: FUNC_ARRAY_VALUE(posGenerator, i),
-      direction: FUNC_ARRAY_VALUE(dirGenerator, i),
+      position: FUNC_ARRAY_VALUE(posGenerator, i, self.boundary),
+      direction: FUNC_ARRAY_VALUE(dirGenerator, i ),
       inertialMass: FUNC_ARRAY_VALUE(inertialMass, i),
       momentInertia: FUNC_ARRAY_VALUE(momentInertia, i),
 

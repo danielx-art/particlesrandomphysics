@@ -1,9 +1,10 @@
 import { createContext, ReactNode, useContext, useState } from "react";
-import { defaultSystemParameters } from "./particlePhysics/particlePhysics/default_parameters";
+import { defaultSystemParameters } from "../particlePhysics/particlePhysics/default_parameters";
+import { parametersType } from "../particlePhysics/particlePhysics/default_parameters";
 
 type psystConfigType = {
-  pconfig: object;
-  setPconfig: (newConfig: parametersT) => void;
+  pconfig: parametersType;
+  setPconfig: (newConfig: parametersType) => void;
 };
 
 const initialPsystConfig: psystConfigType = {
