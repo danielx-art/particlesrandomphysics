@@ -2,7 +2,7 @@ import { NextPage } from "next";
 import { usePconfig } from "../context/context";
 
 const Buttons: NextPage = () => {
-  const {} = usePconfig();
+  const { pconfig, setPconfig } = usePconfig();
 
   return (
     <>
@@ -11,7 +11,10 @@ const Buttons: NextPage = () => {
           <p className=" text-2xl w-8 h-8 text-white leading-5"> ... </p>
         </button>
 
-        <button className="bg-black p-1 border border-white hover:rotate-90 active:opacity-50 transition-transform duration-500 ease-in-out rounded-full hover:scale-105">
+        <button
+          onClick={() => handleRandomConfig()}
+          className="bg-black p-1 border border-white hover:rotate-90 active:opacity-50 transition-transform duration-500 ease-in-out rounded-full hover:scale-105"
+        >
           <svg
             fill="white"
             xmlns="http://www.w3.org/2000/svg"

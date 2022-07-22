@@ -1,4 +1,4 @@
-import defaultSystemParameters from "./default_parameters";
+import { defaultSystemParameters } from "./default_parameters";
 import octaTree from "./octaTree";
 import { sphere } from "./shapes";
 
@@ -160,7 +160,7 @@ export default createParticleSystem = function (args = {}) {
         }
       }
 
-      self.collisionDetection = quadTree(boundary, 8);
+      self.collisionDetection = octaTree(boundary, 8);
       for (let i = 0; i < self.particles.length; i++) {
         self.collisionDetection.insert(self.particles[i]);
       }

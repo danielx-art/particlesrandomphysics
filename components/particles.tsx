@@ -1,10 +1,15 @@
 import * as THREE from "three";
-import React, { useRef, useMemo, Ref } from "react";
-import { useFrame } from "@react-three/fiber";
+import React, { useRef, useMemo } from "react";
+import { useFrame, useThree } from "@react-three/fiber";
+import createParticleSystem from '../particlePhysics/particlePhysics/particleSystem'
+
 
 const Particles = () => {
+  
+  const viewport = useThree((state) => state.viewport);
+  
   //should be passed as props and input by the user
-  const count = 300;
+  const number = 300;
 
   const mesh = useRef<THREE.InstancedMesh>(null);
   const light = useRef<THREE.PointLight>(null);
@@ -12,20 +17,10 @@ const Particles = () => {
   const particlesystem = useMemo(() => {
     const psystem = createParticleSystem({
       num: number,
-      boundary: rectangle(width / 2, height / 2, 0.6 * width, 0.6 * height),
-      posGenerator: putIndexOnASpacedGrid(
-        1,
-        3,
-        0.2 * width,
-        0.2 * height,
-        width / 2 - 0.2 * width,
-        height / 2
-      ),
+      boundary: ,
+      posGenerator: ,
       movement: "dynamic",
-      initialVelocity: (i) => {
-        return vec().random2D(maxSpeed);
-        //return vec();
-      },
+      initialVelocity: (i) => { },
       maxForce,
       maxSpeed,
       queryRadius: 400,
@@ -43,28 +38,21 @@ const Particles = () => {
     });
 
     return psystem;
-  }, [count]);
+  }, [number]);
 
   const dummy = useMemo(() => new THREE.Object3D(), []);
 
   useFrame(() => {
     // Run through the randomized data to calculate some movement
 
-    //particlesystem.update();
-    //particlesystem.move();
+    particlesystem.update();
+    particlesystem.move();
     //particlesystem.collisionDetection.show();
 
-    particles.forEach((particle, index) => {
-      //do all the update system here OR update the system and then update and register the dummies
-      let { factor, speed, x, y, z } = particle;
+    particlesystem.particles.forEach((particle, index) => {
+      dummy.position.set(particle.pos.x, particle.pos.y, particle.pos.z);
 
-      // Update the particle time
-      const t = (particle.time += speed);
-
-      // Update the particle position based on the time
-      //dummy.position.set();
-
-      //dummy.lookAt();
+      dummy.lookAt(particle.dir);
       dummy.updateMatrix();
 
       // And apply the matrix to the instanced item
@@ -76,7 +64,7 @@ const Particles = () => {
   return (
     <>
       <pointLight ref={light} distance={40} intensity={3} color="lightblue" />
-      <instancedMesh ref={mesh} args={[, , count]}>
+      <instancedMesh ref={mesh} args={[, , number]}>
         <tetrahedronBufferGeometry args={[0.2, 0]} />
         <meshPhongMaterial color="#2596be" />
       </instancedMesh>

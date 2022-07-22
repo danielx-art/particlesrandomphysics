@@ -1,26 +1,29 @@
 import { createContext, ReactNode, useContext, useState } from "react";
+import { defaultSystemParameters } from "./particlePhysics/particlePhysics/default_parameters";
 
-type psystConfigType = {};
+type psystConfigType = {
+  pconfig: object;
+  setPconfig: (newConfig: parametersT) => void;
+};
 
-const psystConfig: psystConfigType = {};
+const initialPsystConfig: psystConfigType = {
+  pconfig: defaultSystemParameters,
+  setPconfig: () => {},
+};
 
-const pContext = createContext<psystConfigType | null>(psystConfig);
-
-export function usePconfig() {
-  return useContext(pContext) as psystConfigType;
-}
+const pContext = createContext<psystConfigType | null>(null);
 
 type Props = {
   children: ReactNode;
 };
 
 export function pContextProvider({ children }: Props) {
-  //put all values for particle system here that will be randomized as we press refresh
-  const value = {};
+  const [pconfig, setPconfig] = useState(initialPsystConfig.pconfig);
+  const value = { pconfig, setPconfig };
 
-  return (
-    <>
-      <pContext.Provider value={value}>{children}</pContext.Provider>
-    </>
-  );
+  return <pContext.Provider value={value}>{children}</pContext.Provider>;
+}
+
+export function usePconfig() {
+  return useContext(pContext) as psystConfigType;
 }
