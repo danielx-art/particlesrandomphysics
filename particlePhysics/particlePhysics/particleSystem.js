@@ -46,17 +46,27 @@ export default createParticleSystem = function (args = {}) {
       : obj;
   };
 
+  /*
+  we have to either calculate and return a Vector3 or an array of Vector3 at index i, wich is alwats first in args.
+  */
+  let handleVectorGenerator = function(generator,...args /*should be i, num, self.boundary*/){
+    let temp = generator(args);
+    return Array.isArray(temp) 
+    ? temp[args[0]] //generator[i] wich is a Vector3
+    : temp; //just single Vector3
+  }
+
   for (let i = 0; i < num; i++) {
     let newParticle = createParticle({
-      position: FUNC_ARRAY_VALUE(posGenerator, i, self.boundary),
-      direction: FUNC_ARRAY_VALUE(dirGenerator, i ),
+      position: handleVectorGenerator(posGenerator, i, self.boundary),
+      direction: handleVectorGenerator(dirGenerator, i ),
       inertialMass: FUNC_ARRAY_VALUE(inertialMass, i),
       momentInertia: FUNC_ARRAY_VALUE(momentInertia, i),
 
       movement: FUNC_ARRAY_VALUE(movement, i),
 
-      initialVelocity: FUNC_ARRAY_VALUE(initialVelocity, i),
-      initialAngularVelocity: FUNC_ARRAY_VALUE(initialAngularVelocity, i),
+      initialVelocity: handleVectorGenerator(initialVelocity, i),
+      initialAngularVelocity: handleVectorGenerator(initialAngularVelocity, i),
 
       maxForce: FUNC_ARRAY_VALUE(maxForce, i),
       maxTorque: FUNC_ARRAY_VALUE(maxTorque, i),

@@ -97,5 +97,3 @@ export const defaultSystemParameters: parametersType = {
 
   display: null,
 };
-
-//testing
