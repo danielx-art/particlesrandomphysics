@@ -3,15 +3,16 @@ import { Vector3 } from "three";
 import { parallelepiped } from "./shapes";
 import vec from "./vetores"
 
-type vectorGeneratorType = (( a: number | Array<number> ) => Vector3) | number | Array<number>;
+/* function that returns an array of Vector3 or a single one in case of constant to avoid wasting memory space*/
+type vectorGeneratorType = (( ...args: number[] ) => Vector3[]) | Vector3;
 
-type scalarGeneratorType = (( a: number | Array<number> ) => number) | number;
+type scalarGeneratorType = (( ...args: number[] ) => number[])  | number 
 
 export type parametersType = {
   num: number,
   boundary: object,
-  posGenerator: vectorGeneratorType ,
-  dirGenerator: vectorGeneratorType
+  posGenerator: vectorGeneratorType,
+  dirGenerator: vectorGeneratorType 
   inertialMass: scalarGeneratorType,
   momentInertia: scalarGeneratorType,
   movement: string,

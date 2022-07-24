@@ -38,45 +38,38 @@ export default createParticleSystem = function (args = {}) {
     particles: [],
   };
 
-  let FUNC_ARRAY_VALUE = function (obj, ...args) {
-    return obj instanceof Function
-      ? obj(args)
-      : Array.isArray(obj)
-      ? obj[args[0]]
-      : obj;
-  };
+  let HANDLE_GENERATOR = function(generator,...args /*should be i, num, self.boundary*/){
 
-  /*
-  we have to either calculate and return a Vector3 or an array of Vector3 at index i, wich is alwats first in args.
-  */
-  let handleVectorGenerator = function(generator,...args /*should be i, num, self.boundary*/){
-    let temp = generator(args);
-    return Array.isArray(temp) 
-    ? temp[args[0]] //generator[i] wich is a Vector3
-    : temp; //just single Vector3
+    if(typeof generator === "number") return generator;
+
+    let arrOrVec = generator(args);
+    return Array.isArray(arrOrVec) 
+    ? arrOrVec[args[0]] //generator[i] wich is a Vector3 or number
+    : arrOrVec; //just single calculated Vector3 or number
   }
+
 
   for (let i = 0; i < num; i++) {
     let newParticle = createParticle({
-      position: handleVectorGenerator(posGenerator, i, self.boundary),
-      direction: handleVectorGenerator(dirGenerator, i ),
-      inertialMass: FUNC_ARRAY_VALUE(inertialMass, i),
-      momentInertia: FUNC_ARRAY_VALUE(momentInertia, i),
+      position: HANDLE_GENERATOR(posGenerator, i, self.num, self.boundary),
+      direction: HANDLE_GENERATOR(dirGenerator, i, self.num, self.boundary),
+      inertialMass: HANDLE_GENERATOR(inertialMass, i),
+      momentInertia: HANDLE_GENERATOR(momentInertia, i),
 
-      movement: FUNC_ARRAY_VALUE(movement, i),
+      movement: HANDLE_GENERATOR(movement, i),
 
-      initialVelocity: handleVectorGenerator(initialVelocity, i),
-      initialAngularVelocity: handleVectorGenerator(initialAngularVelocity, i),
+      initialVelocity: HANDLE_GENERATOR(initialVelocity, i),
+      initialAngularVelocity: HANDLE_GENERATOR(initialAngularVelocity, i),
 
-      maxForce: FUNC_ARRAY_VALUE(maxForce, i),
-      maxTorque: FUNC_ARRAY_VALUE(maxTorque, i),
+      maxForce: HANDLE_GENERATOR(maxForce, i),
+      maxTorque: HANDLE_GENERATOR(maxTorque, i),
 
-      maxSpeed: FUNC_ARRAY_VALUE(maxSpeed, i),
-      maxAngVel: FUNC_ARRAY_VALUE(maxAngVel, i),
-      translationDamping: FUNC_ARRAY_VALUE(translationDamping, i),
-      rotationDamping: FUNC_ARRAY_VALUE(rotationDamping, i),
-      behaviours: FUNC_ARRAY_VALUE(behaviours, i),
-      display: FUNC_ARRAY_VALUE(display, i),
+      maxSpeed: HANDLE_GENERATOR(maxSpeed, i),
+      maxAngVel: HANDLE_GENERATOR(maxAngVel, i),
+      translationDamping: HANDLE_GENERATOR(translationDamping, i),
+      rotationDamping: HANDLE_GENERATOR(rotationDamping, i),
+      behaviours: HANDLE_GENERATOR(behaviours, i),
+      display: HANDLE_GENERATOR(display, i),
     });
 
     self.particles.push(newParticle);
@@ -161,7 +154,7 @@ export default createParticleSystem = function (args = {}) {
               if (indexToRemove < i) {
                 i--;
               }
-            }
+             }
 
             //delete the second particle from quadTree
 

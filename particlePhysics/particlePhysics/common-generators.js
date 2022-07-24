@@ -31,8 +31,17 @@ remembering, this is the parameters of the particle system:
 POSITION GENERATIORS
 */
 
+//--> REFACTOR TO ALWAYS TAKE INDEX, TOTAL_NUMBER, DIMENSIONS, ALL THE REST SHOULD BE RANDOMIZED
+
 //grid
-export function pointsOnA3dGrid([i, total, w, h, d, rows, cols, layers]){
+export function pointsOnA3dGrid(i,total, boundary){
+
+  let [w, h, d] = [boundary.w, boundary.h, boundary.d];
+
+  let rows = Math.floor(w / (Math.random()*100));
+  let cols = Math.floor(h / (Math.random()*50))
+  let layers = Math.ceil(total / (rows*cols));
+
   //i=34 should give x=2, y=0, z=2 if 4x4xany
   let z = Math.floor((i) / (rows*cols));
   let y = Math.floor(((i+1) % (rows*cols))/cols);
@@ -49,7 +58,8 @@ export function pointsOnA3dGrid([i, total, w, h, d, rows, cols, layers]){
   return vec(x,y,z);
 }
 
-export function randomPositions([i,w,h,d]) {
+export function randomPositions(index,total,boundary) {
+  let [w, h, d] = [boundary.w, boundary.h, boundary.d];
   let x = Math.random()*w - w/2;
   let y = Math.random()*h - h/2;
   let z = Math.random()*d - d/2;
@@ -57,13 +67,16 @@ export function randomPositions([i,w,h,d]) {
 }
 
 
-//!IMPORTANT - THIS RETURNS AN ARRAY of VERTICES:
-export function pointsOnRandomIcosphereSurface([i,total,w,h,d, order]){
+export function pointsOnRandomIcosphereSurface(index,total,boundary){
   /*
   A complete version of this icosphere generation code can be found at:
   https://github.com/mourner/icomesh/blob/master/index.js
-  This version was simplified because we don't need the faces or the uv mapping, just the vertices
+  This version was simplified because we don't need the faces or the uv mapping, just the vertices.
+  the order represents the number of subdivisions and should be between 4 and 10
   */
+
+  let [w, h, d] = [boundary.w, boundary.h, boundary.d];
+  let order = Math.floor(Math.random()*6 + 4);
 
   // set up an icosahedron (12 vertices / 20 triangles)
   const f = (1 + Math.sqrt(5)) / 2;
@@ -106,34 +119,40 @@ export function pointsOnRandomIcosphereSurface([i,total,w,h,d, order]){
       vertices[i + 2] *= m;
   }
 
+  //scale randomly based on maximum dimension
+  let randomScale = Math.random()*Math.max(w,h,d)/3 + Math.min(w,h,d)/3;
+  vertices.forEach((item) => item*=randomScale);
+
   return vertices;
 }
 
-export function pointsWithinSphere(){
-
+export function pointsWithinSphere(index,total,boundary){
+  let [w, h, d] = [boundary.w, boundary.h, boundary.d];
+  let radius = Math.random()*Math.max(w,h,d)/3 + Math.min(w,h,d)/3;
+  
 }
 
-export function pointsOn2dGrid(){
-
+export function pointsOn2dGrid(index,total,boundary){
+  let [w, h, d] = [boundary.w, boundary.h, boundary.d];
 }
 
-export function pointsOn2dCircle(){
-
+export function pointsOn2dCircle(index,total,boundary){
+  let [w, h, d] = [boundary.w, boundary.h, boundary.d];
 }
 
-export function pointsOnSpiral(){
-
+export function pointsOnSpiral(index,total,boundary){
+  let [w, h, d] = [boundary.w, boundary.h, boundary.d];
 }
 
-export function pointsWithin2dCircle(){
-
+export function pointsWithin2dCircle(index,total,boundary){
+  let [w, h, d] = [boundary.w, boundary.h, boundary.d];
 }
 
-export function pointsOnRandomSpline(){
-
+export function pointsOnRandomSpline(index,total,boundary){
+  let [w, h, d] = [boundary.w, boundary.h, boundary.d];
 }
 
-export function pointsOnRandomSurface(){
-
+export function pointsOnRandomSurface(index,total,boundary){
+  let [w, h, d] = [boundary.w, boundary.h, boundary.d];
 }
 
