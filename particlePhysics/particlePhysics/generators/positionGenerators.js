@@ -1,13 +1,6 @@
-import vec from '../particlePhysics/vetores'
+import vec from '../vetores'
 
-//implement a random 3d unit vector for three js
-THREE.Vector3.prototype.randomUnitVector = function () {
-  this.x = Math.random() * 2 - 1;
-  this.y = Math.random() * 2 - 1;
-  this.z = Math.random() * 2 - 1;
-  this.normalize();
-  return this;
-};
+//MAKE THEM ALL JUST RETURN ARRAYS, THEN USE THAT TO MAYBE GENERATE OTHER STUFF, LIKE VELOCITIES OR MASS.
 
 /*
 design a bunch of simple generators to pick from a random list.
@@ -27,13 +20,6 @@ remembering, this is the parameters of the particle system:
   display: null (maybe a scale?)
 */
 
-/*
-POSITION GENERATIORS
-*/
-
-//--> REFACTOR TO ALWAYS TAKE INDEX, TOTAL_NUMBER, DIMENSIONS, ALL THE REST SHOULD BE RANDOMIZED
-
-//grid
 export function pointsOnA3dGrid(i,total, boundary){
 
   let [w, h, d] = [boundary.w, boundary.h, boundary.d];
@@ -128,31 +114,78 @@ export function pointsOnRandomIcosphereSurface(index,total,boundary){
 
 export function pointsWithinSphere(index,total,boundary){
   let [w, h, d] = [boundary.w, boundary.h, boundary.d];
-  let radius = Math.random()*Math.max(w,h,d)/3 + Math.min(w,h,d)/3;
-  
+  let randomRadius = Math.random()*Math.max(w,h,d)/3 + Math.min(w,h,d)/3;
+  return vec().randomDirection().setMag(randomRadius);
 }
 
 export function pointsOn2dGrid(index,total,boundary){
   let [w, h, d] = [boundary.w, boundary.h, boundary.d];
+  let rows = Math.floor(w/Math.random()*(total/2));
+  let cols = Math.round(total/rows);
+  let spcx = w/cols;
+  let spcy = h/rows;
+  let basis1 = vec().randomDirection().setMag(spcx);
+  let basis2 = vec().randomDirection().setMag(spcy);
+  let vertices = [];
+
+  for(let i=0; i<rows; i++){
+    for(let j=0; j<cols; j++){
+      let componentx = vec().copy(basis1).multiplyScalar(i);
+      let componenty = vec().copy(basic2).multiplyScalar(j);
+      vertices.push(componentx.add(componenty));
+    }
+  }
+
+  return vertices;
 }
 
 export function pointsOn2dCircle(index,total,boundary){
   let [w, h, d] = [boundary.w, boundary.h, boundary.d];
+  let angleSpacing = 2*Math.PI/total;
+  let randomRadius = Math.random()*Math.max(w,h,d)/3 + Math.min(w,h,d)/3;
+  let rotatingAxis = vec().randomDirection();
+  let vertices = [];
+  for(let i=0; i<total; i++){
+    let newVertex = vec().setMag(randomRadius).applyAxisAngle(rotatingAxis, i*angleSpacing);
+    vertices.push(newVertex);
+  }
+  return vertices;
 }
 
 export function pointsOnSpiral(index,total,boundary){
   let [w, h, d] = [boundary.w, boundary.h, boundary.d];
+  let angleSpacing = 2*Math.PI/total;
+  let randomRadius = Math.random()*Math.max(w,h,d)/3 + Math.min(w,h,d)/3;
+  let radiusIncrease = randomRadius/total;
+  let rotatingAxis = vec().randomDirection();
+  let vertices = [];
+  for(let i=0; i<total; i++){
+    let newVertex = vec().setMag(i*radiusIncrease).applyAxisAngle(rotatingAxis, i*angleSpacing);
+    vertices.push(newVertex);
+  }
+  return vertices;
 }
 
 export function pointsWithin2dCircle(index,total,boundary){
   let [w, h, d] = [boundary.w, boundary.h, boundary.d];
+  let angleSpacing = 2*Math.PI/total;
+  let rotatingAxis = vec().randomDirection();
+  let vertices = [];
+  for(let i=0; i<total; i++){
+    let randomRadius = Math.random()*Math.max(w,h,d)/3 + Math.min(w,h,d)/3;
+    let newVertex = vec().setMag(randomRadius).applyAxisAngle(rotatingAxis, i*angleSpacing*Math.random());
+    vertices.push(newVertex);
+  }
+  return vertices;
 }
 
-export function pointsOnRandomSpline(index,total,boundary){
-  let [w, h, d] = [boundary.w, boundary.h, boundary.d];
-}
+// export function pointsOnRandomSpline(index,total,boundary){
+//   let [w, h, d] = [boundary.w, boundary.h, boundary.d];
+// }
 
-export function pointsOnRandomSurface(index,total,boundary){
-  let [w, h, d] = [boundary.w, boundary.h, boundary.d];
-}
+// export function pointsOnRandomSurface(index,total,boundary){
+//   let [w, h, d] = [boundary.w, boundary.h, boundary.d];
+// }
+
+
 

@@ -50,26 +50,29 @@ export default createParticleSystem = function (args = {}) {
 
 
   for (let i = 0; i < num; i++) {
+
+    let defaultGenArgs = [i, self.num, self.boundary]
+
     let newParticle = createParticle({
-      position: HANDLE_GENERATOR(posGenerator, i, self.num, self.boundary),
-      direction: HANDLE_GENERATOR(dirGenerator, i, self.num, self.boundary),
-      inertialMass: HANDLE_GENERATOR(inertialMass, i),
-      momentInertia: HANDLE_GENERATOR(momentInertia, i),
+      position: HANDLE_GENERATOR(posGenerator, ...defaultGenArgs),
+      direction: HANDLE_GENERATOR(dirGenerator, ...defaultGenArgs),
+      inertialMass: HANDLE_GENERATOR(inertialMass, ...defaultGenArgs),
+      momentInertia: HANDLE_GENERATOR(momentInertia, ...defaultGenArgs),
 
-      movement: HANDLE_GENERATOR(movement, i),
+      movement: HANDLE_GENERATOR(movement, ...defaultGenArgs),
 
-      initialVelocity: HANDLE_GENERATOR(initialVelocity, i),
-      initialAngularVelocity: HANDLE_GENERATOR(initialAngularVelocity, i),
+      initialVelocity: HANDLE_GENERATOR(initialVelocity, ...defaultGenArgs),
+      initialAngularVelocity: HANDLE_GENERATOR(initialAngularVelocity, ...defaultGenArgs),
 
-      maxForce: HANDLE_GENERATOR(maxForce, i),
-      maxTorque: HANDLE_GENERATOR(maxTorque, i),
+      maxForce: HANDLE_GENERATOR(maxForce, ...defaultGenArgs),
+      maxTorque: HANDLE_GENERATOR(maxTorque, ...defaultGenArgs),
 
-      maxSpeed: HANDLE_GENERATOR(maxSpeed, i),
-      maxAngVel: HANDLE_GENERATOR(maxAngVel, i),
-      translationDamping: HANDLE_GENERATOR(translationDamping, i),
-      rotationDamping: HANDLE_GENERATOR(rotationDamping, i),
-      behaviours: HANDLE_GENERATOR(behaviours, i),
-      display: HANDLE_GENERATOR(display, i),
+      maxSpeed: HANDLE_GENERATOR(maxSpeed, ...defaultGenArgs),
+      maxAngVel: HANDLE_GENERATOR(maxAngVel, ...defaultGenArgs),
+      translationDamping: HANDLE_GENERATOR(translationDamping, ...defaultGenArgs),
+      rotationDamping: HANDLE_GENERATOR(rotationDamping, ...defaultGenArgs),
+      behaviours: HANDLE_GENERATOR(behaviours, ...defaultGenArgs),
+      display: HANDLE_GENERATOR(display, ...defaultGenArgs),
     });
 
     self.particles.push(newParticle);
@@ -154,7 +157,7 @@ export default createParticleSystem = function (args = {}) {
               if (indexToRemove < i) {
                 i--;
               }
-             }
+            }
 
             //delete the second particle from quadTree
 

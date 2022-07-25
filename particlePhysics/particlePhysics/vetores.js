@@ -2,16 +2,7 @@ import * as THREE from 'three';
 
 export default vec = function(x=0,y=0,z=0){ return new THREE.Vector3(x,y,z) };
 
-//implement a random 3d vector for three js
-THREE.Vector3.prototype.randomUnitVector = function () {
-    this.x = Math.random() * 2 - 1;
-    this.y = Math.random() * 2 - 1;
-    this.z = Math.random() * 2 - 1;
-    this.normalize();
-    return this;
-};
-
-//nomenclature changes
+//nomenclature changes - dont know if its gonna work but if dont i just find and replace
 THREE.Vector3.prototype.mult = THREE.Vector3.prototype.multiplyScalar;
 THREE.Vector3.prototype.div = THREE.Vector3.prototype.divideScalar;
 THREE.Vector3.prototype.mag = THREE.Vector3.prototype.length;
