@@ -6,9 +6,9 @@ const Buttons: NextPage = () => {
   const { pconfig, setPconfig } = usePconfig();
   const handleRandomConfig = useCallback(()=>{
     //pick random stuff for the state
-    
 
     //setPconfig to this new config
+    
     //then in particles component create a state wich is the particle system with that config anytime the config changes
   },[]);
 

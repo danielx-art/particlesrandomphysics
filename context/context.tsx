@@ -2,12 +2,34 @@ import { createContext, ReactNode, useContext, useState } from "react";
 import { parametersType } from "../particlePhysics/default_parameters";
 
 type psystConfigType = {
-  pconfig: parametersType | undefined;
+  pconfig: parametersType;
   setPconfig: (newConfig: parametersType) => void;
 };
 
 const initialPsystConfig: psystConfigType = {
-  pconfig: undefined,
+  pconfig: {
+    num: undefined,
+    boundary: undefined,
+    posGenerator: undefined,
+    dirGenerator: undefined,
+    inertialMass: undefined,
+    momentInertia: undefined,
+    movement: undefined,
+    initialVelocity: undefined,
+    initialAngularVelocity: undefined,
+    maxForce: undefined,
+    maxTorque: undefined,
+    maxSpeed: undefined,
+    maxAngVel: undefined,
+    translationDamping: undefined,
+    rotationDamping: undefined,
+    wrap: undefined,
+    queryRadius: undefined,
+    safeRadius: undefined,
+    merge: undefined,
+    behaviours: undefined,
+    display: undefined,
+  },
   setPconfig: () => {},
 };
 

@@ -1,8 +1,10 @@
 import * as THREE from "three";
-import React, { useRef, useMemo } from "react";
+import React, { useRef, useMemo, useState } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
-import createParticleSystem from '../particlePhysics/particlePhysics/particleSystem'
+import createParticleSystem from '../particlePhysics/particleSystem'
 import { usePconfig } from "../context/context";
+import * as SHAPES from "../particlePhysics/shapes"
+import vec from "../particlePhysics/vetores"
 
 
 const Particles = () => {
@@ -10,16 +12,27 @@ const Particles = () => {
   const viewport = useThree((state) => state.viewport);
   const {pconfig, setPconfig} = usePconfig();
 
-  if(viewport.width){
-    //set the boundary in pconfig
-  }
+  useMemo(()=>{
+    //this will create the first boundary
+    if(pconfig.boundary === undefined){
+    const firstConfig = pconfig; //use it as a template because im only changing boundary
+    firstConfig.boundary = SHAPES.parallelepiped(
+      vec(0,0,0), 
+      viewport.width, 
+      viewport.height, 
+      Math.min(viewport.width, viewport.height)
+    );
+    setPconfig(firstConfig);
+    }
+  },[viewport]);
 
-  if(pconfig) {
-    //create the particle system using the context parameters
-  }
-  
-  //should be passed as props and input by the user
-  const number = 300;
+  const particleSystem: any = useMemo(()=>{
+    /* this will create a new particle system everytime 
+    pconfig is changed due to button press or it is first set
+    with the new boundary dimensions from viewport as set above*/
+    if(pconfig.boundary === undefined) return undefined;
+    return createParticleSystem(pconfig);
+  },[pconfig]);
 
   const mesh = useRef<THREE.InstancedMesh>(null);
   const light = useRef<THREE.PointLight>(null);
@@ -27,31 +40,32 @@ const Particles = () => {
   const dummy = useMemo(() => new THREE.Object3D(), []);
 
   useFrame(() => {
-    // Run through the randomized data to calculate some movement
+    if(particleSystem !== undefined){
+      // Run through the randomized data to calculate some movement
+      particleSystem.update();
+      particleSystem.move();
+      //particlesystem.collisionDetection.show();
 
-    particlesystem.update();
-    particlesystem.move();
-    //particlesystem.collisionDetection.show();
+      particleSystem.particles.forEach((particle, index) => {
+        dummy.position.set(particle.pos.x, particle.pos.y, particle.pos.z);
 
-    particlesystem.particles.forEach((particle, index) => {
-      dummy.position.set(particle.pos.x, particle.pos.y, particle.pos.z);
+        dummy.lookAt(particle.dir);
+        dummy.updateMatrix();
 
-      dummy.lookAt(particle.dir);
-      dummy.updateMatrix();
-
-      // And apply the matrix to the instanced item
-      if (mesh.current) mesh.current.setMatrixAt(index, dummy.matrix);
-    });
-    if (mesh.current) mesh.current.instanceMatrix.needsUpdate = true;
+        // And apply the matrix to the instanced item
+        if (mesh.current) mesh.current.setMatrixAt(index, dummy.matrix);
+      });
+      if (mesh.current) mesh.current.instanceMatrix.needsUpdate = true;
+    }
   });
 
   return (
     <>
       <pointLight ref={light} distance={40} intensity={3} color="lightblue" />
-      <instancedMesh ref={mesh} args={[, , number]}>
+      {particleSystem !== undefined && <instancedMesh ref={mesh} args={[, , particleSystem.num ]}>
         <tetrahedronBufferGeometry args={[0.2, 0]} />
         <meshPhongMaterial color="#2596be" />
-      </instancedMesh>
+      </instancedMesh>}
     </>
   );
 };
