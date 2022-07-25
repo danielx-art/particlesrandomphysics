@@ -54,7 +54,7 @@ const createTracer = function(
             let z = pos.z;
             totalField.add(beh.field(x,y,z));
         };
-        return totalField.mult(spacing*100000).limit(spacing);
+        return totalField.multiplyScalar(spacing*100000).clampLength(0,spacing);
     };
 
     self['trace'] = function(s, tcolor = [0,0,0], type = "field"){

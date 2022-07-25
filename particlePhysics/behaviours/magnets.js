@@ -10,7 +10,7 @@ var createMagnet = function(
         mdipole = calculated_m;
     }
 
-    particle.dir = vec().copy(mdipole).setMag(1);
+    particle.dir = vec().copy(mdipole).setLength(1);
 
     const self = {
         
@@ -20,13 +20,13 @@ var createMagnet = function(
 
         field: (pointInSpace) => {
             let vecr = vec().copy(pointInSpace).sub(particle.pos)
-            let versorr = vec().copy(vecr).setMag(1);
-            let r = vecr.mag();
+            let versorr = vec().copy(vecr).setLength(1);
+            let r = vecr.length();
             if(r > 1) { //security measure
                 let B = vec().copy(versorr);
-                B.mult(3*( m.dot(versorr) ));
+                B.multiplyScalar(3*( m.dot(versorr) ));
                 B.sub(m);
-                B.div(r*r*r);
+                B.divideScalar(r*r*r);
                 return B;
             }
             return createVector();
@@ -40,18 +40,18 @@ var createMagnet = function(
 
             agents.forEach(function(agent, i){
 
-                if(!agent.physics.magnet){
+                if(!agent.physics.lengthnet){
                     return;
                 }
 
-                let B = agent.magnet.field(particle.pos);
+                let B = agent.lengthnet.field(particle.pos);
 
                 //translation, force
                 //approximation of partial derivatives
                 let dinf = 0.000000001;
-                let Bx = agent.magnet.field(vec(particle.pos.x + dinf, particle.pos.y, particle.pos.z)).sub(B).div(dinf).mult(m.x);
-                let By = agent.magnet.field(vec(particle.pos.x, particle.pos.y + dinf, particle.pos.z)).sub(B).div(dinf).mult(m.y);
-                let Bz = agent.magnet.field(vec(particle.pos.x, particle.pos.y, particle.pos.z + dinf)).sub(B).div(dinf).mult(m.z);
+                let Bx = agent.lengthnet.field(vec(particle.pos.x + dinf, particle.pos.y, particle.pos.z)).sub(B).divideScalar(dinf).multiplyScalar(m.x);
+                let By = agent.lengthnet.field(vec(particle.pos.x, particle.pos.y + dinf, particle.pos.z)).sub(B).divideScalar(dinf).multiplyScalar(m.y);
+                let Bz = agent.lengthnet.field(vec(particle.pos.x, particle.pos.y, particle.pos.z + dinf)).sub(B).divideScalar(dinf).multiplyScalar(m.z);
                 let Fmag = Bx.add(By).add(Bz);
                 Fmagres.add(Fmag);
 
@@ -59,13 +59,13 @@ var createMagnet = function(
                 Tmagres.add(m.cross(B));
             });
 
-            particle.acl.add(Fmagres.div(particle.inertialMass));
-            particle.angacl.add(Tmagres.div(particle.momentInertia));
+            particle.acl.add(Fmagres.divideScalar(particle.inertialMass));
+            particle.angacl.add(Tmagres.divideScalar(particle.momentInertia));
         },
 
         hasMoved: (newState) => {
-            let mmag = m.mag();
-            m.copy(newState.dir).setMag(mmag);
+            let mmag = m.length();
+            m.copy(newState.dir).setLength(mmag);
         },
 
         merge: (otherMagnet) => {

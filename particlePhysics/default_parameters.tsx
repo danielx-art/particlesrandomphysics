@@ -1,31 +1,31 @@
-import * as THREE from "three";
 import { Vector3 } from "three";
 import { parallelepiped } from "./shapes";
 import vec from "./vetores"
+import {pickRandomItemsFromArray} from './helpers'
+import * as POSGEN from './generators/positionGenerators'
 
-
-type posGeneratorType = (...args: number[]) => Vector3[];
-
-type vectorGeneratorType = (( ...args: number[] ) => Vector3[]) | Vector3;
-
-type scalarGeneratorType = (( ...args: number[] ) => number[])  | number 
+function pickRandomGenerator<Type>(importedGeneratorsObj: {[char: string]: Type}){
+  let generators = Object.keys(importedGeneratorsObj);
+  let randomGenerator = pickRandomItemsFromArray(generators, 1) as string;
+  return importedGeneratorsObj[randomGenerator];
+}
 
 export type parametersType = {
   num: number,
   boundary: object,
-  posGenerator: posGeneratorType,
-  dirGenerator: vectorGeneratorType 
-  inertialMass: scalarGeneratorType,
-  momentInertia: scalarGeneratorType,
+  posGenerator: Vector3[],
+  dirGenerator: Vector3[],
+  inertialMass: number[],
+  momentInertia: number[],
   movement: string,
-  initialVelocity: vectorGeneratorType,
-  initialAngularVelocity: vectorGeneratorType,
-  maxForce: scalarGeneratorType,
-  maxTorque: scalarGeneratorType,
-  maxSpeed: scalarGeneratorType,
-  maxAngVel: scalarGeneratorType,
-  translationDamping: scalarGeneratorType,
-  rotationDamping: scalarGeneratorType,
+  initialVelocity: Vector3[],
+  initialAngularVelocity: Vector3[],
+  maxForce: number[],
+  maxTorque: number[],
+  maxSpeed: number[],
+  maxAngVel: number[],
+  translationDamping: number[],
+  rotationDamping: number[],
   wrap: string,
   queryRadius: number,
   safeRadius: number,
@@ -39,47 +39,23 @@ export const defaultSystemParameters: parametersType = {
 
   boundary: parallelepiped(vec(), 100,100,100),
 
-  posGenerator: (i) => {
-    return vec();
-  },
+  posGenerator: ,
 
-  dirGenerator: (i) => {
-    return vec();
-  },
+  dirGenerator: ,
 
-  inertialMass: (i) => {
-    return 1;
-  },
-  momentInertia: (i) => {
-    return 1000;
-  },
+  inertialMass: ,
+  momentInertia: ,
 
   movement: "dynamic",
 
-  initialVelocity: (i) => {
-    return vec();
-  },
-  initialAngularVelocity: (i) => {
-    return vec();
-  },
-  maxForce: (i) => {
-    return 10;
-  },
-  maxTorque: (i) => {
-    return 0.5;
-  },
-  maxSpeed: (i) => {
-    return 0.1;
-  },
-  maxAngVel: (i) => {
-    return 0.1;
-  },
-  translationDamping: (i) => {
-    return 1;
-  },
-  rotationDamping: (i) => {
-    return 1;
-  },
+  initialVelocity: ,
+  initialAngularVelocity:,
+  maxForce: ,
+  maxTorque: ,
+  maxSpeed: ,
+  maxAngVel: ,
+  translationDamping: ,
+  rotationDamping: ,
 
   wrap: "bounce",
 

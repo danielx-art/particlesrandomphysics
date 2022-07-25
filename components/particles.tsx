@@ -2,11 +2,21 @@ import * as THREE from "three";
 import React, { useRef, useMemo } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import createParticleSystem from '../particlePhysics/particlePhysics/particleSystem'
+import { usePconfig } from "../context/context";
 
 
 const Particles = () => {
-  
+
   const viewport = useThree((state) => state.viewport);
+  const {pconfig, setPconfig} = usePconfig();
+
+  if(viewport.width){
+    //set the boundary in pconfig
+  }
+
+  if(pconfig) {
+    //create the particle system using the context parameters
+  }
   
   //should be passed as props and input by the user
   const number = 300;

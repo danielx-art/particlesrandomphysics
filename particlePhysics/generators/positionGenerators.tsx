@@ -1,6 +1,5 @@
 import vec from '../vetores'
-
-//MAKE THEM ALL JUST RETURN ARRAYS, THEN USE THAT TO MAYBE GENERATE OTHER STUFF, LIKE VELOCITIES OR MASS.
+import {Vector3} from "three"
 
 /*
 design a bunch of simple generators to pick from a random list.
@@ -20,9 +19,8 @@ remembering, this is the parameters of the particle system:
   display: null (maybe a scale?)
 */
 
-export function pointsOnA3dGrid(total, boundary){
+export function pointsOnA3dGrid(total: number, w: number, h: number, d: number): Vector3[]{
 
-  let [w, h, d] = [boundary.w, boundary.h, boundary.d];
   let vertices=[];
   let rows = Math.floor(w / (Math.random()*100));
   let cols = Math.floor(h / (Math.random()*50))
@@ -44,8 +42,9 @@ export function pointsOnA3dGrid(total, boundary){
   return vertices;
 }
 
-export function randomPositions(total,boundary) {
-  let [w, h, d] = [boundary.w, boundary.h, boundary.d];
+
+
+export function randomPositions(total: number, w: number, h: number, d: number): Vector3[] {
   let vertices=[];
   for(let i=0; i<total; i++){
     let x = Math.random()*w - w/2;
@@ -57,7 +56,8 @@ export function randomPositions(total,boundary) {
 }
 
 
-export function pointsOnRandomIcosphereSurface(total,boundary){
+
+export function pointsOnRandomIcosphereSurface(total: number, w: number, h: number, d: number): Vector3[] {
   /*
   A complete version of this icosphere generation code can be found at:
   https://github.com/mourner/icomesh/blob/master/index.js
@@ -65,7 +65,6 @@ export function pointsOnRandomIcosphereSurface(total,boundary){
   the order represents the number of subdivisions and should be between 4 and 10
   */
 
-  let [w, h, d] = [boundary.w, boundary.h, boundary.d];
   let order = Math.floor(Math.random()*6 + 4);
 
   // set up an icosahedron (12 vertices / 20 triangles)
@@ -81,24 +80,9 @@ export function pointsOnRandomIcosphereSurface(total,boundary){
       f, 0, -1, f, 0, 1, -f, 0, -1, -f, 0, 1
   ));
 
-  let v = 12;
-  const midCache = order ? new Map() : null; // midpoint vertices cache to avoid duplicating shared vertices
 
-  function addMidPoint(a, b) {
-      const key = Math.floor(((a + b) * (a + b + 1) / 2) + Math.min(a, b)); // Cantor's pairing function
-      const i = midCache.get(key);
-      if (i !== undefined) {
-          midCache.delete(key); // midpoint is only reused once, so we delete it for performance
-          return i;
-      }
-      midCache.set(key, v);
-      vertices[3 * v + 0] = (vertices[3 * a + 0] + vertices[3 * b + 0]) * 0.5;
-      vertices[3 * v + 1] = (vertices[3 * a + 1] + vertices[3 * b + 1]) * 0.5;
-      vertices[3 * v + 2] = (vertices[3 * a + 2] + vertices[3 * b + 2]) * 0.5;
-      return v++;
-  }
-
-  // normalize vertices
+  // normalize vertices and convert to a Vector3[]
+  let vec3vertices = [];
   for (let i = 0; i < numVertices * 3; i += 3) {
       const v1 = vertices[i + 0];
       const v2 = vertices[i + 1];
@@ -107,88 +91,106 @@ export function pointsOnRandomIcosphereSurface(total,boundary){
       vertices[i + 0] *= m;
       vertices[i + 1] *= m;
       vertices[i + 2] *= m;
+      vec3vertices.push(vec(
+        vertices[i],
+        vertices[i+1],
+        vertices[i+2]
+      ));
   }
+
 
   //scale randomly based on maximum dimension
   let randomScale = Math.random()*Math.max(w,h,d)/3 + Math.min(w,h,d)/3;
-  vertices.forEach((item) => item*=randomScale);
+  vec3vertices.forEach((item) => item.multiplyScalariplyScalar(randomScale));
 
+  //theres a problem when total < vertices.lenght or vice-versa
+  return vec3vertices;
+}
+
+
+
+export function pointsWithinSphere(total: number, w: number, h: number, d: number): Vector3[]{
+  let randomRadius = Math.random()*Math.max(w,h,d)/3 + Math.min(w,h,d)/3;
+  let vertices =[];
+  for(let i=0; i<total; i++){
+    vertices.push(vec().randomDirection().setLength(randomRadius));
+  }
   return vertices;
 }
 
-export function pointsWithinSphere(index,total,boundary){
-  let [w, h, d] = [boundary.w, boundary.h, boundary.d];
-  let randomRadius = Math.random()*Math.max(w,h,d)/3 + Math.min(w,h,d)/3;
-  return vec().randomDirection().setMag(randomRadius);
-}
 
-export function pointsOn2dGrid(index,total,boundary){
-  let [w, h, d] = [boundary.w, boundary.h, boundary.d];
+
+export function pointsOn2dGrid(total: number, w: number, h: number, d: number): Vector3[]{
   let vertices = [];
   let rows = Math.floor(w/Math.random()*(total/2));
   let cols = Math.round(total/rows);
   let spcx = w/cols;
   let spcy = h/rows;
-  let basis1 = vec().randomDirection().setMag(spcx);
-  let basis2 = vec().randomDirection().setMag(spcy);
+  let basis1 = vec().randomDirection().setLength(spcx);
+  let basis2 = vec().randomDirection().setLength(spcy);
 
   for(let i=0; i<rows; i++){
     for(let j=0; j<cols; j++){
-      let componentx = vec().copy(basis1).multiplyScalar(i);
-      let componenty = vec().copy(basic2).multiplyScalar(j);
+      let componentx = vec().copy(basis1).multiplyScalariplyScalar(i);
+      let componenty = vec().copy(basic2).multiplyScalariplyScalar(j);
       vertices.push(componentx.add(componenty));
     }
   }
-
-  //theres a problem when total < vertices.lenght or vice-versa
   return vertices;
 }
 
-export function pointsOn2dCircle(total,boundary){
-  let [w, h, d] = [boundary.w, boundary.h, boundary.d];
+
+
+export function pointsOn2dCircle(total: number, w: number, h: number, d: number): Vector3[] {
   let vertices = [];
   let angleSpacing = 2*Math.PI/total;
   let randomRadius = Math.random()*Math.max(w,h,d)/3 + Math.min(w,h,d)/3;
   let rotatingAxis = vec().randomDirection();
   for(let i=0; i<total; i++){
-    let newVertex = vec().setMag(randomRadius).applyAxisAngle(rotatingAxis, i*angleSpacing);
+    let newVertex = vec().setLength(randomRadius).applyAxisAngle(rotatingAxis, i*angleSpacing);
     vertices.push(newVertex);
   }
   return vertices;
 }
 
-export function pointsOnSpiral(total,boundary){
-  let [w, h, d] = [boundary.w, boundary.h, boundary.d];
+
+
+export function pointsOnSpiral(total: number, w: number, h: number, d: number): Vector3[] {
   let vertices = [];
   let angleSpacing = 2*Math.PI/total;
   let randomRadius = Math.random()*Math.max(w,h,d)/3 + Math.min(w,h,d)/3;
   let radiusIncrease = randomRadius/total;
   let rotatingAxis = vec().randomDirection();
   for(let i=0; i<total; i++){
-    let newVertex = vec().setMag(i*radiusIncrease).applyAxisAngle(rotatingAxis, i*angleSpacing);
+    let newVertex = vec().setLength(i*radiusIncrease).applyAxisAngle(rotatingAxis, i*angleSpacing);
     vertices.push(newVertex);
   }
   return vertices;
 }
 
-export function pointsWithin2dCircle(total,boundary){
-  let [w, h, d] = [boundary.w, boundary.h, boundary.d];
+
+
+export function pointsWithin2dCircle(total: number, w: number, h: number, d: number): Vector3[]{
   let vertices = [];
   let angleSpacing = 2*Math.PI/total;
   let rotatingAxis = vec().randomDirection();
   for(let i=0; i<total; i++){
     let randomRadius = Math.random()*Math.max(w,h,d)/3 + Math.min(w,h,d)/3;
-    let newVertex = vec().setMag(randomRadius).applyAxisAngle(rotatingAxis, i*angleSpacing*Math.random());
+    let newVertex = vec().setLength(randomRadius).applyAxisAngle(rotatingAxis, i*angleSpacing*Math.random());
     vertices.push(newVertex);
   }
   return vertices;
 }
 
-// export function pointsOnRandomSpline(total,boundary){
+
+
+// export function pointsOnRandomSpline(total, w, h, d){
 //   let [w, h, d] = [boundary.w, boundary.h, boundary.d];
 // }
 
-// export function pointsOnRandomSurface(total,boundary){
+
+
+// export function pointsOnRandomSurface(total, w, h, d){
 //   let [w, h, d] = [boundary.w, boundary.h, boundary.d];
 // }
 

@@ -31,7 +31,7 @@ export default createParticle = function ({
     {
       type: "magnet",
       mdipole: (pos) => {
-        return vec(pos.x, 0).setMag(1);
+        return vec(pos.x, 0).setLength(1);
       },
       mdipoleDependencies: ["pos"],
     },
@@ -93,22 +93,22 @@ export default createParticle = function ({
 
     self.move = () => {
       //translation - Euler - maybe implement runge kutta 4th?
-      self.acl.limit(maxForce / inertialMass);
+      self.acl.clampLength(0,maxForce / inertialMass);
       self.vel.add(self.acl);
-      self.vel.mult(translationDamping);
-      self.vel.limit(maxSpeed);
+      self.vel.multiplyScalar(translationDamping);
+      self.vel.clampLength(0,maxSpeed);
 
       self.pos.add(self.vel);
-      self.acl.mult(0);
+      self.acl.multiplyScalar(0);
 
       //rotation
-      self.angacl.limit(maxTorque / momentInertia);
+      self.angacl.clampLength(0,maxTorque / momentInertia);
       self.angvel.add(self.angacl);
-      self.angvel.mult(rotationDamping);
-      self.angvel.limit(maxAngVel);
+      self.angvel.multiplyScalar(rotationDamping);
+      self.angvel.clampLength(0,maxAngVel);
       deltadir = self.angvel.cross(self.dir);
-      self.dir.add(deltadir).limit(1);
-      self.angacl.mult(0);
+      self.dir.add(deltadir).clampLength(0,1);
+      self.angacl.multiplyScalar(0);
 
       //notify all behaviours
       for (const f of behaviourKeys) {
@@ -132,16 +132,16 @@ export default createParticle = function ({
       let mcm = m1 + m2;
       //2.position
       let x2 = vec().copy(p2.pos);
-      let xcm = vec().copy(x1.mult(m1)).add(x2.mult(m2)).div(mcm);
+      let xcm = vec().copy(x1.multiplyScalar(m1)).add(x2.multiplyScalar(m2)).divideScalar(mcm);
       //3.velocity
       let v2 = vec().copy(p2.vel);
-      let vcm = vec().copy(v1.mult(m1)).add(v2.mult(m2)).div(mcm);
+      let vcm = vec().copy(v1.multiplyScalar(m1)).add(v2.multiplyScalar(m2)).divideScalar(mcm);
       //4.moment od inercia
       let I2 = p2.momentInertia;
       let Icm = I1 + I2;
       //5.angular velocity
       let w2 = vec().copy(p2.angvel);
-      let wcm = vec().copy(w1.mult(I1)).add(w2.mult(I2)).div(Icm);
+      let wcm = vec().copy(w1.multiplyScalar(I1)).add(w2.multiplyScalar(I2)).divideScalar(Icm);
 
       //now attribute this do particle
       self.inertialMass = mcm;

@@ -48,7 +48,7 @@ export default createParticleSystem = function (args = {}) {
     : arrOrVec; //just single calculated Vector3 or number
   }
 
-  let positions = posGenerator(total, self.boundary);
+  let positions = posGenerator(total, self.boundary.width, self.boundary.height, self.boundary.depth);
 
   for (let i = 0; i < num; i++) {
 
