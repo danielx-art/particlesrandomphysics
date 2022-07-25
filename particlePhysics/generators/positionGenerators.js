@@ -20,40 +20,44 @@ remembering, this is the parameters of the particle system:
   display: null (maybe a scale?)
 */
 
-export function pointsOnA3dGrid(i,total, boundary){
+export function pointsOnA3dGrid(total, boundary){
 
   let [w, h, d] = [boundary.w, boundary.h, boundary.d];
-
+  let vertices=[];
   let rows = Math.floor(w / (Math.random()*100));
   let cols = Math.floor(h / (Math.random()*50))
   let layers = Math.ceil(total / (rows*cols));
-
-  //i=34 should give x=2, y=0, z=2 if 4x4xany
-  let z = Math.floor((i) / (rows*cols));
-  let y = Math.floor(((i+1) % (rows*cols))/cols);
-  let x = ((i+1) % (rows*cols) -1);
-  let zoffset = -d/2;
-  let yoffset = -h/2;
-  let xoffset = -w/2;
   let spacingx = Math.floor(w/cols);
   let spacingy = Math.floor(h/rows);
   let spacingz = Math.floor(d/layers);
-  x = x*spacingx + xoffset;
-  y = y*spacingy + yoffset;
-  z = z*spacingz + zoffset;
-  return vec(x,y,z);
+
+  for(let i=0; i<cols; i++){
+    for(let j=0; j<rows; j++){
+      for(let k=0; k<layers; k++){
+        let x = i*spacingx - w/2;
+        let y = j*spacingy - h/2;
+        let z = k*spacingz - d/2;
+        vertices.push(vec(x,y,z));
+      }
+    }
+  }
+  return vertices;
 }
 
-export function randomPositions(index,total,boundary) {
+export function randomPositions(total,boundary) {
   let [w, h, d] = [boundary.w, boundary.h, boundary.d];
-  let x = Math.random()*w - w/2;
-  let y = Math.random()*h - h/2;
-  let z = Math.random()*d - d/2;
-  return vec(x,y,z);
+  let vertices=[];
+  for(let i=0; i<total; i++){
+    let x = Math.random()*w - w/2;
+    let y = Math.random()*h - h/2;
+    let z = Math.random()*d - d/2;
+    vertices.push(vec(x,y,z));
+  }
+  return vertices;
 }
 
 
-export function pointsOnRandomIcosphereSurface(index,total,boundary){
+export function pointsOnRandomIcosphereSurface(total,boundary){
   /*
   A complete version of this icosphere generation code can be found at:
   https://github.com/mourner/icomesh/blob/master/index.js
@@ -120,13 +124,13 @@ export function pointsWithinSphere(index,total,boundary){
 
 export function pointsOn2dGrid(index,total,boundary){
   let [w, h, d] = [boundary.w, boundary.h, boundary.d];
+  let vertices = [];
   let rows = Math.floor(w/Math.random()*(total/2));
   let cols = Math.round(total/rows);
   let spcx = w/cols;
   let spcy = h/rows;
   let basis1 = vec().randomDirection().setMag(spcx);
   let basis2 = vec().randomDirection().setMag(spcy);
-  let vertices = [];
 
   for(let i=0; i<rows; i++){
     for(let j=0; j<cols; j++){
@@ -136,15 +140,16 @@ export function pointsOn2dGrid(index,total,boundary){
     }
   }
 
+  //theres a problem when total < vertices.lenght or vice-versa
   return vertices;
 }
 
-export function pointsOn2dCircle(index,total,boundary){
+export function pointsOn2dCircle(total,boundary){
   let [w, h, d] = [boundary.w, boundary.h, boundary.d];
+  let vertices = [];
   let angleSpacing = 2*Math.PI/total;
   let randomRadius = Math.random()*Math.max(w,h,d)/3 + Math.min(w,h,d)/3;
   let rotatingAxis = vec().randomDirection();
-  let vertices = [];
   for(let i=0; i<total; i++){
     let newVertex = vec().setMag(randomRadius).applyAxisAngle(rotatingAxis, i*angleSpacing);
     vertices.push(newVertex);
@@ -152,13 +157,13 @@ export function pointsOn2dCircle(index,total,boundary){
   return vertices;
 }
 
-export function pointsOnSpiral(index,total,boundary){
+export function pointsOnSpiral(total,boundary){
   let [w, h, d] = [boundary.w, boundary.h, boundary.d];
+  let vertices = [];
   let angleSpacing = 2*Math.PI/total;
   let randomRadius = Math.random()*Math.max(w,h,d)/3 + Math.min(w,h,d)/3;
   let radiusIncrease = randomRadius/total;
   let rotatingAxis = vec().randomDirection();
-  let vertices = [];
   for(let i=0; i<total; i++){
     let newVertex = vec().setMag(i*radiusIncrease).applyAxisAngle(rotatingAxis, i*angleSpacing);
     vertices.push(newVertex);
@@ -166,11 +171,11 @@ export function pointsOnSpiral(index,total,boundary){
   return vertices;
 }
 
-export function pointsWithin2dCircle(index,total,boundary){
+export function pointsWithin2dCircle(total,boundary){
   let [w, h, d] = [boundary.w, boundary.h, boundary.d];
+  let vertices = [];
   let angleSpacing = 2*Math.PI/total;
   let rotatingAxis = vec().randomDirection();
-  let vertices = [];
   for(let i=0; i<total; i++){
     let randomRadius = Math.random()*Math.max(w,h,d)/3 + Math.min(w,h,d)/3;
     let newVertex = vec().setMag(randomRadius).applyAxisAngle(rotatingAxis, i*angleSpacing*Math.random());
@@ -179,11 +184,11 @@ export function pointsWithin2dCircle(index,total,boundary){
   return vertices;
 }
 
-// export function pointsOnRandomSpline(index,total,boundary){
+// export function pointsOnRandomSpline(total,boundary){
 //   let [w, h, d] = [boundary.w, boundary.h, boundary.d];
 // }
 
-// export function pointsOnRandomSurface(index,total,boundary){
+// export function pointsOnRandomSurface(total,boundary){
 //   let [w, h, d] = [boundary.w, boundary.h, boundary.d];
 // }
 

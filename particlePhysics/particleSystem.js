@@ -48,13 +48,14 @@ export default createParticleSystem = function (args = {}) {
     : arrOrVec; //just single calculated Vector3 or number
   }
 
+  let positions = posGenerator(total, self.boundary);
 
   for (let i = 0; i < num; i++) {
 
     let defaultGenArgs = [i, self.num, self.boundary]
 
     let newParticle = createParticle({
-      position: HANDLE_GENERATOR(posGenerator, ...defaultGenArgs),
+      position: positions[i],
       direction: HANDLE_GENERATOR(dirGenerator, ...defaultGenArgs),
       inertialMass: HANDLE_GENERATOR(inertialMass, ...defaultGenArgs),
       momentInertia: HANDLE_GENERATOR(momentInertia, ...defaultGenArgs),

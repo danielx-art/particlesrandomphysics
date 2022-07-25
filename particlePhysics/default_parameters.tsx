@@ -3,7 +3,9 @@ import { Vector3 } from "three";
 import { parallelepiped } from "./shapes";
 import vec from "./vetores"
 
-/* function that returns an array of Vector3 or a single one in case of constant to avoid wasting memory space*/
+
+type posGeneratorType = (...args: number[]) => Vector3[];
+
 type vectorGeneratorType = (( ...args: number[] ) => Vector3[]) | Vector3;
 
 type scalarGeneratorType = (( ...args: number[] ) => number[])  | number 
@@ -11,7 +13,7 @@ type scalarGeneratorType = (( ...args: number[] ) => number[])  | number
 export type parametersType = {
   num: number,
   boundary: object,
-  posGenerator: vectorGeneratorType,
+  posGenerator: posGeneratorType,
   dirGenerator: vectorGeneratorType 
   inertialMass: scalarGeneratorType,
   momentInertia: scalarGeneratorType,
