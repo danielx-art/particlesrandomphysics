@@ -12,12 +12,12 @@ export default createGravity = function(
 
         field: (pointInSpace) => {
             let vecr = vec().copy(pointInSpace).sub(particle.pos)
-            let versorr = vec().copy(vecr).setMag(1);
-            let r = vecr.mag();
+            let versorr = vec().copy(vecr).setLength(1);
+            let r = vecr.length();
             if(r > 1) { //security measure
                 let g = vec().copy(versorr);
-                g.mult(-G*particle.inertialMass);
-                g.div(r*r);
+                g.multiplyScalar(-G*particle.inertialMass);
+                g.divideScalar(r*r);
                 return g;
             }
             return vec();
@@ -35,12 +35,12 @@ export default createGravity = function(
                 }
 
                 let g = agent.physics.gravity.field(particle.pos);
-                let Fg = g.mult(particle.inertialMass);
+                let Fg = g.multiplyScalar(particle.inertialMass);
                 Fgres.add(Fg);
 
             });
          
-            particle.acl.add(Fgres.div(particle.inertialMass));
+            particle.acl.add(Fgres.divideScalar(particle.inertialMass));
         },
 
         hasMoved: (newState) => {

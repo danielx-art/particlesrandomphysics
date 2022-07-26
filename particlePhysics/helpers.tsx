@@ -1,6 +1,6 @@
-export function pickRandom(array, num) {
+export function pickRandomItemsFromArray<Type>(array: Type[], num: number): Type | Type[] | undefined {
   if (!Array.isArray(array) || num <= 0) {
-    return false;
+    return undefined;
   }
   let copy = [...array];
   if (num == 1) {
@@ -16,7 +16,7 @@ export function pickRandom(array, num) {
   }
 }
 
-export function lerpStretchClamp(value, fromMin, fromMax, min, max) {
+export function lerpStretchClamp(value: number, fromMin: number, fromMax: number, min: number, max: number):number {
   if (value < fromMin) {
     return min;
   }
@@ -26,7 +26,7 @@ export function lerpStretchClamp(value, fromMin, fromMax, min, max) {
   return ((max - min) / (fromMax - fromMin)) * (value - fromMin) + min;
 }
 
-export function executeFunctionByName(functionName, context /*, args */) {
+export function executeFunctionByName(functionName: string, context: any /*, args */) {
   var args = Array.prototype.slice.call(arguments, 2);
   var namespaces = functionName.split(".");
   var func = namespaces.pop();

@@ -24,7 +24,7 @@ export default function euclidean() {
   };
 
   distance = function (pointA, pointB) {
-    return r(pointA, pointB).mag();
+    return r(pointA, pointB).length();
   };
 }
 

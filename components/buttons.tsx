@@ -1,15 +1,48 @@
 import { NextPage } from "next";
 import { usePconfig } from "../context/context";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
+import { pickRandomItemsFromArray } from "../particlePhysics/helpers";
+import * as POS_GENERATORS from "../particlePhysics/generators/positionGenerators"
+import * as VEL_GENERATORS from "../particlePhysics/generators/velocityGenerators"
+
+function pickRandomGenerator<Type>(importedGeneratorsObj: {[char: string]: Type}){
+  let generators = Object.keys(importedGeneratorsObj);
+  let randomGenerator = pickRandomItemsFromArray(generators, 1) as string;
+  return importedGeneratorsObj[randomGenerator];
+}
 
 const Buttons: NextPage = () => {
   const { pconfig, setPconfig } = usePconfig();
-  const handleRandomConfig = useCallback(()=>{
-    //pick random stuff for the state
-    //setPconfig to this new config
+  const handleRandomConfig = ()=>{
     
+    if(pconfig.boundary === undefined) return;
 
-  },[]);
+    const newConfig = {
+      num: Math.round(Math.random()*1000),
+      boundary: pconfig.boundary,
+      posGenerator: pickRandomGenerator(POS_GENERATORS),
+      dirGenerator: pickRandomGenerator(DIR_GENERATORS),
+      inertialMass: pickRandomGenerator(INERTIALMASS_GENERATORS),
+      momentInertia: pickRandomGenerator(MOMINERTIA_GENERATORS),
+      movement: ,
+      initialVelocity: ,
+      initialAngularVelocity: ,
+      maxForce: ,
+      maxTorque: ,
+      maxSpeed: ,
+      maxAngVel: ,
+      translationDamping: ,
+      rotationDamping: ,
+      wrap: ,
+      queryRadius: ,
+      safeRadius: ,
+      merge: ,
+      behaviours:  ,
+      display: ,
+    }
+
+    setPconfig(newConfig);
+  };
 
 
   return (
@@ -20,7 +53,7 @@ const Buttons: NextPage = () => {
         </button>
 
         <button
-          onClick={() => handleRandomConfig()}
+          onClick={handleRandomConfig}
           className="bg-black p-1 border border-white hover:rotate-90 active:opacity-50 transition-transform duration-500 ease-in-out rounded-full hover:scale-105"
         >
           <svg
