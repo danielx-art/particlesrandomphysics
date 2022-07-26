@@ -1,14 +1,4 @@
 import { Vector3 } from "three";
-import { parallelepiped } from "./shapes";
-import vec from "./vetores"
-import {pickRandomItemsFromArray} from './helpers'
-import * as POSGEN from './generators/positionGenerators'
-
-function pickRandomGenerator<Type>(importedGeneratorsObj: {[char: string]: Type}){
-  let generators = Object.keys(importedGeneratorsObj);
-  let randomGenerator = pickRandomItemsFromArray(generators, 1) as string;
-  return importedGeneratorsObj[randomGenerator];
-}
 
 export type parametersType = {
   num: number | undefined,
@@ -34,45 +24,45 @@ export type parametersType = {
   display: null | undefined,
 }; 
 
-export const defaultSystemParameters: parametersType = {
-  num: 3,
+// export const defaultSystemParameters: parametersType = {
+//   num: 3,
 
-  boundary: parallelepiped(vec(), 100,100,100),
+//   boundary: parallelepiped(vec(), 100,100,100),
 
-  posGenerator: ,
+//   posGenerator: ,
 
-  dirGenerator: ,
+//   dirGenerator: ,
 
-  inertialMass: ,
-  momentInertia: ,
+//   inertialMass: ,
+//   momentInertia: ,
 
-  movement: "dynamic",
+//   movement: "dynamic",
 
-  initialVelocity: ,
-  initialAngularVelocity:,
-  maxForce: ,
-  maxTorque: ,
-  maxSpeed: ,
-  maxAngVel: ,
-  translationDamping: ,
-  rotationDamping: ,
+//   initialVelocity: ,
+//   initialAngularVelocity:,
+//   maxForce: ,
+//   maxTorque: ,
+//   maxSpeed: ,
+//   maxAngVel: ,
+//   translationDamping: ,
+//   rotationDamping: ,
 
-  wrap: "bounce",
+//   wrap: "bounce",
 
-  queryRadius: 500,
+//   queryRadius: 500,
 
-  safeRadius: 5,
+//   safeRadius: 5,
 
-  merge: false,
+//   merge: false,
 
-  behaviours: (i) => {
-    return [
-      {
-        type: "gravity",
-        G: 10,
-      },
-    ];
-  },
+//   behaviours: (i) => {
+//     return [
+//       {
+//         type: "gravity",
+//         G: 10,
+//       },
+//     ];
+//   },
 
-  display: null,
-};
+//   display: null,
+// };

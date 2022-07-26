@@ -30,7 +30,7 @@ const Particles = () => {
     /* this will create a new particle system everytime 
     pconfig is changed due to button press or it is first set
     with the new boundary dimensions from viewport as set above*/
-    if(pconfig.boundary === undefined) return undefined;
+    if(pconfig.num === undefined) return undefined; //due to its not been set yet in buttons
     return createParticleSystem(pconfig);
   },[pconfig]);
 
