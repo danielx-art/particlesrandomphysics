@@ -1,23 +1,50 @@
 import * as THREE from "three";
+import { Vector3 } from "three";
+import { setFlagsFromString } from "v8";
 
-export function parallelepiped(center, width, height, depth) {
-  const self = {
-    center,
-    width,
-    height,
-    depth,
-    x: center.x,
-    y: center.y,
-    z: center.z,
-    w: self.width,
-    h: self.height,
-    d: self.depth,
-    hw: w / 2,
-    hh: h / 2,
-    hd: d / 2,
-  };
+interface Ishape {
+  center: Vector3;
+  x: number;
+  y: number;
+  z: number;
+  contains: (point: any) => boolean;
+  intersects: (other: Iparallelepiped) => boolean;
+}
 
-  self.contains = (point) => {
+interface Iparallelepiped extends Ishape {
+  width: number;
+  height: number;
+  depth: number;
+  w: number;
+  h: number;
+  d: number;
+  hw: number;
+  hh: number;
+  hd: number;
+  intersectsSphere: (sphere: Isphere) => boolean;
+}
+
+interface Isphere extends Ishape {
+  radius: number;
+}
+
+export function parallelepiped(
+  center: Vector3,
+  width: number,
+  height: number,
+  depth: number
+): Iparallelepiped {
+  let x = center.x;
+  let y = center.y;
+  let z = center.z;
+  let w = width;
+  let h = height;
+  let d = depth;
+  let hw = w / 2;
+  let hh = h / 2;
+  let hd = d / 2;
+
+  let contains = (point: any) => {
     return (
       point.x >= x - hw &&
       point.x <= x + hw &&
@@ -28,7 +55,7 @@ export function parallelepiped(center, width, height, depth) {
     );
   };
 
-  self.intersects = (other) => {
+  let intersects = (other: Iparallelepiped) => {
     let minX = x - hw;
     let maxX = x + hw;
     let minY = y - hh;
@@ -52,7 +79,7 @@ export function parallelepiped(center, width, height, depth) {
     );
   };
 
-  self.intersectsSphere = (sphere) => {
+  let intersectsSphere = (sphere: Isphere) => {
     let minX = x - hw;
     let maxX = x + hw;
     let minY = y - hh;
@@ -61,43 +88,62 @@ export function parallelepiped(center, width, height, depth) {
     let maxZ = z + hd;
 
     // get box closest point to sphere center by clamping
-    let x = Math.max(minX, Math.min(sphere.x, maxX));
-    let y = Math.max(minY, Math.min(sphere.y, maxY));
-    let z = Math.max(minZ, Math.min(sphere.z, maxZ));
+    let cx = Math.max(minX, Math.min(sphere.x, maxX));
+    let cy = Math.max(minY, Math.min(sphere.y, maxY));
+    let cz = Math.max(minZ, Math.min(sphere.z, maxZ));
 
     // this is the same as isPointInsideSphere
     let distance = Math.sqrt(
-      (x - sphere.x) * (x - sphere.x) +
-        (y - sphere.y) * (y - sphere.y) +
-        (z - sphere.z) * (z - sphere.z)
+      (cx - sphere.x) * (cx - sphere.x) +
+        (cy - sphere.y) * (cy - sphere.y) +
+        (cz - sphere.z) * (cz - sphere.z)
     );
 
     return distance < sphere.radius;
   };
 
+  let self = {
+    center,
+    width,
+    height,
+    depth,
+    x,
+    y,
+    z,
+    w,
+    h,
+    d,
+    hw,
+    hh,
+    hd,
+    contains,
+    intersects,
+    intersectsSphere,
+  };
+
   return self;
 }
 
-export function sphere(center, radius) {
-  const self = {
+export function sphere(center: Vector3, radius: number) {
+  let intersects = (aparallelepiped: Iparallelepiped) => {
+    return aparallelepiped.intersectsSphere(sphere(center, radius));
+  };
+
+  let contains = (point: any) => {
+    let pointV3 = new THREE.Vector3(point.x, point.y, point.z);
+    let dr2 = pointV3.distanceToSquared(center);
+    return dr2 <= radius;
+  };
+
+  return {
     center,
     radius,
     x: center.x,
     y: center.y,
     z: center.z,
+    intersects,
+    contains,
   };
-
-  self.intersects = (aparallelepiped) => {
-    return aparallelepiped.intersectsSphere(self);
-  };
-
-  self.contains = (point) => {
-    let pointV3 = new THREE.Vector3(point.x, point.y, point.z);
-    let dr2 = pointV3.distanceToSquared(center);
-    return dr2 <= self.radius;
-  };
-
-  return self;
 }
 
 // export function rectangle (x,y,width,height,) {
