@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useContext, useState } from "react";
-import { parametersType } from "../particlePhysics/default_parameters";
+import { parametersType } from "../particlePhysics/typeParameters";
 
 type psystConfigType = {
   pconfig: parametersType;

@@ -1,4 +1,4 @@
-import { defaultSystemParameters } from "./default_parameters";
+import { defaultSystemParameters } from "./typeParameters";
 import octaTree from "./octaTree";
 import { sphere } from "./shapes";
 

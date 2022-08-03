@@ -1,5 +1,5 @@
 import { Vector3 } from "three";
-import { Iparallelepiped } from "../particlePhysics/shapes";
+import { Iparallelepiped } from "./shapes";
 
 export interface IdefaultGenArgs {
   index: number;
@@ -8,16 +8,7 @@ export interface IdefaultGenArgs {
   positions: Vector3[];
 }
 
-export type Tgenerator = ({}: IdefaultGenArgs) =>
-  | Vector3[]
-  | Vector3
-  | number[]
-  | number
-  | string[]
-  | string
-  | boolean[]
-  | boolean
-  | undefined;
+export type Tgenerator = ({}: IdefaultGenArgs) => any;
 
 export type parametersType = {
   num: number | undefined;
@@ -46,45 +37,17 @@ export type parametersType = {
   display: null | undefined; //todo
 };
 
-// export const defaultSystemParameters: parametersType = {
-//   num: 3,
-
-//   boundary: parallelepiped(vec(), 100,100,100),
-
-//   posGenerator: ,
-
-//   dirGenerator: ,
-
-//   inertialMass: ,
-//   momentInertia: ,
-
-//   movement: "dynamic",
-
-//   initialVelocity: ,
-//   initialAngularVelocity:,
-//   maxForce: ,
-//   maxTorque: ,
-//   maxSpeed: ,
-//   maxAngVel: ,
-//   translationDamping: ,
-//   rotationDamping: ,
-
-//   wrap: "bounce",
-
-//   queryRadius: 500,
-
-//   safeRadius: 5,
-
-//   merge: false,
-
-//   behaviours: (i) => {
-//     return [
-//       {
-//         type: "gravity",
-//         G: 10,
-//       },
-//     ];
-//   },
-
-//   display: null,
-// };
+export interface particleBody {
+  pos: Vector3;
+  dir: Vector3;
+  inertialMass: number;
+  momentInertia: number;
+  movement: boolean;
+  vel: Vector3;
+  acl: Vector3;
+  angvel: Vector3;
+  angacl: Vector3;
+  x: number;
+  y: number;
+  z: number;
+}
