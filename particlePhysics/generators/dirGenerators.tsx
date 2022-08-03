@@ -2,16 +2,7 @@ import { Vector3 } from "three";
 import { Iparallelepiped } from "../shapes";
 import vec from "../vetores";
 
-export function allAtRest(args: {
-  index: number;
-  num: number;
-  boundary: Iparallelepiped;
-  positions: Array<Vector3>;
-}) {
-  return vec(0, 0, 0);
-}
-
-export function randomVelocity(args: {
+export function randomDir(args: {
   index: number;
   num: number;
   boundary: Iparallelepiped;
@@ -20,7 +11,7 @@ export function randomVelocity(args: {
   return vec().randomDirection();
 }
 
-export function sphericalSwirl(args: {
+export function dirPointInOut(args: {
   index: number;
   num: number;
   boundary: Iparallelepiped;
@@ -30,8 +21,6 @@ export function sphericalSwirl(args: {
   let x = pos.x;
   let y = pos.y;
   let z = pos.z;
-  let vx = z / (z * z + 0.1);
-  let vy = -y;
-  let vz = -x / (x * x + 0.1);
-  return vec(vx, vy, vz);
+  let invert = Math.random() < 0.5 ? -1 : 1;
+  return vec(x, y, z).normalize().multiplyScalar(invert);
 }

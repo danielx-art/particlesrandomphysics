@@ -1,8 +1,7 @@
 import * as THREE from "three";
 import { Vector3 } from "three";
-import { setFlagsFromString } from "v8";
 
-interface Ishape {
+export interface Ishape {
   center: Vector3;
   x: number;
   y: number;
@@ -11,7 +10,7 @@ interface Ishape {
   intersects: (other: Iparallelepiped) => boolean;
 }
 
-interface Iparallelepiped extends Ishape {
+export interface Iparallelepiped extends Ishape {
   width: number;
   height: number;
   depth: number;
@@ -24,7 +23,7 @@ interface Iparallelepiped extends Ishape {
   intersectsSphere: (sphere: Isphere) => boolean;
 }
 
-interface Isphere extends Ishape {
+export interface Isphere extends Ishape {
   radius: number;
 }
 

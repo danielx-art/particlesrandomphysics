@@ -1,49 +1,16 @@
 import { NextPage } from "next";
 import { usePconfig } from "../context/context";
-import { useCallback, useMemo } from "react";
-import { pickRandomItemsFromArray } from "../particlePhysics/helpers";
-import * as POS_GENERATORS from "../particlePhysics/generators/positionGenerators"
-import * as VEL_GENERATORS from "../particlePhysics/generators/velocityGenerators"
-
-function pickRandomGenerator<Type>(importedGeneratorsObj: {[char: string]: Type}){
-  let generators = Object.keys(importedGeneratorsObj);
-  let randomGenerator = pickRandomItemsFromArray(generators, 1) as string;
-  return importedGeneratorsObj[randomGenerator];
-}
+import { pickRandomConfig } from "../particlePhysics/randomConfig";
 
 const Buttons: NextPage = () => {
   const { pconfig, setPconfig } = usePconfig();
-  const handleRandomConfig = ()=>{
-    
-    if(pconfig.boundary === undefined) return;
+  const handleRandomConfig = () => {
+    if (pconfig.boundary === undefined) return;
 
-    const newConfig = {
-      num: Math.round(Math.random()*1000),
-      boundary: pconfig.boundary,
-      posGenerator: pickRandomGenerator(POS_GENERATORS),
-      dirGenerator: pickRandomGenerator(DIR_GENERATORS),
-      inertialMass: pickRandomGenerator(INERTIALMASS_GENERATORS),
-      momentInertia: pickRandomGenerator(MOMINERTIA_GENERATORS),
-      movement: ,
-      initialVelocity: ,
-      initialAngularVelocity: ,
-      maxForce: ,
-      maxTorque: ,
-      maxSpeed: ,
-      maxAngVel: ,
-      translationDamping: ,
-      rotationDamping: ,
-      wrap: ,
-      queryRadius: ,
-      safeRadius: ,
-      merge: ,
-      behaviours:  ,
-      display: ,
-    }
+    const newConfig = pickRandomConfig(pconfig);
 
     setPconfig(newConfig);
   };
-
 
   return (
     <>

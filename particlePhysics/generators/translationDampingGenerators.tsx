@@ -2,36 +2,29 @@ import { Vector3 } from "three";
 import { Iparallelepiped } from "../shapes";
 import vec from "../vetores";
 
-export function allAtRest(args: {
+export function noTranslationDamp(args: {
   index: number;
   num: number;
   boundary: Iparallelepiped;
   positions: Array<Vector3>;
 }) {
-  return vec(0, 0, 0);
+  return 1;
 }
 
-export function randomVelocity(args: {
+export function smallTranslationDamp(args: {
   index: number;
   num: number;
   boundary: Iparallelepiped;
   positions: Array<Vector3>;
 }) {
-  return vec().randomDirection();
+  return 0.999;
 }
 
-export function sphericalSwirl(args: {
+export function TranslationDamp09(args: {
   index: number;
   num: number;
   boundary: Iparallelepiped;
   positions: Array<Vector3>;
 }) {
-  let pos = args.positions[args.index];
-  let x = pos.x;
-  let y = pos.y;
-  let z = pos.z;
-  let vx = z / (z * z + 0.1);
-  let vy = -y;
-  let vz = -x / (x * x + 0.1);
-  return vec(vx, vy, vz);
+  return 0.9;
 }

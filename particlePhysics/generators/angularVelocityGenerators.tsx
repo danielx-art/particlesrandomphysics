@@ -11,7 +11,7 @@ export function allAtRest(args: {
   return vec(0, 0, 0);
 }
 
-export function randomVelocity(args: {
+export function angVelRandom(args: {
   index: number;
   num: number;
   boundary: Iparallelepiped;
@@ -20,7 +20,7 @@ export function randomVelocity(args: {
   return vec().randomDirection();
 }
 
-export function sphericalSwirl(args: {
+export function angVelBiggerAtCenter(args: {
   index: number;
   num: number;
   boundary: Iparallelepiped;
@@ -30,8 +30,8 @@ export function sphericalSwirl(args: {
   let x = pos.x;
   let y = pos.y;
   let z = pos.z;
-  let vx = z / (z * z + 0.1);
-  let vy = -y;
-  let vz = -x / (x * x + 0.1);
-  return vec(vx, vy, vz);
+  let dr = pos.distanceTo(args.boundary.center);
+  return vec()
+    .randomDirection()
+    .multiplyScalar(dr / (dr * dr + 0.5));
 }

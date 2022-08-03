@@ -38,42 +38,49 @@ export default createParticleSystem = function (args = {}) {
     particles: [],
   };
 
-  let HANDLE_GENERATOR = function(generator,...args /*should be i, num, self.boundary*/){
+  let HANDLE_GENERATOR = function (generator) {
+    //make generators only spit arrays
+    if (typeof generator === "number") return generator;
 
-    if(typeof generator === "number") return generator;
+    let arrOrValue = generator(args);
+    return Array.isArray(arrOrValue)
+      ? arrOrValue[args.index] //pre calculated generator[i] wich is a Vector3 or number
+      : arrOrValue; //just single calculated Vector3 or number thats possibly different for each i
+  };
 
-    let arrOrVec = generator(args);
-    return Array.isArray(arrOrVec) 
-    ? arrOrVec[args[0]] //generator[i] wich is a Vector3 or number
-    : arrOrVec; //just single calculated Vector3 or number
-  }
-
-  let positions = posGenerator(total, self.boundary.width, self.boundary.height, self.boundary.depth);
+  let positions = posGenerator(num, boundary);
 
   for (let i = 0; i < num; i++) {
-
-    let defaultGenArgs = [i, self.num, self.boundary]
+    let defaultGenArgs = {
+      index: i,
+      num: num,
+      boundary: boundary,
+      positions: positions,
+    };
 
     let newParticle = createParticle({
       position: positions[i],
-      direction: HANDLE_GENERATOR(dirGenerator, ...defaultGenArgs),
-      inertialMass: HANDLE_GENERATOR(inertialMass, ...defaultGenArgs),
-      momentInertia: HANDLE_GENERATOR(momentInertia, ...defaultGenArgs),
+      direction: HANDLE_GENERATOR(dirGenerator, defaultGenArgs),
+      inertialMass: HANDLE_GENERATOR(inertialMass, defaultGenArgs),
+      momentInertia: HANDLE_GENERATOR(momentInertia, defaultGenArgs),
 
-      movement: HANDLE_GENERATOR(movement, ...defaultGenArgs),
+      movement: HANDLE_GENERATOR(movement, defaultGenArgs),
 
-      initialVelocity: HANDLE_GENERATOR(initialVelocity, ...defaultGenArgs),
-      initialAngularVelocity: HANDLE_GENERATOR(initialAngularVelocity, ...defaultGenArgs),
+      initialVelocity: HANDLE_GENERATOR(initialVelocity, defaultGenArgs),
+      initialAngularVelocity: HANDLE_GENERATOR(
+        initialAngularVelocity,
+        defaultGenArgs
+      ),
 
-      maxForce: HANDLE_GENERATOR(maxForce, ...defaultGenArgs),
-      maxTorque: HANDLE_GENERATOR(maxTorque, ...defaultGenArgs),
+      maxForce: HANDLE_GENERATOR(maxForce, defaultGenArgs),
+      maxTorque: HANDLE_GENERATOR(maxTorque, defaultGenArgs),
 
-      maxSpeed: HANDLE_GENERATOR(maxSpeed, ...defaultGenArgs),
-      maxAngVel: HANDLE_GENERATOR(maxAngVel, ...defaultGenArgs),
-      translationDamping: HANDLE_GENERATOR(translationDamping, ...defaultGenArgs),
-      rotationDamping: HANDLE_GENERATOR(rotationDamping, ...defaultGenArgs),
-      behaviours: HANDLE_GENERATOR(behaviours, ...defaultGenArgs),
-      display: HANDLE_GENERATOR(display, ...defaultGenArgs),
+      maxSpeed: HANDLE_GENERATOR(maxSpeed, defaultGenArgs),
+      maxAngVel: HANDLE_GENERATOR(maxAngVel, defaultGenArgs),
+      translationDamping: HANDLE_GENERATOR(translationDamping, defaultGenArgs),
+      rotationDamping: HANDLE_GENERATOR(rotationDamping, defaultGenArgs),
+      behaviours: HANDLE_GENERATOR(behaviours, defaultGenArgs),
+      display: HANDLE_GENERATOR(display, defaultGenArgs),
     });
 
     self.particles.push(newParticle);

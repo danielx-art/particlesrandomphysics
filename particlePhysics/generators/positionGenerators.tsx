@@ -1,5 +1,6 @@
 import vec from "../vetores";
 import { Vector3 } from "three";
+import { Iparallelepiped } from "../shapes";
 
 /*
 design a bunch of simple generators to pick from a random list.
@@ -21,10 +22,11 @@ remembering, this is the parameters of the particle system:
 
 export function pointsOnA3dGrid(
   total: number,
-  w: number,
-  h: number,
-  d: number
+  boundary: Iparallelepiped
 ): Vector3[] {
+  let w = boundary.width;
+  let h = boundary.height;
+  let d = boundary.depth;
   let vertices = [];
   let rows = Math.floor(w / (Math.random() * 100));
   let cols = Math.floor(h / (Math.random() * 50));
@@ -48,10 +50,11 @@ export function pointsOnA3dGrid(
 
 export function randomPositions(
   total: number,
-  w: number,
-  h: number,
-  d: number
+  boundary: Iparallelepiped
 ): Vector3[] {
+  let w = boundary.width;
+  let h = boundary.height;
+  let d = boundary.depth;
   let vertices = [];
   for (let i = 0; i < total; i++) {
     let x = Math.random() * w - w / 2;
@@ -64,10 +67,11 @@ export function randomPositions(
 
 export function pointsOnRandomIcosphereSurface(
   total: number,
-  w: number,
-  h: number,
-  d: number
+  boundary: Iparallelepiped
 ): Vector3[] {
+  let w = boundary.width;
+  let h = boundary.height;
+  let d = boundary.depth;
   /*
   A complete version of this icosphere generation code can be found at:
   https://github.com/mourner/icomesh/blob/master/index.js
@@ -149,10 +153,11 @@ export function pointsOnRandomIcosphereSurface(
 
 export function pointsWithinSphere(
   total: number,
-  w: number,
-  h: number,
-  d: number
+  boundary: Iparallelepiped
 ): Vector3[] {
+  let w = boundary.width;
+  let h = boundary.height;
+  let d = boundary.depth;
   let randomRadius =
     (Math.random() * Math.max(w, h, d)) / 3 + Math.min(w, h, d) / 3;
   let vertices = [];
@@ -164,10 +169,11 @@ export function pointsWithinSphere(
 
 export function pointsOn2dGrid(
   total: number,
-  w: number,
-  h: number,
-  d: number
+  boundary: Iparallelepiped
 ): Vector3[] {
+  let w = boundary.width;
+  let h = boundary.height;
+
   let vertices = [];
   let rows = Math.floor((w / Math.random()) * (total / 2));
   let cols = Math.round(total / rows);
@@ -188,10 +194,11 @@ export function pointsOn2dGrid(
 
 export function pointsOn2dCircle(
   total: number,
-  w: number,
-  h: number,
-  d: number
+  boundary: Iparallelepiped
 ): Vector3[] {
+  let w = boundary.width;
+  let h = boundary.height;
+  let d = boundary.depth;
   let vertices = [];
   let angleSpacing = (2 * Math.PI) / total;
   let randomRadius =
@@ -208,10 +215,11 @@ export function pointsOn2dCircle(
 
 export function pointsOnSpiral(
   total: number,
-  w: number,
-  h: number,
-  d: number
+  boundary: Iparallelepiped
 ): Vector3[] {
+  let w = boundary.width;
+  let h = boundary.height;
+  let d = boundary.depth;
   let vertices = [];
   let angleSpacing = (2 * Math.PI) / total;
   let randomRadius =
@@ -229,10 +237,11 @@ export function pointsOnSpiral(
 
 export function pointsWithin2dCircle(
   total: number,
-  w: number,
-  h: number,
-  d: number
+  boundary: Iparallelepiped
 ): Vector3[] {
+  let w = boundary.width;
+  let h = boundary.height;
+  let d = boundary.depth;
   let vertices = [];
   let angleSpacing = (2 * Math.PI) / total;
   let rotatingAxis = vec().randomDirection();
