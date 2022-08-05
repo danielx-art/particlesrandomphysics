@@ -1,6 +1,8 @@
-import { defaultSystemParameters } from "./typeParameters";
+import { defaultSystemParameters } from "./types";
 import octaTree from "./octaTree";
 import { sphere } from "./shapes";
+import { setFluidGetter } from "@react-spring/shared";
+import { pickRandomItemsFromArray } from "./helpers";
 
 export default createParticleSystem = function (args = {}) {
   const {
@@ -8,33 +10,33 @@ export default createParticleSystem = function (args = {}) {
     boundary,
     posGenerator,
     dirGenerator,
-    inertialMass,
-    momentInertia,
-    movement,
-    initialVelocity,
-    initialAngularVelocity,
-    maxForce,
-    maxTorque,
-    maxSpeed,
-    maxAngVel,
-    translationDamping,
-    rotationDamping,
-    wrap,
+    inertialMassGenerator,
+    momentInertiaGenerator,
+    movementGenerator,
+    initialVelocityGenerator,
+    initialAngularVelocityGenerator,
+    maxForceGenerator,
+    maxTorqueGenerator,
+    maxSpeedGenerator,
+    maxAngVelGenerator,
+    translationDampingGenerator,
+    rotationDampingGenerator,
+    wrapGenerator,
     queryRadius,
     safeRadius,
     merge,
-    behaviours,
-    display,
+    behavioursGenerator,
+    displayGenerator,
   } = { ...defaultSystemParameters, ...args };
 
   //Initialize all the particles
   const self = {
     num,
     boundary,
-    movement,
     wrap,
     queryRadius,
     safeRadius,
+    merge,
     particles: [],
   };
 
@@ -61,26 +63,35 @@ export default createParticleSystem = function (args = {}) {
     let newParticle = createParticle({
       position: positions[i],
       direction: HANDLE_GENERATOR(dirGenerator, defaultGenArgs),
-      inertialMass: HANDLE_GENERATOR(inertialMass, defaultGenArgs),
-      momentInertia: HANDLE_GENERATOR(momentInertia, defaultGenArgs),
+      inertialMass: HANDLE_GENERATOR(inertialMassGenerator, defaultGenArgs),
+      momentInertia: HANDLE_GENERATOR(momentInertiaGenerator, defaultGenArgs),
 
-      movement: HANDLE_GENERATOR(movement, defaultGenArgs),
+      movement: HANDLE_GENERATOR(movementGenerator, defaultGenArgs),
 
-      initialVelocity: HANDLE_GENERATOR(initialVelocity, defaultGenArgs),
+      initialVelocity: HANDLE_GENERATOR(
+        initialVelocityGenerator,
+        defaultGenArgs
+      ),
       initialAngularVelocity: HANDLE_GENERATOR(
-        initialAngularVelocity,
+        initialAngularVelocityGenerator,
         defaultGenArgs
       ),
 
-      maxForce: HANDLE_GENERATOR(maxForce, defaultGenArgs),
-      maxTorque: HANDLE_GENERATOR(maxTorque, defaultGenArgs),
+      maxForce: HANDLE_GENERATOR(maxForceGenerator, defaultGenArgs),
+      maxTorque: HANDLE_GENERATOR(maxTorqueGenerator, defaultGenArgs),
 
-      maxSpeed: HANDLE_GENERATOR(maxSpeed, defaultGenArgs),
-      maxAngVel: HANDLE_GENERATOR(maxAngVel, defaultGenArgs),
-      translationDamping: HANDLE_GENERATOR(translationDamping, defaultGenArgs),
-      rotationDamping: HANDLE_GENERATOR(rotationDamping, defaultGenArgs),
-      behaviours: HANDLE_GENERATOR(behaviours, defaultGenArgs),
-      display: HANDLE_GENERATOR(display, defaultGenArgs),
+      maxSpeed: HANDLE_GENERATOR(maxSpeedGenerator, defaultGenArgs),
+      maxAngVel: HANDLE_GENERATOR(maxAngVelGenerator, defaultGenArgs),
+      translationDamping: HANDLE_GENERATOR(
+        translationDampingGenerator,
+        defaultGenArgs
+      ),
+      rotationDamping: HANDLE_GENERATOR(
+        rotationDampingGenerator,
+        defaultGenArgs
+      ),
+      behaviours: HANDLE_GENERATOR(behavioursGenerator, defaultGenArgs),
+      display: HANDLE_GENERATOR(displayGenerator, defaultGenArgs),
     });
 
     self.particles.push(newParticle);
@@ -92,93 +103,74 @@ export default createParticleSystem = function (args = {}) {
 
   //interactions
   self.update = () => {
-    if (movement == "dynamic") {
-      for (let i = 0; i < num; i++) {
-        let safeRange = sphere(self.particles[i].pos.copy(), safeRadius);
-        let forMerge = self.collisionDetection.query(safeRange);
-        let indexThis = forMerge.indexOf(self.particles[i]);
-        if (indexThis > -1) {
-          let range = sphere(self.particles[i].pos, queryRadius);
-          let inRange = self.collisionDetection.query(range);
-          forMerge.splice(indexThis, 1);
-          let agents = inRange.filter((x) => !forMerge.includes(x));
-          self.particles[i].applyForces(agents);
-        }
-      }
+    for (let i = 0; i < num; i++) {
+      let unsafeRange = sphere(self.particles[i].pos.copy(), safeRadius);
+      let tooClose = self.collisionDetection.query(unsafeRange);
+      let range = sphere(self.particles[i].pos, queryRadius);
+      let inRange = self.collisionDetection.query(range);
+      let agents = inRange.filter((x) => !tooClose.includes(x));
+      self.particles[i].applyForces(agents);
+    }
+  };
+
+  let repopulateTree = () => {
+    self.collisionDetection = octaTree(boundary, 8);
+    for (let i = 0; i < self.particles.length; i++) {
+      self.collisionDetection.insert(self.particles[i]);
     }
   };
 
   //move
   self.move = () => {
-    if (movement == "dynamic") {
-      for (let i = 0; i < num; i++) {
-        self.particles[i].move();
+    for (let i = 0; i < num; i++) {
+      self.particles[i].move();
+      self.wrap(particles[i], boundary);
+      repopulateTree();
 
-        /*-------------------------
-        ----fake wrapping stuff----
-        --------------------------*/
-        let bottomWall = self.boundary.y + self.boundary.height / 2;
-        let topWall = self.boundary.y - self.boundary.height / 2;
-        let rightWall = self.boundary.x + self.boundary.width / 2;
-        let leftWall = self.boundary.x - self.boundary.width / 2;
+      /*note: 
+      everytime I change particle position on this loop I should repopulate the tree so the next particle
+      can query other particles correctly. But can't I build an event listener so that the tree automatically tracks
+      self.particles positions?
+      */
 
-        if (wrap == "torus") {
-          if (self.particles[i].pos.x >= rightWall)
-            self.particles[i].pos.x = leftWall + 1;
-          if (self.particles[i].pos.y >= bottomWall)
-            self.particles[i].pos.y = topWall + 1;
-          if (self.particles[i].pos.x <= leftWall)
-            self.particles[i].pos.x = rightWall - 1;
-          if (self.particles[i].pos.y <= topWall)
-            self.particles[i].pos.y = bottomWall - 1;
-        } else if (wrap == "bounce") {
-          if (self.particles[i].pos.x >= rightWall)
-            self.particles[i].vel.x *= -1;
-          if (self.particles[i].pos.y >= bottomWall)
-            self.particles[i].vel.y *= -1;
-          if (self.particles[i].pos.x <= leftWall)
-            self.particles[i].vel.x *= -1;
-          if (self.particles[i].pos.y <= topWall) self.particles[i].vel.y *= -1;
+      if (merge == true) {
+        let closeRange = sphere(self.particles[i].pos, safeRadius);
+        let forMerge = self.collisionDetection.query(closeRange);
+        let indexThis = forMerge.indexOf(self.particles[i]);
+        if (indexThis > -1) {
+          forMerge.splice(indexThis, 1);
         }
+        let numMerge = forMerge.length;
 
-        /*-------------------
-        ----Merging stuff----
-        --------------------*/
+        for (let j = 0; j < numMerge; j++) {
+          self.particles[i].merge(forMerge[j]); //this changes position of the particle, but since I already did the wrapping, then it should not be a concern that the particle will be out of the tree boundary
+          //repopulateTree(); //overkill - only makes a difference if merge radius is very big wich should not be the case
 
-        if (merge == true) {
-          let safeRange = sphere(self.particles[i].pos, safeRadius);
-          let forMerge = self.collisionDetection.query(safeRange);
-          let indexThis = forMerge.indexOf(self.particles[i]);
-          if (indexThis > -1) {
-            forMerge.splice(indexThis, 1);
-          }
-          let numMerge = forMerge.length;
+          //then I have to remove the particle wich has been merged with this one from both the tree and particles array
+          indexToRemove = self.particles.indexOf(forMerge[j]);
 
-          for (let j = 0; j < numMerge; j++) {
-            self.particles[i].merge(forMerge[j]); //There is a problem here! Sebugg
-            indexToRemove = self.particles.indexOf(forMerge[j]);
+          /*interesting note:
+          Since I'm looping trough the particles in a crescent index "i", then
+          if particle "i" wants to merge with particle "indexToRemove", then I didnt 
+          yet went through particle "indexToRemove", because if so particle "i" would 
+          be already merged, so "i" will always be less then "indexToRemove". 
+          */
 
-            //delete the second particle from particles
-            if (indexToRemove > -1) {
-              self.particles.splice(indexToRemove, 1);
-              num--;
-              if (indexToRemove < i) {
-                i--;
-              }
-            }
+          //delete the second particle from tree
+          self.collisionDetection.remove(particles[indexToRemove]);
 
-            //delete the second particle from quadTree
-
-            self.collisionDetection.remove(forMerge[j]);
+          //delete the second particle from self.particles
+          if (indexToRemove > -1) {
+            self.particles.splice(indexToRemove, 1);
+            num--; //so that we dont get array out of bounds
           }
         }
       }
+      repopulateTree();
+    } //particle loop
 
-      self.collisionDetection = octaTree(boundary, 8);
-      for (let i = 0; i < self.particles.length; i++) {
-        self.collisionDetection.insert(self.particles[i]);
-      }
-    }
+    //after going trought all the particles, I should recreate the tree again, or should I?
+    repopulateTree();
   };
 
   return self;

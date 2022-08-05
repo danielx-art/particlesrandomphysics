@@ -1,6 +1,6 @@
-import magneticDipole from "./behaviours/magneticDipole";
-import { particlePreBody } from "./types";
 import vec from "./vetores";
+import magneticDipole from "./behaviours/magneticDipole";
+import { Iparticle } from "./types";
 
 /* --------------------------------------------------------------
 -----------------------------------------------------------------
@@ -8,7 +8,7 @@ import vec from "./vetores";
 -----------------------------------------------------------------
 -----------------------------------------------------------------*/
 
-export default createParticle = function ({
+export default function createParticle({
   position = vec(),
   direction = vec(0, -1),
   inertialMass = 1,
@@ -25,8 +25,8 @@ export default createParticle = function ({
   translationDamping = 0.9,
   rotationDamping = 0.8,
 
-  behaviours = [magneticDipole, gravity],
-} = {}) {
+  behaviours = [magneticDipole],
+}): Iparticle {
   const self: any = {
     pos: position,
     dir: direction,
@@ -65,7 +65,7 @@ export default createParticle = function ({
 
   let physicsKeys = Object.keys(self.physics);
 
-  self.applyForces = (agents) => {
+  self.applyForces = (agents: any) => {
     physicsKeys.forEach((phenom) => {
       self.physics[phenom].forces(agents);
     });
@@ -87,7 +87,7 @@ export default createParticle = function ({
     self.angvel.add(self.angacl);
     self.angvel.multiplyScalar(rotationDamping);
     self.angvel.clampLength(0, maxAngVel);
-    deltadir = self.angvel.cross(self.dir);
+    let deltadir = self.angvel.cross(self.dir);
     self.dir.add(deltadir).clampLength(0, 1);
     self.angacl.multiplyScalar(0);
 
@@ -98,8 +98,7 @@ export default createParticle = function ({
   };
 
   //merge function
-  self.merge = (particleForMerge) => {
-    //console.log(particleForMerge); //debugg
+  self.merge = (particleForMerge: any) => {
     let p1 = self;
     let m1 = p1.inertialMass;
     let x1 = vec().copy(p1.pos);
@@ -107,7 +106,7 @@ export default createParticle = function ({
     let I1 = p1.momentInertia;
     let w1 = vec().copy(p1.angvel);
 
-    let p2 = particleForMerge.body;
+    let p2 = particleForMerge;
     //1.mass
     let m2 = p2.inertialMass;
     let mcm = m1 + m2;
@@ -123,7 +122,7 @@ export default createParticle = function ({
       .copy(v1.multiplyScalar(m1))
       .add(v2.multiplyScalar(m2))
       .divideScalar(mcm);
-    //4.moment od inercia
+    //4.moment of inercia
     let I2 = p2.momentInertia;
     let Icm = I1 + I2;
     //5.angular velocity
@@ -146,5 +145,5 @@ export default createParticle = function ({
     });
   };
 
-  return self;
-};
+  return self as Iparticle;
+}

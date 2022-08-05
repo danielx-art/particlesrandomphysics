@@ -12,7 +12,7 @@ export type Tgenerator = ({}: IdefaultGenArgs) => any;
 
 export type parametersType = {
   num: number | undefined;
-  boundary: { [key: string]: any } | undefined;
+  boundary: Iparallelepiped | undefined;
   posGenerator: (
     num: number,
     boundary: Iparallelepiped
@@ -29,7 +29,10 @@ export type parametersType = {
   maxAngVel: Tgenerator;
   translationDamping: Tgenerator;
   rotationDamping: Tgenerator;
-  wrap: Tgenerator; //todo
+  wrap: (
+    particle: Iparticle,
+    boundary: Iparallelepiped /*this in the future should be any shape*/
+  ) => void;
   queryRadius: number | undefined;
   safeRadius: number | undefined;
   merge: boolean | undefined; //todo
@@ -37,7 +40,7 @@ export type parametersType = {
   display: null | undefined; //todo
 };
 
-export interface particleBody {
+export interface Iparticle {
   pos: Vector3;
   dir: Vector3;
   inertialMass: number;
@@ -50,4 +53,8 @@ export interface particleBody {
   x: number;
   y: number;
   z: number;
+  physics: {};
+  applyForces: (agents: Iparticle[]) => void;
+  move: () => {};
+  merge: (p: Iparticle) => void;
 }

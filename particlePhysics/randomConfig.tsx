@@ -1,5 +1,5 @@
 import { pickRandomItemsFromArray } from "../particlePhysics/helpers";
-import { parametersType } from "./typeParameters";
+import { parametersType } from "./types";
 import * as POS_GENERATORS from "../particlePhysics/generators/positionGenerators";
 import * as DIR_GENERATORS from "../particlePhysics/generators/dirGenerators";
 import * as INERTIALMASS_GENERATORS from "../particlePhysics/generators/inertialMassGenerators";
@@ -13,7 +13,7 @@ import * as MAXSPEED_GENERATORS from "../particlePhysics/generators/maxSpeedGene
 import * as MAXANGVEL_GENERATORS from "../particlePhysics/generators/maxAngVelGenerators";
 import * as TDAMP_GENERATORS from "../particlePhysics/generators/translationDampingGenerators";
 import * as RDAMP_GENERATORS from "../particlePhysics/generators/rotationDampingGenerators";
-//import * as WRAP_GENERATORS from "../particlePhysics/generators/wrapGenerators"
+import * as WRAP_GENERATORS from "../particlePhysics/generators/wrapGenerators";
 //import * as BEHAVIOURS_GENERATORS from "../particlePhysics/generators/behavioursGenerators"
 //import * as DISPLAY_GENERATORS from "../particlePhysics/generators/displayGenerators"
 
@@ -43,9 +43,9 @@ export function pickRandomConfig(preconfig: parametersType): parametersType {
     translationDamping: pickRandomGenerator(TDAMP_GENERATORS),
     rotationDamping: pickRandomGenerator(RDAMP_GENERATORS),
     wrap: pickRandomGenerator(WRAP_GENERATORS),
-    queryRadius: preconfig.boundary.w / 3,
-    safeRadius: 4,
-    merge: false, //make this random maybe
+    queryRadius: preconfig.boundary ? preconfig.boundary.width / 3 : 10,
+    safeRadius: 1,
+    merge: Math.random() < 0.2 ? true : false,
     behaviours: pickRandomGenerator(BEHAVIOURS_GENERATORS),
     display: pickRandomGenerator(DISPLAY_GENERATORS),
   };
