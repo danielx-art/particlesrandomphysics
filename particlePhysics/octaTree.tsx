@@ -1,8 +1,9 @@
-import { parallelepiped } from "./shapes";
+import { Iparallelepiped, Ishape, parallelepiped } from "./shapes";
 import * as THREE from "three";
+import { Tparticle, Ttree } from "./types";
 
-const octaTree = function (boundary, capacity) {
-  const self = {
+const octaTree = function (boundary: Iparallelepiped, capacity: number) {
+  const self: { [ket: string]: any } = {
     boundary,
     capacity,
     points: [],
@@ -31,7 +32,7 @@ const octaTree = function (boundary, capacity) {
     self.divided = true;
   };
 
-  self.insert = function (point) {
+  self.insert = function (point: Tparticle) {
     if (!self.boundary.contains(point)) {
       return false;
     }
@@ -62,7 +63,7 @@ const octaTree = function (boundary, capacity) {
     return false;
   };
 
-  self.query = function (range, found) {
+  self.query = function (range: Ishape, found: Tparticle[]) {
     if (!found) {
       found = [];
     }
@@ -78,20 +79,19 @@ const octaTree = function (boundary, capacity) {
     }
 
     if (self.divided) {
-      self.subTrees.forEach((sub3) => sub3.query(range, found));
+      self.subTrees.forEach((sub3: Ttree) => sub3.query(range, found));
     }
 
     return found;
   };
 
-  self.remove = function (point) {
+  self.remove = function (point: Tparticle) {
     let indexToRemove = self.points.indexOf(point);
     if (indexToRemove > -1) {
       self.points.splice(indexToRemove, 1);
-      return;
     } else {
       if (self.divided) {
-        self.subTrees.forEach((sub3) => sub3.remove(point));
+        self.subTrees.forEach((sub3: Ttree) => sub3.remove(point));
       }
     }
   };
@@ -99,14 +99,14 @@ const octaTree = function (boundary, capacity) {
   self.count = function () {
     let counter = self.points.length;
     if (self.divided) {
-      self.subTrees.forEach((sub3) => {
+      self.subTrees.forEach((sub3: Ttree) => {
         counter += sub3.count();
       });
     }
     return counter;
   };
 
-  return self;
+  return self as Ttree;
 };
 
 export default octaTree;

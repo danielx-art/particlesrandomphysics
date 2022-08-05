@@ -1,10 +1,15 @@
-import { defaultSystemParameters } from "./types";
+import {
+  parametersType,
+  Tgenerator,
+  TparticleSystem,
+  Tposgenerator,
+} from "./types";
+import createParticle from "./particle";
 import octaTree from "./octaTree";
-import { sphere } from "./shapes";
-import { setFluidGetter } from "@react-spring/shared";
-import { pickRandomItemsFromArray } from "./helpers";
+import { Iparallelepiped, sphere } from "./shapes";
+import { Vector3 } from "three";
 
-export default createParticleSystem = function (args = {}) {
+export default function createParticleSystem(args: parametersType) {
   const {
     num,
     boundary,
@@ -21,16 +26,16 @@ export default createParticleSystem = function (args = {}) {
     maxAngVelGenerator,
     translationDampingGenerator,
     rotationDampingGenerator,
-    wrapGenerator,
+    wrap,
     queryRadius,
     safeRadius,
     merge,
     behavioursGenerator,
     displayGenerator,
-  } = { ...defaultSystemParameters, ...args };
+  } = { ...args };
 
   //Initialize all the particles
-  const self = {
+  const self: { [key: string]: any } = {
     num,
     boundary,
     wrap,
@@ -40,7 +45,7 @@ export default createParticleSystem = function (args = {}) {
     particles: [],
   };
 
-  let HANDLE_GENERATOR = function (generator) {
+  let HANDLE_GENERATOR = function (generator: Tgenerator, args: any) {
     //make generators only spit arrays
     if (typeof generator === "number") return generator;
 
@@ -122,9 +127,9 @@ export default createParticleSystem = function (args = {}) {
 
   //move
   self.move = () => {
-    for (let i = 0; i < num; i++) {
+    for (let i = 0; i < self.num; i++) {
       self.particles[i].move();
-      self.wrap(particles[i], boundary);
+      self.wrap(self.particles[i], boundary);
       repopulateTree();
 
       /*note: 
@@ -133,7 +138,7 @@ export default createParticleSystem = function (args = {}) {
       self.particles positions?
       */
 
-      if (merge == true) {
+      if (self.merge == true) {
         let closeRange = sphere(self.particles[i].pos, safeRadius);
         let forMerge = self.collisionDetection.query(closeRange);
         let indexThis = forMerge.indexOf(self.particles[i]);
@@ -147,7 +152,7 @@ export default createParticleSystem = function (args = {}) {
           //repopulateTree(); //overkill - only makes a difference if merge radius is very big wich should not be the case
 
           //then I have to remove the particle wich has been merged with this one from both the tree and particles array
-          indexToRemove = self.particles.indexOf(forMerge[j]);
+          let indexToRemove = self.particles.indexOf(forMerge[j]);
 
           /*interesting note:
           Since I'm looping trough the particles in a crescent index "i", then
@@ -157,12 +162,12 @@ export default createParticleSystem = function (args = {}) {
           */
 
           //delete the second particle from tree
-          self.collisionDetection.remove(particles[indexToRemove]);
+          self.collisionDetection.remove(self.particles[indexToRemove]);
 
           //delete the second particle from self.particles
           if (indexToRemove > -1) {
             self.particles.splice(indexToRemove, 1);
-            num--; //so that we dont get array out of bounds
+            self.num--; //so that we dont get array out of bounds
           }
         }
       }
@@ -173,5 +178,5 @@ export default createParticleSystem = function (args = {}) {
     repopulateTree();
   };
 
-  return self;
-};
+  return self as TparticleSystem;
+}

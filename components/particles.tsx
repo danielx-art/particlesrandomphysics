@@ -1,38 +1,39 @@
 import * as THREE from "three";
 import React, { useRef, useMemo, useState } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
-import createParticleSystem from '../particlePhysics/particleSystem'
+import createParticleSystem from "../particlePhysics/particleSystem";
 import { usePconfig } from "../context/context";
-import * as SHAPES from "../particlePhysics/shapes"
-import vec from "../particlePhysics/vetores"
-
+import * as SHAPES from "../particlePhysics/shapes";
+import vec from "../particlePhysics/vetores";
+import { pickRandomConfig } from "../particlePhysics/randomConfig";
+import { Tparticle } from "../particlePhysics/types";
 
 const Particles = () => {
-
   const viewport = useThree((state) => state.viewport);
-  const {pconfig, setPconfig} = usePconfig();
+  const { pconfig, setPconfig } = usePconfig();
 
-  useMemo(()=>{
+  useMemo(() => {
     //this will create the first boundary
-    if(pconfig.boundary === undefined){
-    const firstConfig = pconfig; //use it as a template because im only changing boundary
-    firstConfig.boundary = SHAPES.parallelepiped(
-      vec(0,0,0), 
-      viewport.width, 
-      viewport.height, 
-      Math.min(viewport.width, viewport.height)
-    );
-    setPconfig(firstConfig);
+    if (pconfig.num === 0) {
+      const preconfig = pconfig; //use it as a template because im only changing boundary
+      preconfig.boundary = SHAPES.parallelepiped(
+        vec(0, 0, 0),
+        viewport.width,
+        viewport.height,
+        Math.min(viewport.width, viewport.height)
+      );
+      let firstConfig = pickRandomConfig(preconfig);
+      setPconfig(firstConfig);
     }
-  },[viewport]);
+  }, [viewport]);
 
-  const particleSystem: any = useMemo(()=>{
+  const particleSystem: any = useMemo(() => {
     /* this will create a new particle system everytime 
     pconfig is changed due to button press or it is first set
     with the new boundary dimensions from viewport as set above*/
-    if(pconfig.num === undefined) return undefined; //due to its not been set yet in buttons
+    if (pconfig.num === 0) return undefined; //due to its not been set yet in buttons
     return createParticleSystem(pconfig);
-  },[pconfig]);
+  }, [pconfig]);
 
   const mesh = useRef<THREE.InstancedMesh>(null);
   const light = useRef<THREE.PointLight>(null);
@@ -40,13 +41,13 @@ const Particles = () => {
   const dummy = useMemo(() => new THREE.Object3D(), []);
 
   useFrame(() => {
-    if(particleSystem !== undefined){
+    if (particleSystem !== undefined) {
       // Run through the randomized data to calculate some movement
       particleSystem.update();
       particleSystem.move();
       //particlesystem.collisionDetection.show();
 
-      particleSystem.particles.forEach((particle, index) => {
+      particleSystem.particles.forEach((particle: Tparticle, index: number) => {
         dummy.position.set(particle.pos.x, particle.pos.y, particle.pos.z);
 
         dummy.lookAt(particle.dir);
@@ -62,10 +63,12 @@ const Particles = () => {
   return (
     <>
       <pointLight ref={light} distance={40} intensity={3} color="lightblue" />
-      {particleSystem !== undefined && <instancedMesh ref={mesh} args={[, , particleSystem.num ]}>
-        <tetrahedronBufferGeometry args={[0.2, 0]} />
-        <meshPhongMaterial color="#2596be" />
-      </instancedMesh>}
+      {particleSystem !== undefined && (
+        <instancedMesh ref={mesh} args={[, , particleSystem.num]}>
+          <tetrahedronBufferGeometry args={[0.2, 0]} />
+          <meshPhongMaterial color="#2596be" />
+        </instancedMesh>
+      )}
     </>
   );
 };

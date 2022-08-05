@@ -1,60 +1,62 @@
-export default magneticDipole = function (particle) {
-  if (mdipole instanceof Function) {
-    let args = mdipoleDependencies.map((dependency) => particle[dependency]);
-    let calculated_m = mdipole(...args);
-    mdipole = calculated_m;
-  }
+import { Vector3 } from "three";
+import { Tparticle, TparticlePreBody } from "../types";
+import vec from "../vetores";
 
-  particle.dir = vec().copy(mdipole).setLength(1);
+export default function magneticDipole(particle: TparticlePreBody) {
+  //I need to randomly? create a magnetic dipole intensity here
+  let m = vec().copy(particle.dir);
 
   const self = {
     title: "magnet",
     descripition: "",
-    m: mdipole,
+    m,
     particle,
 
-    field: (pointInSpace) => {
+    field: (pointInSpace: Vector3) => {
       let vecr = vec().copy(pointInSpace).sub(particle.pos);
       let versorr = vec().copy(vecr).setLength(1);
       let r = vecr.length();
       if (r > 1) {
-        //security measure
+        /*note
+        this is redundant since particle will only act on particles outside a "tooClose" or
+        safeRadius as worked on the particleSystem and collisionDetection themselves
+        */
         let B = vec().copy(versorr);
         B.multiplyScalar(3 * m.dot(versorr));
         B.sub(m);
         B.divideScalar(r * r * r);
         return B;
       }
-      return createVector();
+      return vec();
     },
 
-    forces: (agents) => {
+    forces: (agents: Tparticle[]) => {
       Array.isArray(agents) ? true : (agents = [agents]); //if only one is passed
 
-      let Fmagres = createVector();
-      let Tmagres = createVector();
+      let Fmagres = vec();
+      let Tmagres = vec();
 
       agents.forEach(function (agent, i) {
-        if (!agent.physics.lengthnet) {
+        if (!agent.physics.magnet) {
           return;
         }
 
-        let B = agent.lengthnet.field(particle.pos);
+        let B = agent.physics.magnet.field(particle.pos);
 
         //translation, force
         //approximation of partial derivatives
         let dinf = 0.000000001;
-        let Bx = agent.lengthnet
+        let Bx = agent.physics.magnet
           .field(vec(particle.pos.x + dinf, particle.pos.y, particle.pos.z))
           .sub(B)
           .divideScalar(dinf)
           .multiplyScalar(m.x);
-        let By = agent.lengthnet
+        let By = agent.physics.magnet
           .field(vec(particle.pos.x, particle.pos.y + dinf, particle.pos.z))
           .sub(B)
           .divideScalar(dinf)
           .multiplyScalar(m.y);
-        let Bz = agent.lengthnet
+        let Bz = agent.physics.magnet
           .field(vec(particle.pos.x, particle.pos.y, particle.pos.z + dinf))
           .sub(B)
           .divideScalar(dinf)
@@ -70,16 +72,16 @@ export default magneticDipole = function (particle) {
       particle.angacl.add(Tmagres.divideScalar(particle.momentInertia));
     },
 
-    hasMoved: (newState) => {
+    hasMoved: (newState: TparticlePreBody) => {
       let mmag = m.length();
       m.copy(newState.dir).setLength(mmag);
     },
 
-    merge: (otherMagnet) => {
+    merge: (otherMagnet: any) => {
       let m2 = vec().copy(otherMagnet.m);
       m.add(m2);
     },
   };
 
   return self;
-};
+}

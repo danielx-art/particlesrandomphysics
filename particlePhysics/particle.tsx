@@ -1,6 +1,6 @@
 import vec from "./vetores";
 import magneticDipole from "./behaviours/magneticDipole";
-import { Iparticle } from "./types";
+import { Tparticle } from "./types";
 
 /* --------------------------------------------------------------
 -----------------------------------------------------------------
@@ -26,7 +26,7 @@ export default function createParticle({
   rotationDamping = 0.8,
 
   behaviours = [magneticDipole],
-}): Iparticle {
+}): Tparticle {
   const self: any = {
     pos: position,
     dir: direction,
@@ -51,22 +51,27 @@ export default function createParticle({
     get z() {
       return this.pos.z;
     },
+    physics: {},
   };
 
   /*
   BEHAVIOURS ASSIGNMENT
   */
 
-  self["physics"] = {};
-
   for (const behaviour of behaviours) {
-    behaviour(/*attach to*/ self);
+    behaviour(self);
+    /*note:
+    "behaviour(self)" is not a pure function, we need to assign, or "attach", to the physics 
+    object of the particle this said behaviour, so in other words it needs to set stuff on its "parent particle", the "self",
+    because the behaviour needs access to the particles properties. But we need to be careful here, the behaviour
+    should only access the properties of the particle (self) as it is above, and not the methods assigned later bellow.
+    */
   }
 
-  let physicsKeys = Object.keys(self.physics);
+  let physicsList = Object.keys(self.physics);
 
   self.applyForces = (agents: any) => {
-    physicsKeys.forEach((phenom) => {
+    physicsList.forEach((phenom) => {
       self.physics[phenom].forces(agents);
     });
   };
@@ -92,7 +97,7 @@ export default function createParticle({
     self.angacl.multiplyScalar(0);
 
     //notify all behaviours
-    physicsKeys.forEach((phenom) => {
+    physicsList.forEach((phenom) => {
       self.physics[phenom].hasMoved(self);
     });
   };
@@ -140,10 +145,10 @@ export default function createParticle({
     self.angvel = vec().copy(wcm);
 
     //notify the merge to all behaviours
-    physicsKeys.forEach((phenom) => {
+    physicsList.forEach((phenom) => {
       self.physics[phenom].merge(particleForMerge.physics[phenom]);
     });
   };
 
-  return self as Iparticle;
+  return self as Tparticle;
 }

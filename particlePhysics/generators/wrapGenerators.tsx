@@ -1,26 +1,52 @@
-import { Vector3 } from "three";
 import { Iparallelepiped } from "../shapes";
-import { Iparticle } from "../types";
-import vec from "../vetores";
+import { Tparticle } from "../types";
 
-export function wrapAround(particle: Iparticle, boundary: Iparallelepiped) {
-  let bottomWall = self.boundary.y + self.boundary.height / 2;
-  let topWall = self.boundary.y - self.boundary.height / 2;
-  let rightWall = self.boundary.x + self.boundary.width / 2;
-  let leftWall = self.boundary.x - self.boundary.width / 2;
+export function wrapAround(particle: Tparticle, boundary: Iparallelepiped) {
+  let maxY = boundary.y + boundary.hh;
+  let minY = boundary.y - boundary.hh;
+  let maxX = boundary.x + boundary.hw;
+  let minX = boundary.x - boundary.hw;
+  let minZ = boundary.z + boundary.hd;
+  let maxZ = boundary.z - boundary.hd;
 
-  if (particle.pos.x >= rightWall) particle.pos.x = leftWall + 1;
-  if (particle.pos.y >= bottomWall) particle.pos.y = topWall + 1;
-  if (particle.pos.x <= leftWall) particle.pos.x = rightWall - 1;
-  if (particle.pos.y <= topWall) particle.pos.y = bottomWall - 1;
+  if (particle.pos.x >= maxX) particle.pos.x = minX + 1;
+  if (particle.pos.x <= minX) particle.pos.x = maxX - 1;
+  if (particle.pos.y >= maxY) particle.pos.y = minY + 1;
+  if (particle.pos.y <= minY) particle.pos.y = maxY - 1;
+  if (particle.pos.z >= maxZ) particle.pos.z = minZ + 1;
+  if (particle.pos.z <= minZ) particle.pos.z = maxZ - 1;
+}
 
-  // bounce:
-  //     if (self.particles[i].pos.x >= rightWall)
-  //     self.particles[i].vel.x *= -1;
-  //     if (self.particles[i].pos.y >= bottomWall)
-  //     self.particles[i].vel.y *= -1;
-  //     if (self.particles[i].pos.x <= leftWall)
-  //     self.particles[i].vel.x *= -1;
-  //     if (self.particles[i].pos.y <= topWall) self.particles[i].vel.y *= -1;
-  //
+export function wrapBounce(particle: Tparticle, boundary: Iparallelepiped) {
+  let maxY = boundary.y + boundary.hh;
+  let minY = boundary.y - boundary.hh;
+  let maxX = boundary.x + boundary.hw;
+  let minX = boundary.x - boundary.hw;
+  let minZ = boundary.z + boundary.hd;
+  let maxZ = boundary.z - boundary.hd;
+
+  if (particle.pos.x >= maxX) {
+    particle.pos.x = maxX;
+    particle.vel.x *= -1;
+  }
+  if (particle.pos.x <= minX) {
+    particle.pos.x = minX;
+    particle.vel.x *= -1;
+  }
+  if (particle.pos.y >= maxY) {
+    particle.pos.y = maxY;
+    particle.vel.y *= -1;
+  }
+  if (particle.pos.y <= minY) {
+    particle.pos.y = minY;
+    particle.vel.y *= -1;
+  }
+  if (particle.pos.y >= maxZ) {
+    particle.pos.z = maxZ;
+    particle.vel.z *= -1;
+  }
+  if (particle.pos.y <= minZ) {
+    particle.pos.z = minZ;
+    particle.vel.z *= -1;
+  }
 }

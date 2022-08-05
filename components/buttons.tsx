@@ -5,7 +5,7 @@ import { pickRandomConfig } from "../particlePhysics/randomConfig";
 const Buttons: NextPage = () => {
   const { pconfig, setPconfig } = usePconfig();
   const handleRandomConfig = () => {
-    if (pconfig.boundary === undefined) return;
+    if (pconfig.num === 0) return;
 
     const newConfig = pickRandomConfig(pconfig);
 
