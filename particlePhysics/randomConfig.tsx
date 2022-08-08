@@ -14,7 +14,7 @@ import * as MAXANGVEL_GENERATORS from "../particlePhysics/generators/maxAngVelGe
 import * as TDAMP_GENERATORS from "../particlePhysics/generators/translationDampingGenerators";
 import * as RDAMP_GENERATORS from "../particlePhysics/generators/rotationDampingGenerators";
 import * as WRAP_GENERATORS from "../particlePhysics/generators/wrapGenerators";
-//import * as BEHAVIOURS_GENERATORS from "../particlePhysics/generators/behavioursGenerators"
+import * as BEHAVIOURS_GENERATORS from "../particlePhysics/generators/behavioursGenerators";
 //import * as DISPLAY_GENERATORS from "../particlePhysics/generators/displayGenerators"
 
 function pickRandomGenerator<Type>(importedGeneratorsObj: {
@@ -47,6 +47,6 @@ export function pickRandomConfig(preconfig: parametersType): parametersType {
     safeRadius: 1,
     merge: Math.random() < 0.2 ? true : false,
     behavioursGenerator: pickRandomGenerator(BEHAVIOURS_GENERATORS),
-    displayGenerator: pickRandomGenerator(DISPLAY_GENERATORS),
+    displayGenerator: /*pickRandomGenerator(DISPLAY_GENERATORS)*/ null,
   };
 }

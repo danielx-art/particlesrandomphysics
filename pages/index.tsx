@@ -1,7 +1,7 @@
 import { Canvas } from "@react-three/fiber";
 import type { NextPage } from "next";
-import Particles from "../components/particles";
-import Buttons from "../components/buttons";
+import Particles from "./components/particles";
+import Buttons from "./components/buttons";
 
 const Home: NextPage = () => {
   return (

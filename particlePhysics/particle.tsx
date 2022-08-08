@@ -1,6 +1,6 @@
 import vec from "./vetores";
 import magneticDipole from "./behaviours/magneticDipole";
-import { Tparticle } from "./types";
+import { Tparticle, TparticlePreBody } from "./types";
 
 /* --------------------------------------------------------------
 -----------------------------------------------------------------
@@ -53,13 +53,19 @@ export default function createParticle({
     },
     physics: {},
   };
+  /*note:
+  this "self" could be typed better, Idk if I should refactor it, because the problem is that the functions
+  assigned later bellow need access to the properties of this self or if I should use Object.assign({},self, {newFuntion: ...})
+  everytime I assign something, but the problem on the latter is that I will have to use & type operator creating a new type
+  everytime I do this, which I think it's not an ok idea.
+  */
 
   /*
   BEHAVIOURS ASSIGNMENT
   */
 
   for (const behaviour of behaviours) {
-    behaviour(self);
+    behaviour(self as TparticlePreBody);
     /*note:
     "behaviour(self)" is not a pure function, we need to assign, or "attach", to the physics 
     object of the particle this said behaviour, so in other words it needs to set stuff on its "parent particle", the "self",
@@ -70,14 +76,14 @@ export default function createParticle({
 
   let physicsList = Object.keys(self.physics);
 
-  self.applyForces = (agents: any) => {
+  self["applyForces"] = (agents: any) => {
     physicsList.forEach((phenom) => {
       self.physics[phenom].forces(agents);
     });
   };
 
   /* add the fact that movement false just dont move*/
-  self.move = () => {
+  self["move"] = () => {
     //translation - Euler - maybe implement runge kutta 4th?
     self.acl.clampLength(0, maxForce / inertialMass);
     self.vel.add(self.acl);
@@ -98,12 +104,12 @@ export default function createParticle({
 
     //notify all behaviours
     physicsList.forEach((phenom) => {
-      self.physics[phenom].hasMoved(self);
+      self.physics[phenom].hasMoved(self as TparticlePreBody);
     });
   };
 
   //merge function
-  self.merge = (particleForMerge: any) => {
+  self["merge"] = (particleForMerge: any) => {
     let p1 = self;
     let m1 = p1.inertialMass;
     let x1 = vec().copy(p1.pos);

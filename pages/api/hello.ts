@@ -1,12 +1,14 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from "next";
 
 type Data = {
-  name: string
-}
+  name: string;
+};
 
 export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  res.status(200).json({ name: 'This is random particle physics, by @danielx.art' })
+  res
+    .status(200)
+    .json({ name: "This is random particle physics, by @danielx.art" });
 }
