@@ -14,7 +14,7 @@ import * as MAXANGVEL_GENERATORS from "../particlePhysics/generators/maxAngVelGe
 import * as TDAMP_GENERATORS from "../particlePhysics/generators/translationDampingGenerators";
 import * as RDAMP_GENERATORS from "../particlePhysics/generators/rotationDampingGenerators";
 import * as WRAP_GENERATORS from "../particlePhysics/generators/wrapGenerators";
-import * as BEHAVIOURS_GENERATORS from "../particlePhysics/generators/behavioursGenerators";
+import * as BEHAVIOURS from "./generators/behaviours";
 //import * as DISPLAY_GENERATORS from "../particlePhysics/generators/displayGenerators"
 
 function pickRandomGenerator<Type>(importedGeneratorsObj: {
@@ -25,9 +25,15 @@ function pickRandomGenerator<Type>(importedGeneratorsObj: {
   return importedGeneratorsObj[randomGenerator];
 }
 
+function pickRandomBehaviour<Type>(importedBehavioursObjList: {
+  [char: string]: Type;
+}) {
+  return importedBehavioursObjList.behaviours;
+}
+
 export function pickRandomConfig(preconfig: parametersType): parametersType {
   return {
-    num: Math.round(Math.random() * 999 + 1),
+    num: Math.round(Math.random() * 3 + 1),
     boundary: preconfig.boundary,
     posGenerator: pickRandomGenerator(POS_GENERATORS),
     dirGenerator: pickRandomGenerator(DIR_GENERATORS),
@@ -46,7 +52,7 @@ export function pickRandomConfig(preconfig: parametersType): parametersType {
     queryRadius: preconfig.boundary ? preconfig.boundary.width / 3 : 10,
     safeRadius: 1,
     merge: Math.random() < 0.2 ? true : false,
-    behavioursGenerator: pickRandomGenerator(BEHAVIOURS_GENERATORS),
+    behaviours: pickRandomBehaviour(BEHAVIOURS),
     displayGenerator: /*pickRandomGenerator(DISPLAY_GENERATORS)*/ null,
   };
 }

@@ -3,9 +3,9 @@ import { parallelepiped } from "../particlePhysics/shapes";
 import { parametersType } from "../particlePhysics/types";
 import vec from "../particlePhysics/vetores";
 
-type psystConfigType = {
+export type psystConfigType = {
   pconfig: parametersType;
-  setPconfig: (newConfig: parametersType) => void;
+  setPconfig: React.Dispatch<React.SetStateAction<parametersType>>;
 };
 
 const initialPsystConfig: psystConfigType = {
@@ -29,25 +29,25 @@ const initialPsystConfig: psystConfigType = {
     queryRadius: 10,
     safeRadius: 10,
     merge: false,
-    behavioursGenerator: () => [],
+    behaviours: [],
     displayGenerator: null,
   },
   setPconfig: () => {},
 };
 
-const pContext = createContext<psystConfigType | null>(null);
+const PContext = createContext<psystConfigType>({} as psystConfigType);
 
 type Props = {
   children: ReactNode;
 };
 
-export function pContextProvider({ children }: Props) {
+export function PContextProvider({ children }: Props) {
   const [pconfig, setPconfig] = useState(initialPsystConfig.pconfig);
   const value = { pconfig, setPconfig };
 
-  return <pContext.Provider value={value}>{children}</pContext.Provider>;
+  return <PContext.Provider value={value}>{children}</PContext.Provider>;
 }
 
 export function usePconfig() {
-  return useContext(pContext) as psystConfigType;
+  return useContext(PContext) as psystConfigType;
 }

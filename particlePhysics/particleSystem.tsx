@@ -30,7 +30,7 @@ export default function createParticleSystem(args: parametersType) {
     queryRadius,
     safeRadius,
     merge,
-    behavioursGenerator,
+    behaviours,
     displayGenerator,
   } = { ...args };
 
@@ -95,8 +95,8 @@ export default function createParticleSystem(args: parametersType) {
         rotationDampingGenerator,
         defaultGenArgs
       ),
-      behaviours: HANDLE_GENERATOR(behavioursGenerator, defaultGenArgs),
-      display: HANDLE_GENERATOR(displayGenerator, defaultGenArgs),
+      behaviours: behaviours,
+      //display: HANDLE_GENERATOR(displayGenerator, defaultGenArgs),
     });
 
     self.particles.push(newParticle);
@@ -109,11 +109,11 @@ export default function createParticleSystem(args: parametersType) {
   //interactions
   self.update = () => {
     for (let i = 0; i < num; i++) {
-      let unsafeRange = sphere(self.particles[i].pos.copy(), safeRadius);
+      let unsafeRange = sphere(self.particles[i].pos.clone(), safeRadius);
       let tooClose = self.collisionDetection.query(unsafeRange);
       let range = sphere(self.particles[i].pos, queryRadius);
       let inRange = self.collisionDetection.query(range);
-      let agents = inRange.filter((x) => !tooClose.includes(x));
+      let agents = inRange.filter((x: any) => !tooClose.includes(x));
       self.particles[i].applyForces(agents);
     }
   };

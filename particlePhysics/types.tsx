@@ -38,7 +38,7 @@ export type parametersType = {
   queryRadius: number;
   safeRadius: number;
   merge: boolean;
-  behavioursGenerator: (a: number) => Array<any>; //todo
+  behaviours: any[];
   displayGenerator: null; //todo
 };
 

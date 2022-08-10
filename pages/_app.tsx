@@ -1,14 +1,13 @@
 import "../styles/globals.css";
-import type { AppProps } from "next/app";
-import { pContextProvider } from "../context/context";
-import { useState } from "react";
+import { PContextProvider } from "../context/context";
+import Home from "./index";
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp() {
   return (
     <>
-      <pContextProvider value={value}>
-        <Component {...pageProps} />
-      </pContextProvider>
+      <PContextProvider>
+        <Home />
+      </PContextProvider>
     </>
   );
 }

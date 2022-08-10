@@ -1,18 +1,17 @@
 import * as THREE from "three";
-import React, { useRef, useMemo, useState } from "react";
+import React, { useRef, useMemo, useEffect, useState } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
-import createParticleSystem from "../particlePhysics/particleSystem";
-import { usePconfig } from "../context/context";
-import * as SHAPES from "../particlePhysics/shapes";
-import vec from "../particlePhysics/vetores";
-import { pickRandomConfig } from "../particlePhysics/randomConfig";
-import { Tparticle } from "../particlePhysics/types";
+import createParticleSystem from "../../particlePhysics/particleSystem";
+import { psystConfigType, usePconfig } from "../../context/context";
+import * as SHAPES from "../../particlePhysics/shapes";
+import vec from "../../particlePhysics/vetores";
+import { pickRandomConfig } from "../../particlePhysics/randomConfig";
+import { Tparticle } from "../../particlePhysics/types";
 
-const Particles = () => {
+const Particles = ({ pconfig, setPconfig }: psystConfigType) => {
   const viewport = useThree((state) => state.viewport);
-  const { pconfig, setPconfig } = usePconfig();
 
-  useMemo(() => {
+  useEffect(() => {
     //this will create the first boundary
     if (pconfig.num === 0) {
       const preconfig = pconfig; //use it as a template because im only changing boundary
@@ -27,12 +26,27 @@ const Particles = () => {
     }
   }, [viewport]);
 
+  // const [particleSystem, setParticleSystem] = useState(
+  //   createParticleSystem(pconfig)
+  // );
+
+  // useEffect(() => {
+  //   if (pconfig.num !== 0) {
+  //     let psyst = createParticleSystem(pconfig);
+  //     console.log(psyst); //debugg
+  //     setParticleSystem(psyst);
+  //   }
+  // }, [pconfig]);
+
   const particleSystem: any = useMemo(() => {
-    /* this will create a new particle system everytime 
+    /* this will create a new particle system everytime
     pconfig is changed due to button press or it is first set
     with the new boundary dimensions from viewport as set above*/
-    if (pconfig.num === 0) return undefined; //due to its not been set yet in buttons
-    return createParticleSystem(pconfig);
+    if (pconfig.num === 0) {
+      return undefined;
+    } //due to its not been set yet in buttons
+    let psyst = createParticleSystem(pconfig);
+    return psyst;
   }, [pconfig]);
 
   const mesh = useRef<THREE.InstancedMesh>(null);
@@ -46,13 +60,10 @@ const Particles = () => {
       particleSystem.update();
       particleSystem.move();
       //particlesystem.collisionDetection.show();
-
       particleSystem.particles.forEach((particle: Tparticle, index: number) => {
         dummy.position.set(particle.pos.x, particle.pos.y, particle.pos.z);
-
         dummy.lookAt(particle.dir);
         dummy.updateMatrix();
-
         // And apply the matrix to the instanced item
         if (mesh.current) mesh.current.setMatrixAt(index, dummy.matrix);
       });

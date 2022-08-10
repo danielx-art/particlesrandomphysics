@@ -6,7 +6,7 @@ export function randomDir(args: {
   index: number;
   num: number;
   boundary: Iparallelepiped;
-  positions: Array<Vector3>;
+  positions: Vector3[];
 }) {
   return vec().randomDirection();
 }
@@ -15,7 +15,7 @@ export function dirPointInOut(args: {
   index: number;
   num: number;
   boundary: Iparallelepiped;
-  positions: Array<Vector3>;
+  positions: Vector3[];
 }) {
   let pos = args.positions[args.index];
   let x = pos.x;
