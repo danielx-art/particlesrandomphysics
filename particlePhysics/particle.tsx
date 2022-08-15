@@ -1,6 +1,7 @@
 import vec from "./vetores";
 import magneticDipole from "./behaviours/magneticDipole";
 import { Tparticle, TparticlePreBody } from "./types";
+import { setFlagsFromString } from "v8";
 
 /* --------------------------------------------------------------
 -----------------------------------------------------------------

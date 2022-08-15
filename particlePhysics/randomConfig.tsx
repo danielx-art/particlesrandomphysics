@@ -15,6 +15,8 @@ import * as TDAMP_GENERATORS from "../particlePhysics/generators/translationDamp
 import * as RDAMP_GENERATORS from "../particlePhysics/generators/rotationDampingGenerators";
 import * as WRAP_GENERATORS from "../particlePhysics/generators/wrapGenerators";
 import * as BEHAVIOURS from "./generators/behaviours";
+import { Iparallelepiped, parallelepiped } from "./shapes";
+import vec from "./vetores";
 //import * as DISPLAY_GENERATORS from "../particlePhysics/generators/displayGenerators"
 
 function pickRandomGenerator<Type>(importedGeneratorsObj: {
@@ -31,10 +33,14 @@ function pickRandomBehaviour<Type>(importedBehavioursObjList: {
   return importedBehavioursObjList.behaviours;
 }
 
-export function pickRandomConfig(preconfig: parametersType): parametersType {
-  return {
-    num: Math.round(Math.random() * 3 + 1),
-    boundary: preconfig.boundary,
+export function pickRandomConfig(
+  argsboundary: Iparallelepiped | undefined
+): parametersType {
+  let self: parametersType = {
+    num: Math.round(Math.random() * 29 + 1),
+    boundary: argsboundary
+      ? argsboundary
+      : parallelepiped(vec(0, 0, 0), 100, 100, 100),
     posGenerator: pickRandomGenerator(POS_GENERATORS),
     dirGenerator: pickRandomGenerator(DIR_GENERATORS),
     inertialMassGenerator: pickRandomGenerator(INERTIALMASS_GENERATORS),
@@ -49,10 +55,14 @@ export function pickRandomConfig(preconfig: parametersType): parametersType {
     translationDampingGenerator: pickRandomGenerator(TDAMP_GENERATORS),
     rotationDampingGenerator: pickRandomGenerator(RDAMP_GENERATORS),
     wrap: pickRandomGenerator(WRAP_GENERATORS),
-    queryRadius: preconfig.boundary ? preconfig.boundary.width / 3 : 10,
+    queryRadius: 500,
     safeRadius: 1,
     merge: Math.random() < 0.2 ? true : false,
     behaviours: pickRandomBehaviour(BEHAVIOURS),
     displayGenerator: /*pickRandomGenerator(DISPLAY_GENERATORS)*/ null,
   };
+
+  //console.log(self); //test
+
+  return self;
 }

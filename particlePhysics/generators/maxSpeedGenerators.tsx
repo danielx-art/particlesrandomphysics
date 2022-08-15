@@ -8,7 +8,7 @@ export function maxSpeedConstOne(args: {
   boundary: Iparallelepiped;
   positions: Array<Vector3>;
 }) {
-  return 1;
+  return 0.1;
 }
 
 export function maxSpeedConstSmall(args: {
@@ -17,5 +17,5 @@ export function maxSpeedConstSmall(args: {
   boundary: Iparallelepiped;
   positions: Array<Vector3>;
 }) {
-  return 0.1;
+  return 0.5;
 }

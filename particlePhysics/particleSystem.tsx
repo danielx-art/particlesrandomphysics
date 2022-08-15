@@ -108,10 +108,10 @@ export default function createParticleSystem(args: parametersType) {
 
   //interactions
   self.update = () => {
-    for (let i = 0; i < num; i++) {
-      let unsafeRange = sphere(self.particles[i].pos.clone(), safeRadius);
+    for (let i = 0; i < self.num; i++) {
+      let unsafeRange = sphere(self.particles[i].pos.clone(), self.safeRadius);
       let tooClose = self.collisionDetection.query(unsafeRange);
-      let range = sphere(self.particles[i].pos, queryRadius);
+      let range = sphere(self.particles[i].pos, self.queryRadius);
       let inRange = self.collisionDetection.query(range);
       let agents = inRange.filter((x: any) => !tooClose.includes(x));
       self.particles[i].applyForces(agents);
@@ -119,8 +119,8 @@ export default function createParticleSystem(args: parametersType) {
   };
 
   let repopulateTree = () => {
-    self.collisionDetection = octaTree(boundary, 8);
-    for (let i = 0; i < self.particles.length; i++) {
+    self.collisionDetection = octaTree(self.boundary, 8);
+    for (let i = 0; i < self.num; i++) {
       self.collisionDetection.insert(self.particles[i]);
     }
   };
@@ -129,17 +129,10 @@ export default function createParticleSystem(args: parametersType) {
   self.move = () => {
     for (let i = 0; i < self.num; i++) {
       self.particles[i].move();
-      self.wrap(self.particles[i], boundary);
-      repopulateTree();
-
-      /*note: 
-      everytime I change particle position on this loop I should repopulate the tree so the next particle
-      can query other particles correctly. But can't I build an event listener so that the tree automatically tracks
-      self.particles positions?
-      */
+      self.wrap(self.particles[i], self.boundary);
 
       if (self.merge == true) {
-        let closeRange = sphere(self.particles[i].pos, safeRadius);
+        let closeRange = sphere(self.particles[i].pos, self.safeRadius);
         let forMerge = self.collisionDetection.query(closeRange);
         let indexThis = forMerge.indexOf(self.particles[i]);
         if (indexThis > -1) {
@@ -149,16 +142,15 @@ export default function createParticleSystem(args: parametersType) {
 
         for (let j = 0; j < numMerge; j++) {
           self.particles[i].merge(forMerge[j]); //this changes position of the particle, but since I already did the wrapping, then it should not be a concern that the particle will be out of the tree boundary
-          //repopulateTree(); //overkill - only makes a difference if merge radius is very big wich should not be the case
 
           //then I have to remove the particle wich has been merged with this one from both the tree and particles array
           let indexToRemove = self.particles.indexOf(forMerge[j]);
 
           /*interesting note:
           Since I'm looping trough the particles in a crescent index "i", then
-          if particle "i" wants to merge with particle "indexToRemove", then I didnt 
-          yet went through particle "indexToRemove", because if so particle "i" would 
-          be already merged, so "i" will always be less then "indexToRemove". 
+          if particle "i" wants to merge with particle "indexToRemove", then I didnt
+          yet went through particle "indexToRemove", because if so particle "i" would
+          be already merged, so "i" will always be less then "indexToRemove".
           */
 
           //delete the second particle from tree
@@ -171,11 +163,10 @@ export default function createParticleSystem(args: parametersType) {
           }
         }
       }
-      repopulateTree();
     } //particle loop
 
     //after going trought all the particles, I should recreate the tree again, or should I?
-    repopulateTree();
+    //repopulateTree();
   };
 
   return self as TparticleSystem;

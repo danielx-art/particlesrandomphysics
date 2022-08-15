@@ -1,12 +1,27 @@
-import { Canvas, useThree } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import type { NextPage } from "next";
 import Particles from "./components/particles";
 import Buttons from "./components/buttons";
+import OctaTreeBox from "./components/octaTreeBox";
 import { usePconfig } from "../context/context";
-import { OrbitControls } from "@react-three/drei";
+import { useMemo } from "react";
+import createParticleSystem from "../particlePhysics/particleSystem";
+import { TparticleSystem } from "../particlePhysics/types";
+import CameraControls from "./components/cameraControls";
 
 const Home: NextPage = () => {
   const { pconfig, setPconfig } = usePconfig();
+
+  //think I have to useReducer here //debugg
+  const particleSystem: TparticleSystem | undefined = useMemo(() => {
+    /* this will create a new particle system everytime
+    pconfig is changed due to button press or it is first set
+    with the new boundary dimensions from viewport as set above*/
+    if (pconfig.num === 0) {
+      return undefined;
+    }
+    return createParticleSystem(pconfig);
+  }, [pconfig]);
 
   return (
     <>
@@ -15,8 +30,9 @@ const Home: NextPage = () => {
         className="h-full w-full absolute"
         camera={{ position: [0, 0, -5] }}
       >
-        <CameraControls />
-        <Particles {...{ pconfig, setPconfig }} />
+        <CameraControls {...{ pconfig, setPconfig }} />
+        {particleSystem !== undefined && <Particles {...particleSystem} />}
+        {particleSystem !== undefined && <OctaTreeBox {...particleSystem} />}
       </Canvas>
       <Buttons />
     </>
@@ -24,12 +40,3 @@ const Home: NextPage = () => {
 };
 
 export default Home;
-
-const CameraControls = () => {
-  const {
-    camera,
-    gl: { domElement },
-  } = useThree();
-
-  return <OrbitControls args={[camera, domElement]} enableZoom={false} />;
-};

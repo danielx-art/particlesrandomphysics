@@ -3,7 +3,6 @@ import { Tparticle, TparticlePreBody } from "../types";
 import vec from "../vetores";
 
 export default function magneticDipole(particle: TparticlePreBody) {
-  //I need to randomly? create a magnetic dipole intensity here
   let m = vec().copy(particle.dir);
 
   const self = {
@@ -83,5 +82,5 @@ export default function magneticDipole(particle: TparticlePreBody) {
     },
   };
 
-  return self;
+  particle.physics[self.title] = self;
 }
