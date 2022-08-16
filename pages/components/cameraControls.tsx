@@ -21,6 +21,7 @@ const CameraControls = ({ pconfig, setPconfig }: Tprops) => {
   const viewport = useThree((state) => state.viewport);
 
   useEffect(() => {
+    camera.translateZ(15);
     //this will create the first boundary
     if (pconfig.num === 0) {
       let viewportFirstBoundary = parallelepiped(
@@ -34,7 +35,7 @@ const CameraControls = ({ pconfig, setPconfig }: Tprops) => {
     }
   }, [pconfig.num]);
 
-  return <OrbitControls args={[camera, domElement]} enableZoom={false} />;
+  return <OrbitControls args={[camera, domElement]} enableZoom={true} />;
 };
 
 export default CameraControls;

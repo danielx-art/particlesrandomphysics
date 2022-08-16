@@ -24,7 +24,7 @@ export function momentInertiaConst10000(args: {
   index: number;
   num: number;
   boundary: Iparallelepiped;
-  positions: Array<Vector3>;
+  positions: Vector3[];
 }) {
   return 10000;
 }
@@ -33,7 +33,7 @@ export function momentInertiaRandom(args: {
   index: number;
   num: number;
   boundary: Iparallelepiped;
-  positions: Array<Vector3>;
+  positions: Vector3[];
 }) {
   return Math.random() * 5000 + 5000;
 }

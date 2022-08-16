@@ -6,7 +6,7 @@ export function maxForceConst(args: {
   index: number;
   num: number;
   boundary: Iparallelepiped;
-  positions: Array<Vector3>;
+  positions: Vector3[];
 }) {
   return 0.01;
 }

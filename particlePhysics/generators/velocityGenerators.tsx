@@ -6,7 +6,7 @@ export function allAtRest(args: {
   index: number;
   num: number;
   boundary: Iparallelepiped;
-  positions: Array<Vector3>;
+  positions: Vector3[];
 }) {
   return vec(0, 0, 0);
 }
@@ -15,7 +15,7 @@ export function randomVelocity(args: {
   index: number;
   num: number;
   boundary: Iparallelepiped;
-  positions: Array<Vector3>;
+  positions: Vector3[];
 }) {
   return vec().randomDirection();
 }
@@ -24,9 +24,9 @@ export function sphericalSwirl(args: {
   index: number;
   num: number;
   boundary: Iparallelepiped;
-  positions: Array<Vector3>;
+  positions: Vector3[];
 }) {
-  let pos = args.positions[args.index];
+  let pos = vec().copy(args.positions[args.index]);
   let x = pos.x;
   let y = pos.y;
   let z = pos.z;

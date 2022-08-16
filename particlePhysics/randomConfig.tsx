@@ -37,7 +37,7 @@ export function pickRandomConfig(
   argsboundary: Iparallelepiped | undefined
 ): parametersType {
   let self: parametersType = {
-    num: Math.round(Math.random() * 29 + 1),
+    num: 29,
     boundary: argsboundary
       ? argsboundary
       : parallelepiped(vec(0, 0, 0), 100, 100, 100),
@@ -55,9 +55,9 @@ export function pickRandomConfig(
     translationDampingGenerator: pickRandomGenerator(TDAMP_GENERATORS),
     rotationDampingGenerator: pickRandomGenerator(RDAMP_GENERATORS),
     wrap: pickRandomGenerator(WRAP_GENERATORS),
-    queryRadius: 500,
+    queryRadius: 2000,
     safeRadius: 1,
-    merge: Math.random() < 0.2 ? true : false,
+    merge: false,
     behaviours: pickRandomBehaviour(BEHAVIOURS),
     displayGenerator: /*pickRandomGenerator(DISPLAY_GENERATORS)*/ null,
   };

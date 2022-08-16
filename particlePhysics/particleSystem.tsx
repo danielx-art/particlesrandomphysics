@@ -8,6 +8,7 @@ import createParticle from "./particle";
 import octaTree from "./octaTree";
 import { Iparallelepiped, sphere } from "./shapes";
 import { Vector3 } from "three";
+import vec from "./vetores";
 
 export default function createParticleSystem(args: parametersType) {
   const {
@@ -109,9 +110,12 @@ export default function createParticleSystem(args: parametersType) {
   //interactions
   self.update = () => {
     for (let i = 0; i < self.num; i++) {
-      let unsafeRange = sphere(self.particles[i].pos.clone(), self.safeRadius);
+      let unsafeRange = sphere(
+        vec().copy(self.particles[i].pos),
+        self.safeRadius
+      );
       let tooClose = self.collisionDetection.query(unsafeRange);
-      let range = sphere(self.particles[i].pos, self.queryRadius);
+      let range = sphere(vec().copy(self.particles[i].pos), self.queryRadius);
       let inRange = self.collisionDetection.query(range);
       let agents = inRange.filter((x: any) => !tooClose.includes(x));
       self.particles[i].applyForces(agents);
@@ -132,7 +136,10 @@ export default function createParticleSystem(args: parametersType) {
       self.wrap(self.particles[i], self.boundary);
 
       if (self.merge == true) {
-        let closeRange = sphere(self.particles[i].pos, self.safeRadius);
+        let closeRange = sphere(
+          vec().copy(self.particles[i].pos),
+          self.safeRadius
+        );
         let forMerge = self.collisionDetection.query(closeRange);
         let indexThis = forMerge.indexOf(self.particles[i]);
         if (indexThis > -1) {

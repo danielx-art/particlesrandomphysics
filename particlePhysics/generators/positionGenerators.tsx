@@ -2,51 +2,51 @@ import vec from "../vetores";
 import { Vector3 } from "three";
 import { Iparallelepiped } from "../shapes";
 
-export function pointsOnA3dGrid(
-  total: number,
-  boundary: Iparallelepiped
-): Vector3[] {
-  //console.log("pointsOnA3dGrid"); //debugg & test
-  let w = boundary.width;
-  let h = boundary.height;
-  let d = boundary.depth;
-  let vertices = [];
-  let rows = Math.ceil((0.8 * w) / (Math.random() * 100 + 1));
-  let cols = Math.ceil((0.8 * h) / (Math.random() * 50 + 1));
-  let layers = Math.ceil(total / (rows * cols));
-  let spacingx = Math.floor(w / cols);
-  let spacingy = Math.floor(h / rows);
-  let spacingz = Math.floor(d / layers);
+// export function pointsOnA3dGrid(
+//   total: number,
+//   boundary: Iparallelepiped
+// ): Vector3[] {
+//   //console.log("pointsOnA3dGrid"); // test
+//   let w = boundary.width;
+//   let h = boundary.height;
+//   let d = boundary.depth;
+//   let vertices = [];
+//   let rows = Math.ceil((0.8 * w) / (Math.random() * 100 + 1));
+//   let cols = Math.ceil((0.8 * h) / (Math.random() * 50 + 1));
+//   let layers = Math.ceil(total / (rows * cols));
+//   let spacingx = Math.floor(w / cols);
+//   let spacingy = Math.floor(h / rows);
+//   let spacingz = Math.floor(d / layers);
 
-  for (let i = 0; i < cols; i++) {
-    for (let j = 0; j < rows; j++) {
-      for (let k = 0; k < layers; k++) {
-        let x = i * spacingx - w / 4;
-        let y = j * spacingy - h / 4;
-        let z = k * spacingz - d / 4;
-        vertices.push(vec(x, y, z));
-      }
-    }
-  }
-  return vertices;
-}
+//   for (let i = 0; i < cols; i++) {
+//     for (let j = 0; j < rows; j++) {
+//       for (let k = 0; k < layers; k++) {
+//         let x = i * spacingx - w / 4;
+//         let y = j * spacingy - h / 4;
+//         let z = k * spacingz - d / 4;
+//         vertices.push(vec(x, y, z).add(vec().copy(boundary.center)));
+//       }
+//     }
+//   }
+//   return vertices;
+// }
 
 export function randomPositions(
   total: number,
   boundary: Iparallelepiped
 ): Vector3[] {
-  //console.log("randomPositions"); //debugg & test
-
+  //console.log("randomPositions"); //test
   let w = boundary.width;
   let h = boundary.height;
   let d = boundary.depth;
   let vertices = [];
   for (let i = 0; i < total; i++) {
-    let x = Math.random() * w - w / 2;
-    let y = Math.random() * h - h / 2;
-    let z = Math.random() * d - d / 2;
+    let x = 0.8 * (Math.random() * w - w / 2) + boundary.x;
+    let y = 0.8 * (Math.random() * h - h / 2) + boundary.y;
+    let z = 0.8 * (Math.random() * d - d / 2) + boundary.z;
     vertices.push(vec(x, y, z));
   }
+
   return vertices;
 }
 
@@ -136,120 +136,127 @@ export function randomPositions(
 //   return vec3vertices;
 // }
 
-export function pointsWithinSphere(
-  total: number,
-  boundary: Iparallelepiped
-): Vector3[] {
-  //console.log("pointsWithinSphere"); //debugg & test
+// export function pointsWithinSphere(
+//   total: number,
+//   boundary: Iparallelepiped
+// ): Vector3[] {
+//   //console.log("pointsWithinSphere"); // test
 
-  let w = boundary.width;
-  let h = boundary.height;
-  let d = boundary.depth;
-  let randomRadius =
-    (Math.random() * Math.max(w, h, d)) / 3 + Math.min(w, h, d) / 3;
-  let vertices = [];
-  for (let i = 0; i < total; i++) {
-    vertices.push(vec().randomDirection().setLength(randomRadius));
-  }
-  return vertices;
-}
+//   let w = boundary.width;
+//   let h = boundary.height;
+//   let d = boundary.depth;
+//   let randomRadius =
+//     (Math.random() * Math.max(w, h, d)) / 3 + Math.min(w, h, d) / 3;
+//   let vertices = [];
+//   for (let i = 0; i < total; i++) {
+//     vertices.push(
+//       vec()
+//         .randomDirection()
+//         .setLength(randomRadius)
+//         .add(vec().copy(boundary.center))
+//     );
+//   }
+//   return vertices;
+// }
 
-export function pointsOn2dGrid(
-  total: number,
-  boundary: Iparallelepiped
-): Vector3[] {
-  //console.log("pointsOn2dGrid"); //debugg & test
+// export function pointsOn2dGrid(
+//   total: number,
+//   boundary: Iparallelepiped
+// ): Vector3[] {
+//   //console.log("pointsOn2dGrid"); // test
 
-  let w = boundary.width;
-  let h = boundary.height;
+//   let w = boundary.width;
+//   let h = boundary.height;
 
-  let vertices = [];
-  let rows = Math.ceil(w / Math.floor(Math.random() * (total / 2) + 1));
-  let cols = Math.ceil(total / rows);
-  let spcx = w / cols;
-  let spcy = h / rows;
-  let basis1 = vec().randomDirection().setLength(spcx);
-  let basis2 = vec().randomDirection().setLength(spcy);
+//   let vertices = [];
+//   let rows = Math.ceil(w / Math.floor(Math.random() * (total / 2) + 1));
+//   let cols = Math.ceil(total / rows);
+//   let spcx = w / cols;
+//   let spcy = h / rows;
+//   let basis1 = vec().randomDirection().setLength(spcx);
+//   let basis2 = vec().randomDirection().setLength(spcy);
 
-  for (let i = 0; i < rows; i++) {
-    for (let j = 0; j < cols; j++) {
-      let componentx = vec().copy(basis1).multiplyScalar(i);
-      let componenty = vec().copy(basis2).multiplyScalar(j);
-      vertices.push(componentx.add(componenty));
-    }
-  }
-  return vertices;
-}
+//   for (let i = 0; i < rows; i++) {
+//     for (let j = 0; j < cols; j++) {
+//       let componentx = vec().copy(basis1).multiplyScalar(i);
+//       let componenty = vec().copy(basis2).multiplyScalar(j);
+//       vertices.push(
+//         componentx.add(componenty).add(vec().copy(boundary.center))
+//       );
+//     }
+//   }
+//   return vertices;
+// }
 
-export function pointsOn2dCircle(
-  total: number,
-  boundary: Iparallelepiped
-): Vector3[] {
-  //console.log("pointsOn2dCircle"); //debugg & test
+// export function pointsOn2dCircle(
+//   total: number,
+//   boundary: Iparallelepiped
+// ): Vector3[] {
+//   //console.log("pointsOn2dCircle"); //test
 
-  let w = boundary.width;
-  let h = boundary.height;
-  let d = boundary.depth;
-  let vertices = [];
-  let angleSpacing = (2 * Math.PI) / total;
-  let randomRadius =
-    (Math.random() * Math.max(w, h, d)) / 3 + Math.min(w, h, d) / 3;
-  let rotatingAxis = vec().randomDirection();
-  for (let i = 0; i < total; i++) {
-    let newVertex = vec(1, 0, 0)
-      .setLength(randomRadius)
-      .applyAxisAngle(rotatingAxis, i * angleSpacing);
-    vertices.push(newVertex);
-  }
-  return vertices;
-}
+//   let w = boundary.width;
+//   let h = boundary.height;
+//   let d = boundary.depth;
+//   let vertices = [];
+//   let angleSpacing = (2 * Math.PI) / total;
+//   let randomRadius =
+//     (Math.random() * Math.max(w, h, d)) / 3 + Math.min(w, h, d) / 3;
+//   let rotatingAxis = vec().randomDirection();
+//   for (let i = 0; i < total; i++) {
+//     let newVertex = vec(1, 0, 0)
+//       .setLength(randomRadius)
+//       .applyAxisAngle(rotatingAxis, i * angleSpacing);
+//     vertices.push(newVertex.add(vec().copy(boundary.center)));
+//   }
+//   return vertices;
+// }
 
-export function pointsOnSpiral(
-  total: number,
-  boundary: Iparallelepiped
-): Vector3[] {
-  //console.log("pointsOnSpiral"); //debugg & test
+// export function pointsOnSpiral(
+//   total: number,
+//   boundary: Iparallelepiped
+// ): Vector3[] {
+//   //console.log("pointsOnSpiral"); // test
 
-  let w = boundary.width;
-  let h = boundary.height;
-  let d = boundary.depth;
-  let vertices = [];
-  let angleSpacing = (2 * Math.PI) / total;
-  let randomRadius =
-    (Math.random() * Math.max(w, h, d)) / 3 + Math.min(w, h, d) / 3;
-  let radiusIncrease = randomRadius / total;
-  let rotatingAxis = vec().randomDirection();
-  for (let i = 0; i < total; i++) {
-    let newVertex = vec(1, 0, 0)
-      .setLength(i * radiusIncrease)
-      .applyAxisAngle(rotatingAxis, i * angleSpacing);
-    vertices.push(newVertex);
-  }
-  return vertices;
-}
+//   let w = boundary.width;
+//   let h = boundary.height;
+//   let d = boundary.depth;
+//   let vertices = [];
+//   let angleSpacing = (2 * Math.PI) / total;
+//   let randomRadius =
+//     (Math.random() * Math.max(w, h, d)) / 3 + Math.min(w, h, d) / 3;
+//   let radiusIncrease = randomRadius / total;
+//   let rotatingAxis = vec().randomDirection();
+//   for (let i = 0; i < total; i++) {
+//     let newVertex = vec(1, 0, 0)
+//       .setLength(i * radiusIncrease)
+//       .applyAxisAngle(rotatingAxis, i * angleSpacing);
+//     vertices.push(newVertex.add(vec().copy(boundary.center)));
+//   }
+//   return vertices;
+// }
 
-export function pointsWithin2dCircle(
-  total: number,
-  boundary: Iparallelepiped
-): Vector3[] {
-  //console.log("pointsWithin2dCircle"); //debugg & test
+// export function pointsWithin2dCircle(
+//   total: number,
+//   boundary: Iparallelepiped
+// ): Vector3[] {
+//   //console.log("pointsWithin2dCircle"); //test
 
-  let w = boundary.width;
-  let h = boundary.height;
-  let d = boundary.depth;
-  let vertices = [];
-  let angleSpacing = (2 * Math.PI) / total;
-  let rotatingAxis = vec().randomDirection();
-  for (let i = 0; i < total; i++) {
-    let randomRadius =
-      (Math.random() * Math.max(w, h, d)) / 3 + Math.min(w, h, d) / 3;
-    let newVertex = vec(1, 0, 0)
-      .setLength(randomRadius)
-      .applyAxisAngle(rotatingAxis, i * angleSpacing * Math.random());
-    vertices.push(newVertex);
-  }
-  return vertices;
-}
+//   let w = boundary.width;
+//   let h = boundary.height;
+//   let d = boundary.depth;
+//   let vertices = [];
+//   let angleSpacing = (2 * Math.PI) / total;
+//   let rotatingAxis = vec().randomDirection();
+//   for (let i = 0; i < total; i++) {
+//     let randomRadius =
+//       (Math.random() * Math.max(w, h, d)) / 3 + Math.min(w, h, d) / 3;
+//     let newVertex = vec(1, 0, 0)
+//       .setLength(randomRadius)
+//       .applyAxisAngle(rotatingAxis, i * angleSpacing * Math.random());
+//     vertices.push(newVertex);
+//   }
+//   return vertices;
+// }
 
 // export function pointsOnRandomSpline(total, w, h, d){
 //   let [w, h, d] = [boundary.w, boundary.h, boundary.d];

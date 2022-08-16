@@ -6,7 +6,7 @@ export function maxAngVelRandom(args: {
   index: number;
   num: number;
   boundary: Iparallelepiped;
-  positions: Array<Vector3>;
+  positions: Vector3[];
 }) {
   return Math.random() * 1000;
 }
@@ -15,7 +15,7 @@ export function maxAngVelConst(args: {
   index: number;
   num: number;
   boundary: Iparallelepiped;
-  positions: Array<Vector3>;
+  positions: Vector3[];
 }) {
   return 10;
 }

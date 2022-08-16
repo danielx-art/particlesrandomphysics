@@ -1,12 +1,8 @@
 import * as THREE from "three";
-import React, { useRef, useMemo } from "react";
+import React, { useRef, useMemo, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 
-import {
-  parametersType,
-  Tparticle,
-  TparticleSystem,
-} from "../../particlePhysics/types";
+import { Tparticle, TparticleSystem } from "../../particlePhysics/types";
 
 const Particles = (particleSystem: TparticleSystem) => {
   const mesh = useRef<THREE.InstancedMesh>(null);
@@ -16,16 +12,8 @@ const Particles = (particleSystem: TparticleSystem) => {
 
   useFrame(() => {
     if (particleSystem !== undefined) {
-      // Run through the randomized data to calculate some movement
-
-      // particleSystem.particles.forEach((particle: Tparticle, index: number) => {
-      //   particle.pos.x++;
-      // }); //debugg
-
       particleSystem.update();
       particleSystem.move();
-
-      //particlesystem.collisionDetection.show();
       particleSystem.particles.forEach((particle: Tparticle, index: number) => {
         dummy.position.set(particle.pos.x, particle.pos.y, particle.pos.z);
         dummy.lookAt(particle.dir);
@@ -35,6 +23,7 @@ const Particles = (particleSystem: TparticleSystem) => {
       });
       if (mesh.current) mesh.current.instanceMatrix.needsUpdate = true;
     }
+    //console.log(particleSystem.particles);
   });
 
   return (

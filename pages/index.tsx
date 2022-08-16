@@ -12,15 +12,14 @@ import CameraControls from "./components/cameraControls";
 const Home: NextPage = () => {
   const { pconfig, setPconfig } = usePconfig();
 
-  //think I have to useReducer here //debugg
   const particleSystem: TparticleSystem | undefined = useMemo(() => {
     /* this will create a new particle system everytime
     pconfig is changed due to button press or it is first set
     with the new boundary dimensions from viewport as set above*/
-    if (pconfig.num === 0) {
-      return undefined;
+    if (pconfig.num !== 0) {
+      return createParticleSystem(pconfig);
     }
-    return createParticleSystem(pconfig);
+    return undefined;
   }, [pconfig]);
 
   return (
@@ -28,7 +27,7 @@ const Home: NextPage = () => {
       <p className="text-1xl w-full text-center absolute"></p>
       <Canvas
         className="h-full w-full absolute"
-        camera={{ position: [0, 0, -5] }}
+        camera={{ position: [0, 0, 5] }}
       >
         <CameraControls {...{ pconfig, setPconfig }} />
         {particleSystem !== undefined && <Particles {...particleSystem} />}

@@ -12,7 +12,7 @@ export default function magneticDipole(particle: TparticlePreBody) {
     particle,
 
     field: (pointInSpace: Vector3) => {
-      let vecr = vec().copy(pointInSpace).sub(particle.pos);
+      let vecr = vec().copy(pointInSpace).sub(vec().copy(particle.pos));
       let versorr = vec().copy(vecr).setLength(1);
       let r = vecr.length();
       if (r > 1) {

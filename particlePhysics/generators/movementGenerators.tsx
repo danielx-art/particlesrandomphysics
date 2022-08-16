@@ -6,7 +6,7 @@ import vec from "../vetores";
 //   index: number;
 //   num: number;
 //   boundary: Iparallelepiped;
-//   positions: Array<Vector3>;
+//   positions: Vector3[];
 // }) {
 //   return Math.random() > 0.3 ? true : false;
 // }
@@ -15,7 +15,7 @@ export function allMove(args: {
   index: number;
   num: number;
   boundary: Iparallelepiped;
-  positions: Array<Vector3>;
+  positions: Vector3[];
 }) {
   return true;
 }

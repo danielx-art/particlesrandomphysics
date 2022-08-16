@@ -1,7 +1,6 @@
 import vec from "./vetores";
 import magneticDipole from "./behaviours/magneticDipole";
 import { Tparticle, TparticlePreBody } from "./types";
-import { setFlagsFromString } from "v8";
 
 /* --------------------------------------------------------------
 -----------------------------------------------------------------
@@ -91,6 +90,7 @@ export default function createParticle({
     self.vel.multiplyScalar(translationDamping);
     self.vel.clampLength(0, maxSpeed);
 
+    //console.log("step 8 - particle will move"); //debugg
     self.pos.add(self.vel);
     self.acl.multiplyScalar(0);
 
@@ -107,6 +107,8 @@ export default function createParticle({
     physicsList.forEach((phenom) => {
       self.physics[phenom].hasMoved(self as TparticlePreBody);
     });
+
+    //console.log("step 9 - particle moved"); //debugg
   };
 
   //merge function

@@ -4,10 +4,11 @@ import { pickRandomConfig } from "../../particlePhysics/randomConfig";
 
 const Buttons: NextPage = () => {
   const { pconfig, setPconfig } = usePconfig();
-  const handleRandomConfig = async () => {
+  const handleRandomConfig = () => {
     if (pconfig.num !== 0) {
       const newConfig = pickRandomConfig(pconfig.boundary);
-      await setPconfig(newConfig);
+      console.log("refreshed"); //debugg
+      setPconfig(newConfig);
     }
   };
 

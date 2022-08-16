@@ -15,7 +15,7 @@ export function smallTranslationDamp(args: {
   index: number;
   num: number;
   boundary: Iparallelepiped;
-  positions: Array<Vector3>;
+  positions: Vector3[];
 }) {
   return 0.999;
 }
@@ -24,7 +24,7 @@ export function TranslationDamp09(args: {
   index: number;
   num: number;
   boundary: Iparallelepiped;
-  positions: Array<Vector3>;
+  positions: Vector3[];
 }) {
   return 0.9;
 }
