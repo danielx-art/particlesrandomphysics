@@ -23,7 +23,6 @@ const Particles = (particleSystem: TparticleSystem) => {
       });
       if (mesh.current) mesh.current.instanceMatrix.needsUpdate = true;
     }
-    //console.log(particleSystem.particles);
   });
 
   return (

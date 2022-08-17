@@ -6,8 +6,6 @@ import { Vector3 } from "three";
 import vec from "./vetores";
 
 export default function createParticleSystem(args: parametersType) {
-  console.log("creating particle system"); //debugg
-
   const {
     num,
     boundary,
@@ -66,8 +64,6 @@ export default function createParticleSystem(args: parametersType) {
       positions: positions,
     };
 
-    console.log(`creating particle ${i}`); //debugg
-
     let newParticle = createParticle({
       position: positions[i],
       direction: HANDLE_GENERATOR(dirGenerator, defaultGenArgs),
@@ -109,7 +105,6 @@ export default function createParticleSystem(args: parametersType) {
 
   //interactions
   self.update = () => {
-    console.log(`updating particle system`); //debugg
     for (let i = 0; i < self.num; i++) {
       let unsafeRange = sphere(
         vec().copy(self.particles[i].pos),
@@ -133,12 +128,10 @@ export default function createParticleSystem(args: parametersType) {
   //move
   self.move = () => {
     for (let i = 0; i < self.num; i++) {
-      console.log(`moving particle ${i} in particle system`); //debugg
       self.particles[i].move();
       self.wrap(self.particles[i], self.boundary);
 
       if (self.merge == true) {
-        console.log(`merge test`); //debugg
         let closeRange = sphere(
           vec().copy(self.particles[i].pos),
           self.safeRadius
