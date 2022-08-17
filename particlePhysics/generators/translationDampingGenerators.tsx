@@ -11,20 +11,20 @@ export function noTranslationDamp(args: {
   return 1;
 }
 
-export function smallTranslationDamp(args: {
-  index: number;
-  num: number;
-  boundary: Iparallelepiped;
-  positions: Vector3[];
-}) {
-  return 0.999;
-}
+// export function smallTranslationDamp(args: {
+//   index: number;
+//   num: number;
+//   boundary: Iparallelepiped;
+//   positions: Vector3[];
+// }) {
+//   return 0.999;
+// }
 
-export function TranslationDamp09(args: {
-  index: number;
-  num: number;
-  boundary: Iparallelepiped;
-  positions: Vector3[];
-}) {
-  return 0.9;
-}
+// export function TranslationDamp09(args: {
+//   index: number;
+//   num: number;
+//   boundary: Iparallelepiped;
+//   positions: Vector3[];
+// }) {
+//   return 0.9;
+// }

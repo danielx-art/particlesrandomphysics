@@ -7,7 +7,6 @@ const Buttons: NextPage = () => {
   const handleRandomConfig = () => {
     if (pconfig.num !== 0) {
       const newConfig = pickRandomConfig(pconfig.boundary);
-      console.log("refreshed"); //debugg
       setPconfig(newConfig);
     }
   };

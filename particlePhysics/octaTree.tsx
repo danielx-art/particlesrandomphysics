@@ -63,7 +63,7 @@ const octaTree = function (boundary: Iparallelepiped, capacity: number) {
     return false;
   };
 
-  self.query = function (range: Ishape, found: Tparticle[]) {
+  self.query = function (range: Ishape, found?: Tparticle[]) {
     if (!found) {
       found = [];
     }
@@ -79,7 +79,9 @@ const octaTree = function (boundary: Iparallelepiped, capacity: number) {
     }
 
     if (self.divided) {
-      self.subTrees.forEach((sub3: Ttree) => sub3.query(range, found));
+      self.subTrees.forEach((sub3: Ttree) =>
+        sub3.query(range, found as Tparticle[])
+      );
     }
 
     return found;

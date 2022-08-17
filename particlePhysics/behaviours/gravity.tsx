@@ -28,7 +28,6 @@ export default function gravity(particle: TparticlePreBody) {
 
   self["forces"] = (agents: Tparticle[]) => {
     Array.isArray(agents) ? true : (agents = [agents]); //if only one is passed
-
     let Fgres = vec();
 
     agents.forEach(function (agent, i) {

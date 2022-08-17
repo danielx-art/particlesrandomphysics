@@ -11,11 +11,11 @@ export function maxSpeedConstOne(args: {
   return 0.1;
 }
 
-export function maxSpeedConstSmall(args: {
-  index: number;
-  num: number;
-  boundary: Iparallelepiped;
-  positions: Vector3[];
-}) {
-  return 0.05;
-}
+// export function maxSpeedConstSmall(args: {
+//   index: number;
+//   num: number;
+//   boundary: Iparallelepiped;
+//   positions: Vector3[];
+// }) {
+//   return 0.05;
+// }

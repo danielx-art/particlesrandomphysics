@@ -20,20 +20,22 @@ const CameraControls = ({ pconfig, setPconfig }: Tprops) => {
   /*setup for the viewport dimensions and particle system boundary */
   const viewport = useThree((state) => state.viewport);
 
-  useEffect(() => {
-    camera.translateZ(15);
-    //this will create the first boundary
-    if (pconfig.num === 0) {
-      let viewportFirstBoundary = parallelepiped(
-        vec(0, 0, 0),
-        2 * Math.max(viewport.width, viewport.height),
-        2 * Math.max(viewport.width, viewport.height),
-        2 * Math.max(viewport.width, viewport.height)
-      );
-      let firstConfig = pickRandomConfig(viewportFirstBoundary);
-      setPconfig(firstConfig);
-    }
-  }, [pconfig.num]);
+  //camera.translateZ(5);
+
+  // useEffect(() => {
+  //   camera.translateZ(15);
+  //   //this will create the first boundary
+  //   if (pconfig.num === 0) {
+  //     let viewportFirstBoundary = parallelepiped(
+  //       vec(0, 0, 0),
+  //       2 * Math.max(viewport.width, viewport.height),
+  //       2 * Math.max(viewport.width, viewport.height),
+  //       2 * Math.max(viewport.width, viewport.height)
+  //     );
+  //     let firstConfig = pickRandomConfig(viewportFirstBoundary);
+  //     setPconfig(firstConfig);
+  //   }
+  // }, [pconfig.num]);
 
   return <OrbitControls args={[camera, domElement]} enableZoom={true} />;
 };

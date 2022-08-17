@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import { Box } from "@react-three/drei";
 import { useMemo } from "react";
 import { TparticleSystem } from "../../particlePhysics/types";
 
@@ -13,7 +12,7 @@ const OctaTreeBox = (particleSystem: TparticleSystem) => {
         tree.boundary.h,
         tree.boundary.d
       ),
-    [particleSystem]
+    [particleSystem.collisionDetection.boundary]
   );
   return (
     <lineSegments>
