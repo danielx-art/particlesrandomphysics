@@ -26,7 +26,7 @@ const Home: NextPage = () => {
     <>
       <p className="text-1xl w-full text-center absolute"></p>
       <Canvas
-        className="h-full w-full absolute"
+        className="h-full w-full absolute bg-black"
         camera={{ position: [0, 0, 5] }}
       >
         <CameraControls {...{ pconfig, setPconfig }} />

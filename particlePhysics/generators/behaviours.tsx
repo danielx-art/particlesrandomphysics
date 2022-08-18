@@ -3,7 +3,7 @@ import { default as gravity } from "../behaviours/gravity";
 
 const behaviours = [];
 
-//behaviours.push(magneticdipole);
-behaviours.push(gravity);
+behaviours.push(magneticdipole);
+//behaviours.push(gravity);
 
 export { behaviours };

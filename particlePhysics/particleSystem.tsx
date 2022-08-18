@@ -31,6 +31,9 @@ export default function createParticleSystem(args: parametersType) {
   } = { ...args };
 
   //Initialize all the particles
+
+  let particleBehaviours = behaviours.map((behaviour) => behaviour());
+
   const self: { [key: string]: any } = {
     num,
     boundary,
@@ -39,6 +42,7 @@ export default function createParticleSystem(args: parametersType) {
     safeRadius,
     merge,
     particles: [],
+    physics: particleBehaviours.map((behaviour) => behaviour.metadata),
   };
 
   //Collision Detection
@@ -94,7 +98,7 @@ export default function createParticleSystem(args: parametersType) {
         rotationDampingGenerator,
         defaultGenArgs
       ),
-      behaviours: behaviours,
+      particleBehaviours,
       //display: HANDLE_GENERATOR(displayGenerator, defaultGenArgs),
     });
 

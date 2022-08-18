@@ -1,5 +1,5 @@
 import vec from "./vetores";
-import magneticDipole from "./behaviours/magneticDipole";
+import gravity from "./behaviours/gravity";
 import { Tparticle, TparticlePreBody } from "./types";
 
 /* --------------------------------------------------------------
@@ -25,7 +25,9 @@ export default function createParticle({
   translationDamping = 0.9,
   rotationDamping = 0.8,
 
-  behaviours = [magneticDipole],
+  particleBehaviours = [
+    { metadata: {}, attach: (particle: TparticlePreBody) => {} },
+  ],
 }): Tparticle {
   const self: any = {
     pos: position,
@@ -64,8 +66,8 @@ export default function createParticle({
   BEHAVIOURS ASSIGNMENT
   */
 
-  for (const behaviour of behaviours) {
-    behaviour(self as TparticlePreBody);
+  for (const behaviour of particleBehaviours) {
+    behaviour.attach(self as TparticlePreBody);
     /*note:
     "behaviour(self)" is not a pure function, we need to assign, or "attach", to the physics 
     object of the particle this said behaviour, so in other words it needs to set stuff on its "parent particle", the "self",
@@ -85,6 +87,7 @@ export default function createParticle({
   /* add the fact that movement false just dont move*/
   self["move"] = () => {
     //translation - Euler - maybe implement runge kutta 4th?
+    //if (self.acl.length() > 0) console.log(self.acl); //debugg
     self.acl.clampLength(0, maxForce / inertialMass);
     self.vel.add(self.acl);
     self.vel.multiplyScalar(translationDamping);

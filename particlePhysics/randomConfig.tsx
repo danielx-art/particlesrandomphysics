@@ -37,7 +37,7 @@ export function pickRandomConfig(
   argsboundary: Iparallelepiped | undefined
 ): parametersType {
   let self: parametersType = {
-    num: 100,
+    num: 20,
     boundary: argsboundary
       ? argsboundary
       : parallelepiped(vec(0, 0, 0), 100, 100, 100),

@@ -7,7 +7,6 @@ It uses Typescript, Tailwind, React-Three-Fiber (and some of its partner librari
 
 ***TO DOS***
 
-- !something weird with particles positions - I think is in wrap generator handle generator
 - create new behaviours!
 - deal with display
 - deal with tracers (another type of particle that follows fields and need to create a trace rather than a 3d solid)

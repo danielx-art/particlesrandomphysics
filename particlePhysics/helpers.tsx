@@ -26,14 +26,14 @@ export function lerpStretchClamp(value: number, fromMin: number, fromMax: number
   return ((max - min) / (fromMax - fromMin)) * (value - fromMin) + min;
 }
 
-export function executeFunctionByName(functionName: string, context: any /*, args */) {
-  var args = Array.prototype.slice.call(arguments, 2);
-  var namespaces = functionName.split(".");
-  var func = namespaces.pop();
+// export function executeFunctionByName(functionName: string, context: any /*, args */) {
+//   var args = Array.prototype.slice.call(arguments, 2);
+//   var namespaces = functionName.split(".");
+//   var func = namespaces.pop();
 
-  //get deeper into nested contexts
-  for (var i = 0; i < namespaces.length; i++) {
-    context = context[namespaces[i]];
-  }
-  return context[func].apply(context, args);
-}
+//   //get deeper into nested contexts
+//   for (var i = 0; i < namespaces.length; i++) {
+//     context = context[namespaces[i]];
+//   }
+//   return context[func].apply(context, args);
+// }

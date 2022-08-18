@@ -29,11 +29,11 @@ export function momentInertiaConst10000(args: {
   return 10000;
 }
 
-// export function momentInertiaRandom(args: {
-//   index: number;
-//   num: number;
-//   boundary: Iparallelepiped;
-//   positions: Vector3[];
-// }) {
-//   return Math.random() * 5000 + 5000;
-// }
+export function momentInertiaRandom(args: {
+  index: number;
+  num: number;
+  boundary: Iparallelepiped;
+  positions: Vector3[];
+}) {
+  return Math.random() * 5000 + 5000;
+}
