@@ -8,6 +8,7 @@ import { useMemo } from "react";
 import createParticleSystem from "../particlePhysics/particleSystem";
 import { TparticleSystem } from "../particlePhysics/types";
 import CameraControls from "./components/cameraControls";
+import Tracers, { SingleTrace } from "./components/tracers";
 
 const Home: NextPage = () => {
   const { pconfig, setPconfig } = usePconfig();
@@ -32,6 +33,18 @@ const Home: NextPage = () => {
         <CameraControls {...{ pconfig, setPconfig }} />
         {particleSystem !== undefined && <Particles {...particleSystem} />}
         {particleSystem !== undefined && <OctaTreeBox {...particleSystem} />}
+        {particleSystem !== undefined && (
+          <Tracers
+            {...{
+              particleSystem,
+              steps: 100,
+              detail: 0.5,
+              width: 0.02,
+              color: "hotpink",
+              count: 10,
+            }}
+          />
+        )}
       </Canvas>
       <Buttons />
     </>
