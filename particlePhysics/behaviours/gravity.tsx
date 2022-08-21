@@ -4,7 +4,6 @@ import vec from "../vetores";
 
 export default function gravity() {
   let G = 1;
-
   let title = "gravity";
   let description = "Newton's universal law of gravity between all particles";
 
@@ -19,12 +18,12 @@ export default function gravity() {
         field: (pointInSpace: Vector3) => {
           let vecr = vec().copy(pointInSpace).sub(vec().copy(particle.pos));
           let versorr = vec().copy(vecr).setLength(1);
-          let r = vecr.length();
-          if (r > 1) {
+          let r2 = vecr.lengthSq();
+          if (r2 > 0.0001) {
             //security measure
             let g = vec().copy(versorr);
             g.multiplyScalar(-G * particle.inertialMass);
-            g.divideScalar(r * r);
+            g.divideScalar(r2);
             return g;
           }
           return vec();

@@ -38,7 +38,7 @@ const Home: NextPage = () => {
             {...{
               particleSystem,
               steps: 100,
-              detail: 0.5,
+              detail: 0.01,
               width: 0.02,
               color: "hotpink",
               count: 10,
