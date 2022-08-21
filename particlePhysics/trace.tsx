@@ -39,13 +39,11 @@ const trace = function (
       ) as Vector3;
       totalField.add(field);
     });
-    totalField.multiplyScalar(ds);
+    totalField.setLength(ds);
     //console.log(totalField); //debugg
     let newPosition = vec().copy(lastPosition).add(totalField);
     if (
-      psystem.boundary.contains(newPosition) &&
-      totalField.lengthSq() > 0.0001 &&
-      totalField.lengthSq() < 0.5
+      psystem.boundary.contains(newPosition)
     ) {
       vertices.push(newPosition);
     } else {
