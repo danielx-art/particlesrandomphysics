@@ -9,4 +9,3 @@ It uses Typescript, Tailwind, React-Three-Fiber (and some of its partner librari
 
 - create new behaviours!
 - deal with display
-- deal with tracers (another type of particle that follows fields and need to create a trace rather than a 3d solid)
