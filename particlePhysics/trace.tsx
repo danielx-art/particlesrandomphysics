@@ -1,4 +1,4 @@
-import { Vector3 } from "three";
+import * as THREE from "three";
 import { TparticleSystem } from "./types";
 import vec from "./vetores";
 
@@ -7,54 +7,63 @@ const trace = function (
   behaviourName: string,
   maxSteps: number,
   ds: number,
-  start: Vector3[]
+  start: THREE.Vector3[]
 ) {
-  let randomX =
-    (Math.random() - 1 / 2) * psystem.boundary.w + psystem.boundary.x;
-  let randomY =
-    (Math.random() - 1 / 2) * psystem.boundary.h + psystem.boundary.y;
-  let randomZ =
-    (Math.random() - 1 / 2) * psystem.boundary.d + psystem.boundary.z;
-
+  let variation = 0.2;
+  //maxSteps += Math.floor((2 * Math.random() - 1) * variation);
+  let stepsSoFar = start.length;
+  let stepsToGo = maxSteps - stepsSoFar;
   let vertices = [] as THREE.Vector3[];
 
-  if (start.length > 0) {
-    vertices.push(...start); //start with previously calculated path
-  } else {
+  if (stepsToGo === maxSteps) {
+    let randomX =
+      (Math.random() - 1 / 2) * psystem.boundary.w + psystem.boundary.x;
+    let randomY =
+      (Math.random() - 1 / 2) * psystem.boundary.h + psystem.boundary.y;
+    let randomZ =
+      (Math.random() - 1 / 2) * psystem.boundary.d + psystem.boundary.z;
     vertices.push(vec(randomX, randomY, randomZ)); //otherwise just use a random position
+  } else {
+    vertices.push(...start);
+    vertices.shift();
   }
 
-  if (vertices.length > 1) {
-    vertices.shift(); //if it already has more than one position, shift it to "advance" the line
-  }
-
-  let stepsToGo = maxSteps - vertices.length;
-
-  for (let i = 0; i < stepsToGo; i++) {
+  for (let i = 0; i < stepsToGo - 1; i++) {
     let lastPosition = vertices[vertices.length - 1];
     let totalField = vec();
     psystem.particles.forEach((particle) => {
       let field = particle.physics[behaviourName].field(
         lastPosition
-      ) as Vector3;
+      ) as THREE.Vector3;
       totalField.add(field);
     });
 
-    let newPosition = vec().copy(lastPosition).add(vec().copy(totalField).setLength(ds));
-    if (
-      psystem.boundary.contains(newPosition) && totalField.lengthSq() < 0.05
-    ) {
+    let newPosition = vec()
+      .copy(lastPosition)
+      .add(vec().copy(totalField).setLength(ds));
+    if (psystem.boundary.contains(newPosition)) {
       vertices.push(newPosition);
     } else {
-      //if it gets out then do it again
-      let restarted: THREE.Vector3[] = trace(
-        psystem,
-        behaviourName,
-        maxSteps,
-        ds,
-        []
-      );
-      return restarted;
+      let randomX =
+        (Math.random() - 1 / 2) * psystem.boundary.w + psystem.boundary.x;
+      let randomY =
+        (Math.random() - 1 / 2) * psystem.boundary.h + psystem.boundary.y;
+      let randomZ =
+        (Math.random() - 1 / 2) * psystem.boundary.d + psystem.boundary.z;
+      vertices = [vec(randomX, randomY, randomZ)]; //otherwise just use a random position
+      i = 0;
+    }
+
+    let willRestart = Math.random() < 0.05 ? true : false;
+
+    if (willRestart) {
+      let randomX =
+        (Math.random() - 1 / 2) * psystem.boundary.w + psystem.boundary.x;
+      let randomY =
+        (Math.random() - 1 / 2) * psystem.boundary.h + psystem.boundary.y;
+      let randomZ =
+        (Math.random() - 1 / 2) * psystem.boundary.d + psystem.boundary.z;
+      vertices = [vec(randomX, randomY, randomZ)];
     }
   }
 

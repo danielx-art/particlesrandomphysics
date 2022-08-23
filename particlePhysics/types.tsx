@@ -55,7 +55,7 @@ export type TparticlePreBody = {
   x: number;
   y: number;
   z: number;
-  physics: { [behaviourTitle: string]: any };
+  physics: { [behaviourTitle: string]: Tbehaviour };
 };
 
 export type Tparticle = TparticlePreBody & {
@@ -72,6 +72,7 @@ export type TparticleSystem = {
   safeRadius: number;
   merge: boolean;
   particles: Tparticle[];
+  physics: { title: string; description: string; [key: string]: any };
   collisionDetection: Ttree;
   update: () => {};
   move: () => {};
@@ -90,17 +91,10 @@ export type Ttree = {
   count: () => number;
 };
 
-/*note
-We could have a type for behaviours, the pseudo-code for that is:
 export type Tbehaviour = {
-  title: string;
-  description: string;
-  [any number of properties it needs]: any;
-  field: Vector3 => any;
-  forces: Tparticle[] => void;
-  hasMoved: TparticlePreBody => void;
-  merge: Tbehaviour => void;
-}
-but the problem is of course the variable number of properties each behaviour should
-be able to have
-*/
+  field: (pointInSpace: Vector3) => Vector3;
+  forces: (agents: Tparticle[]) => void;
+  hasMoved: (newState: TparticlePreBody) => void;
+  merge: (otherThis: Tbehaviour) => void;
+  [otherProperties: string]: any;
+};

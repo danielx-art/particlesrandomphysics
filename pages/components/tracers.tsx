@@ -8,12 +8,17 @@ import React, {
 } from "react";
 import { useFrame, extend, Object3DNode } from "@react-three/fiber";
 
-import { Tparticle, TparticleSystem } from "../../particlePhysics/types";
+import {
+  parametersType,
+  Tparticle,
+  TparticleSystem,
+} from "../../particlePhysics/types";
 import trace from "../../particlePhysics/trace";
 import { pickRandomItemsFromArray } from "../../particlePhysics/helpers";
 import { LineMaterial } from "three/examples/jsm/lines/LineMaterial";
 import { LineGeometry } from "three/examples/jsm/lines/LineGeometry";
 import { Line2 } from "three/examples/jsm/lines/Line2";
+import vec from "../../particlePhysics/vetores";
 
 extend({ LineMaterial, LineGeometry, Line2 });
 
@@ -27,36 +32,37 @@ declare module "@react-three/fiber" {
 
 type Ttracersprops = {
   particleSystem: TparticleSystem;
-  steps: number;
-  detail: number;
-  width: number;
-  color: string;
-  count: number;
+  pconfig: parametersType;
 };
 
-export default function Tracers({
-  particleSystem,
-  steps,
-  detail,
-  width,
-  color,
-  count,
-}: Ttracersprops) {
-  const tracesConfig = useMemo(() => {
-    return new Array(count).fill(0).map((item) => {
-      return {
-        particleSystem,
-        steps,
-        detail,
-        width,
-        color,
-      };
-    });
-  }, [particleSystem, steps, detail, width, color, count]);
+export default function Tracers({ particleSystem, pconfig }: Ttracersprops) {
+  const randomConfigs = useMemo(() => {
+    let allSystemBehaviours = particleSystem.physics.map(
+      (item: { title: string }) => item.title
+    );
+    let randomPhysics = pickRandomItemsFromArray(
+      allSystemBehaviours,
+      1
+    ) as string;
+    let randomCount = Math.floor(Math.random() * 60);
+    let configs = Array(randomCount)
+      .fill(0)
+      .map(() => {
+        return {
+          particleSystem,
+          physics: randomPhysics,
+          steps: 150 + Math.ceil(Math.random() * 250),
+          detail: 0.5 * (1 + Math.random()),
+          width: 0.001 * (1 + Math.random() * 10),
+          color: "hotpink", //pick from a list later
+        };
+      });
+    return configs;
+  }, [pconfig]);
 
   return (
     <>
-      {tracesConfig.map((props, index) => (
+      {randomConfigs.map((props, index) => (
         <SingleTrace key={index} {...props} />
       ))}
     </>
@@ -65,30 +71,70 @@ export default function Tracers({
 
 export function SingleTrace({
   particleSystem,
+  physics,
   steps,
   detail,
   width,
   color,
-}: any) {
+}: {
+  particleSystem: TparticleSystem;
+  physics: string;
+  steps: number;
+  detail: number;
+  width: number;
+  color: string;
+}) {
   const line = useRef() as any;
-
-  //const [positions, setPositions] = useState([] as Vector3[]);
-  let positions = [] as THREE.Vector3[];
-
+  let positions = useMemo(() => [] as THREE.Vector3[], [physics]);
   useFrame(() => {
-    let randomPhysics = pickRandomItemsFromArray(
-      particleSystem.physics,
-      1
-    ) as any;
-    let newPositions = trace(
-      particleSystem,
-      randomPhysics.title,
-      steps,
-      detail,
-      positions
-    );
-    positions = newPositions;
-    if (line.current) {
+    let stepsSoFar = positions.length;
+    //let stepsToGo = steps - stepsSoFar;
+
+    if (stepsSoFar === 0) {
+      let randomX = ((Math.random() - 1 / 2) * particleSystem.boundary.w +
+        particleSystem.boundary.x) as number;
+      let randomY = ((Math.random() - 1 / 2) * particleSystem.boundary.h +
+        particleSystem.boundary.y) as number;
+      let randomZ = ((Math.random() - 1 / 2) * particleSystem.boundary.d +
+        particleSystem.boundary.z) as number;
+      positions = [vec(randomX, randomY, randomZ)]; //otherwise just use a random position
+    } else if (stepsSoFar > steps) {
+      positions.shift();
+    }
+
+    let lastPosition = positions[positions.length - 1];
+
+    let totalField = vec();
+    particleSystem.particles.forEach((particle) => {
+      let field = particle["physics"][physics].field(
+        lastPosition
+      ) as THREE.Vector3;
+      totalField.add(field);
+    });
+
+    let newPosition = vec()
+      .copy(lastPosition)
+      .add(vec().copy(totalField).setLength(detail));
+    if (particleSystem.boundary.contains(newPosition)) {
+      positions.push(newPosition);
+    }
+
+    let willRestart = Math.random() < 0.05 ? true : false;
+
+    if (willRestart) {
+      let randomX =
+        (Math.random() - 1 / 2) * particleSystem.boundary.w +
+        particleSystem.boundary.x;
+      let randomY =
+        (Math.random() - 1 / 2) * particleSystem.boundary.h +
+        particleSystem.boundary.y;
+      let randomZ =
+        (Math.random() - 1 / 2) * particleSystem.boundary.d +
+        particleSystem.boundary.z;
+      positions = [vec(randomX, randomY, randomZ)];
+    }
+
+    if (line.current && positions.length > 1) {
       let curve = new THREE.CatmullRomCurve3(positions).getPoints(steps);
       let convertedToArray = [] as number[];
       curve.forEach((item) => convertedToArray.push(item.x, item.y, item.z));

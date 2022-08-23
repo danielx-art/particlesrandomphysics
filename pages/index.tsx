@@ -34,16 +34,7 @@ const Home: NextPage = () => {
         {particleSystem !== undefined && <Particles {...particleSystem} />}
         {particleSystem !== undefined && <OctaTreeBox {...particleSystem} />}
         {particleSystem !== undefined && (
-          <Tracers
-            {...{
-              particleSystem,
-              steps: 100,
-              detail: 0.01,
-              width: 0.02,
-              color: "hotpink",
-              count: 10,
-            }}
-          />
+          <Tracers {...{ particleSystem, pconfig }} />
         )}
       </Canvas>
       <Buttons />
