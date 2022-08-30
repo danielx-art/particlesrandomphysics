@@ -86,29 +86,32 @@ export default function createParticle({
 
   /* add the fact that movement false just dont move*/
   self["move"] = () => {
-    //translation - Euler - maybe implement runge kutta 4th?
-    //if (self.acl.length() > 0) console.log(self.acl); //debugg
-    self.acl.clampLength(0, maxForce / inertialMass);
-    self.vel.add(self.acl);
-    self.vel.multiplyScalar(translationDamping);
-    self.vel.clampLength(0, maxSpeed);
+    if (true) {
+      //the movement
+      //translation - Euler - maybe implement runge kutta 4th?
+      //if (self.acl.length() > 0) console.log(self.acl); //debugg
+      self.acl.clampLength(0, maxForce / inertialMass);
+      self.vel.add(self.acl);
+      self.vel.multiplyScalar(translationDamping);
+      self.vel.clampLength(0, maxSpeed);
 
-    self.pos.add(self.vel);
-    self.acl.multiplyScalar(0);
+      self.pos.add(self.vel);
+      self.acl.multiplyScalar(0);
 
-    //rotation
-    self.angacl.clampLength(0, maxTorque / momentInertia);
-    self.angvel.add(self.angacl);
-    self.angvel.multiplyScalar(rotationDamping);
-    self.angvel.clampLength(0, maxAngVel);
-    let deltadir = self.angvel.cross(self.dir);
-    self.dir.add(deltadir).clampLength(0, 1);
-    self.angacl.multiplyScalar(0);
+      //rotation
+      self.angacl.clampLength(0, maxTorque / momentInertia);
+      self.angvel.add(self.angacl);
+      self.angvel.multiplyScalar(rotationDamping);
+      self.angvel.clampLength(0, maxAngVel);
+      let deltadir = self.angvel.cross(self.dir);
+      self.dir.add(deltadir).clampLength(0, 1);
+      self.angacl.multiplyScalar(0);
 
-    //notify all behaviours
-    physicsList.forEach((phenom) => {
-      self.physics[phenom].hasMoved(self as TparticlePreBody);
-    });
+      //notify all behaviours
+      physicsList.forEach((phenom) => {
+        self.physics[phenom].hasMoved(self as TparticlePreBody);
+      });
+    }
   };
 
   //merge function
@@ -158,6 +161,8 @@ export default function createParticle({
       self.physics[phenom].merge(particleForMerge.physics[phenom]);
     });
   };
+
+  //console.log(self); //test
 
   return self as Tparticle;
 }

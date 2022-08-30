@@ -30,7 +30,7 @@ const Particles = (particleSystem: TparticleSystem) => {
       <pointLight ref={light} distance={40} intensity={3} color="lightblue" />
       {particleSystem !== undefined && (
         <instancedMesh ref={mesh} args={[, , particleSystem.num]}>
-          <tetrahedronBufferGeometry args={[0.2, 0]} />
+          <tetrahedronBufferGeometry args={[0.15, 0]} />
           <meshBasicMaterial color="#2596be" />
         </instancedMesh>
       )}

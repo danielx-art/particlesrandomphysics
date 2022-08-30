@@ -42,7 +42,9 @@ export default function createParticleSystem(args: parametersType) {
     safeRadius,
     merge,
     particles: [],
-    physics: particleBehaviours.map((behaviour) => behaviour.metadata),
+    physics: particleBehaviours.map(
+      (behaviour) => behaviour.metadata
+    ) as unknown,
   };
 
   //Collision Detection

@@ -7,28 +7,19 @@ import React, {
   useLayoutEffect,
 } from "react";
 import { useFrame, extend, Object3DNode } from "@react-three/fiber";
+import { CatmullRomLine } from "@react-three/drei";
 
 import {
   parametersType,
   Tparticle,
   TparticleSystem,
 } from "../../particlePhysics/types";
-import trace from "../../particlePhysics/trace";
 import { pickRandomItemsFromArray } from "../../particlePhysics/helpers";
-import { LineMaterial } from "three/examples/jsm/lines/LineMaterial";
-import { LineGeometry } from "three/examples/jsm/lines/LineGeometry";
-import { Line2 } from "three/examples/jsm/lines/Line2";
 import vec from "../../particlePhysics/vetores";
+import { MeshLine } from "../../MeshLine/meshLine";
+import { MeshLineMaterial } from "../../MeshLine/material";
 
-extend({ LineMaterial, LineGeometry, Line2 });
-
-declare module "@react-three/fiber" {
-  interface ThreeElements {
-    line2: Object3DNode<Line2, typeof Line2>;
-    lineMaterial: Object3DNode<LineMaterial, typeof LineMaterial>;
-    lineGeometry: Object3DNode<LineGeometry, typeof LineGeometry>;
-  }
-}
+extend({ MeshLine, MeshLineMaterial });
 
 type Ttracersprops = {
   particleSystem: TparticleSystem;
@@ -40,20 +31,28 @@ export default function Tracers({ particleSystem, pconfig }: Ttracersprops) {
     let allSystemBehaviours = particleSystem.physics.map(
       (item: { title: string }) => item.title
     );
+
     let randomPhysics = pickRandomItemsFromArray(
       allSystemBehaviours,
       1
     ) as string;
-    let randomCount = Math.floor(Math.random() * 60);
+
+    let randomCount =
+      Math.random() > 0.5 ? 5 + Math.floor(Math.random() * 5) : 0;
+    let randomBaseWidth = 0.008;
+    let randomWidth =
+      randomBaseWidth + (Math.random() > 0.5 ? randomBaseWidth * 0.1 : 0);
     let configs = Array(randomCount)
       .fill(0)
       .map(() => {
+        let randomNumber = Math.random();
+
         return {
           particleSystem,
           physics: randomPhysics,
-          steps: 150 + Math.ceil(Math.random() * 250),
-          detail: 0.5 * (1 + Math.random()),
-          width: 0.001 * (1 + Math.random() * 10),
+          steps: 10 + Math.ceil(randomNumber * 50),
+          detail: 0.1 * (1 + randomNumber),
+          width: randomWidth * (2 - randomNumber),
           color: "hotpink", //pick from a list later
         };
       });
@@ -67,6 +66,46 @@ export default function Tracers({ particleSystem, pconfig }: Ttracersprops) {
       ))}
     </>
   );
+}
+
+function createStartingPositions(
+  particleSystem: TparticleSystem,
+  steps: number,
+  physics: string,
+  detail: number
+) {
+  let positions = [] as THREE.Vector3[];
+  let randomX = ((Math.random() - 1 / 2) * particleSystem.boundary.w +
+    particleSystem.boundary.x) as number;
+  let randomY = ((Math.random() - 1 / 2) * particleSystem.boundary.h +
+    particleSystem.boundary.y) as number;
+  let randomZ = ((Math.random() - 1 / 2) * particleSystem.boundary.d +
+    particleSystem.boundary.z) as number;
+  positions.push(vec(randomX, randomY, randomZ));
+
+  for (let i = 1; i < steps; i++) {
+    let lastPosition = positions[positions.length - 1];
+
+    let totalField = vec();
+    particleSystem.particles.forEach((particle) => {
+      //console.log(physics);
+      //console.log(particle["physics"]); //debugg
+      let field = particle["physics"][physics].field(
+        lastPosition
+      ) as THREE.Vector3;
+      totalField.add(field);
+    });
+
+    let newPosition = vec()
+      .copy(lastPosition)
+      .add(vec().copy(totalField).setLength(detail));
+    if (particleSystem.boundary.contains(newPosition)) {
+      positions.push(newPosition);
+    } else {
+    }
+  }
+
+  return positions;
 }
 
 export function SingleTrace({
@@ -85,113 +124,59 @@ export function SingleTrace({
   color: string;
 }) {
   const line = useRef() as any;
-  let positions = useMemo(() => [] as THREE.Vector3[], [physics]);
+  const [toggle, setToggle] = useState(true);
+
+  let [positions, currentPosition] = useMemo(() => {
+    let positions = createStartingPositions(
+      particleSystem,
+      steps,
+      physics,
+      detail
+    );
+
+    let currentPosition = positions.pop() as THREE.Vector3;
+
+    return [positions, currentPosition];
+  }, [physics, toggle]);
+
   useFrame(() => {
-    let stepsSoFar = positions.length;
-    //let stepsToGo = steps - stepsSoFar;
+    let outOfBoundary = false;
+    for (let i = 0; i < 2; i++) {
+      if (line.current) {
+        let totalField = vec();
+        particleSystem.particles.forEach((particle) => {
+          let field = particle["physics"][physics].field(
+            currentPosition
+          ) as THREE.Vector3;
+          totalField.add(field);
+        });
 
-    if (stepsSoFar === 0) {
-      let randomX = ((Math.random() - 1 / 2) * particleSystem.boundary.w +
-        particleSystem.boundary.x) as number;
-      let randomY = ((Math.random() - 1 / 2) * particleSystem.boundary.h +
-        particleSystem.boundary.y) as number;
-      let randomZ = ((Math.random() - 1 / 2) * particleSystem.boundary.d +
-        particleSystem.boundary.z) as number;
-      positions = [vec(randomX, randomY, randomZ)]; //otherwise just use a random position
-    } else if (stepsSoFar > steps) {
-      positions.shift();
+        let newPosition = vec()
+          .copy(currentPosition)
+          .add(vec().copy(totalField).setLength(detail));
+        if (particleSystem.boundary.contains(newPosition)) {
+          currentPosition.copy(newPosition);
+          line.current.advance(currentPosition);
+        } else {
+          outOfBoundary = false;
+        }
+      }
     }
-
-    let lastPosition = positions[positions.length - 1];
-
-    let totalField = vec();
-    particleSystem.particles.forEach((particle) => {
-      let field = particle["physics"][physics].field(
-        lastPosition
-      ) as THREE.Vector3;
-      totalField.add(field);
-    });
-
-    let newPosition = vec()
-      .copy(lastPosition)
-      .add(vec().copy(totalField).setLength(detail));
-    if (particleSystem.boundary.contains(newPosition)) {
-      positions.push(newPosition);
-    }
-
-    let willRestart = Math.random() < 0.05 ? true : false;
-
-    if (willRestart) {
-      let randomX =
-        (Math.random() - 1 / 2) * particleSystem.boundary.w +
-        particleSystem.boundary.x;
-      let randomY =
-        (Math.random() - 1 / 2) * particleSystem.boundary.h +
-        particleSystem.boundary.y;
-      let randomZ =
-        (Math.random() - 1 / 2) * particleSystem.boundary.d +
-        particleSystem.boundary.z;
-      positions = [vec(randomX, randomY, randomZ)];
-    }
-
-    if (line.current && positions.length > 1) {
-      let curve = new THREE.CatmullRomCurve3(positions).getPoints(steps);
-      let convertedToArray = [] as number[];
-      curve.forEach((item) => convertedToArray.push(item.x, item.y, item.z));
-      line.current.setPositions(convertedToArray);
-    }
+    if (outOfBoundary === false) setToggle((prev) => !prev);
   });
 
   return (
-    <>
-      <line2>
-        <lineGeometry ref={line} />
-        <lineMaterial
-          color={color}
-          linewidth={width}
-          resolution={new THREE.Vector2(10, 10)}
-        />
-      </line2>
-    </>
+    <mesh>
+      {/* @ts-ignore */}
+
+      <meshLine ref={line} attach="geometry" points={positions} />
+
+      {/* @ts-ignore */}
+      <meshLineMaterial
+        attach="material"
+        lineWidth={width}
+        color={new THREE.Color(color)}
+      />
+    </mesh>
   );
 }
-
-// export function SingleTrace({
-//   particleSystem,
-//   steps,
-//   detail,
-//   width,
-//   color,
-// }: any) {
-//   const line = useRef() as any;
-
-//   //const [positions, setPositions] = useState([] as Vector3[]);
-//   let positions = [] as THREE.Vector3[];
-
-//   useFrame(() => {
-//     let randomPhysics = pickRandomItemsFromArray(
-//       particleSystem.physics,
-//       1
-//     ) as any;
-//     let newPositions = trace(
-//       particleSystem,
-//       randomPhysics.title,
-//       steps,
-//       detail,
-//       positions
-//     );
-//     positions = newPositions;
-//     if (line.current) {
-//       line.current.geometry.setFromPoints(positions);
-//     }
-//   });
-
-//   return (
-//     <>
-//       <line ref={line}>
-//         <bufferGeometry />
-//         <lineBasicMaterial color={color} linewidth={width} />
-//       </line>
-//     </>
-//   );
-// }

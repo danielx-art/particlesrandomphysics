@@ -28,5 +28,5 @@ export function massBiggerAtCenter(args: {
 }) {
   let pos = vec().copy(args.positions[args.index]);
   let dr = pos.distanceTo(args.boundary.center);
-  return 1000 * (dr / (dr * dr + 0.5));
+  return 1 + dr / (dr * dr + 0.5);
 }
