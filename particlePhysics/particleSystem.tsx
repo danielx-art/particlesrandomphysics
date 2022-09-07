@@ -1,8 +1,7 @@
 import { parametersType, Tgenerator, TparticleSystem } from "./types";
 import createParticle from "./particle";
 import octaTree from "./octaTree";
-import { Iparallelepiped, sphere } from "./shapes";
-import { Vector3 } from "three";
+import { sphere } from "./shapes";
 import vec from "./vetores";
 
 export default function createParticleSystem(args: parametersType) {

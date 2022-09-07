@@ -1,8 +1,7 @@
-import { NextPage } from "next";
 import { usePconfig } from "../../context/context";
 import { pickRandomConfig } from "../../particlePhysics/randomConfig";
 
-const Buttons: NextPage = () => {
+const Buttons = () => {
   const { pconfig, setPconfig } = usePconfig();
   const handleRandomConfig = () => {
     if (pconfig.num !== 0) {

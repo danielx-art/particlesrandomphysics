@@ -3,13 +3,17 @@ import { Tbehaviour, Tparticle, TparticlePreBody } from "../types";
 import vec from "../vetores";
 
 export default function magneticDipole(particle: TparticlePreBody) {
-  let title = "magnet";
-  let description =
-    "particle behaves as it has a magnetic dipole moment, as a regular magnet with a north and south pole regardless of any electrical effects";
-  let intensity = 1;
+  let metadata = {
+    title: "magnet",
+    description:
+      "particle behaves as it has a magnetic dipole moment, as a regular magnet with a north and south pole regardless of any electrical effects",
+    intensity: 1,
+    fieldTraceable: true,
+    trajectoryTraceable: true,
+  };
 
   return {
-    metadata: { title, description, intensity },
+    metadata,
     attach: function (particle: TparticlePreBody) {
       let self = {} as Tbehaviour;
 
@@ -88,7 +92,7 @@ export default function magneticDipole(particle: TparticlePreBody) {
         m.add(m2);
       };
 
-      particle.physics[title] = self;
+      particle.physics[metadata.title] = self;
     },
   };
 }

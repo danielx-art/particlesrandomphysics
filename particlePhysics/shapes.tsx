@@ -1,8 +1,8 @@
 import * as THREE from "three";
-import { Vector3 } from "three";
+//import { Vector3 } from "three";
 
 export interface Ishape {
-  center: Vector3;
+  center: THREE.Vector3;
   x: number;
   y: number;
   z: number;
@@ -28,7 +28,7 @@ export interface Isphere extends Ishape {
 }
 
 export function parallelepiped(
-  center: Vector3,
+  center: THREE.Vector3,
   width: number,
   height: number,
   depth: number
@@ -123,7 +123,7 @@ export function parallelepiped(
   return self;
 }
 
-export function sphere(center: Vector3, radius: number) {
+export function sphere(center: THREE.Vector3, radius: number) {
   let intersects = (aparallelepiped: Iparallelepiped) => {
     return aparallelepiped.intersectsSphere(sphere(center, radius));
   };

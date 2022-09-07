@@ -21,7 +21,7 @@ const CameraControls = ({ pconfig, setPconfig }: Tprops) => {
   const viewport = useThree((state) => state.viewport);
 
   useEffect(() => {
-    camera.translateZ(2);
+    //camera.translateZ(2);
     //this will create the first boundary
     if (pconfig.num === 0) {
       let viewportFirstBoundary = parallelepiped(

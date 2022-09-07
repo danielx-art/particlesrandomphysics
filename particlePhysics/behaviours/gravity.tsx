@@ -3,16 +3,20 @@ import { Tbehaviour, Tparticle, TparticlePreBody } from "../types";
 import vec from "../vetores";
 
 export default function gravity(particle: TparticlePreBody) {
-  let G = 1;
-  let title = "gravity";
-  let description = "Newton's universal law of gravity between all particles";
+  let metadata = {
+    G: 1,
+    title: "gravity",
+    description: "Newton's universal law of gravity between all particles",
+    fieldTraceable: true,
+    trajectoryTraceable: true,
+  };
 
   return {
-    metadata: { title, description, G },
+    metadata,
     attach: function (particle: TparticlePreBody) {
       let self = {} as Tbehaviour;
 
-      self["G"] = G;
+      self["G"] = metadata.G;
 
       self["field"] = (pointInSpace: Vector3) => {
         let vecr = vec().copy(pointInSpace).sub(vec().copy(particle.pos));
@@ -21,7 +25,7 @@ export default function gravity(particle: TparticlePreBody) {
         if (r2 > 0.0001) {
           //security measure
           let g = vec().copy(versorr);
-          g.multiplyScalar(-G * particle.inertialMass);
+          g.multiplyScalar(-metadata.G * particle.inertialMass);
           g.divideScalar(r2);
           return g;
         }
@@ -50,7 +54,7 @@ export default function gravity(particle: TparticlePreBody) {
         //mass merges by itself
       };
 
-      particle.physics[title] = self;
+      particle.physics[metadata.title] = self;
     },
   };
 }

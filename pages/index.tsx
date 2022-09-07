@@ -8,7 +8,7 @@ import { useMemo } from "react";
 import createParticleSystem from "../particlePhysics/particleSystem";
 import { TparticleSystem } from "../particlePhysics/types";
 import CameraControls from "./components/cameraControls";
-import Tracers, { SingleTrace } from "./components/tracers";
+import Tracers, { SingleFieldTrace } from "./components/tracers";
 
 const Home: NextPage = () => {
   const { pconfig, setPconfig } = usePconfig();

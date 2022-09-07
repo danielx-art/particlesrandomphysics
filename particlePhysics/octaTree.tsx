@@ -1,6 +1,6 @@
 import { Iparallelepiped, Ishape, parallelepiped } from "./shapes";
-import * as THREE from "three";
 import { Tparticle, Ttree } from "./types";
+import vec from "./vetores";
 
 const octaTree = function (boundary: Iparallelepiped, capacity: number) {
   const self: { [ket: string]: any } = {
@@ -23,7 +23,7 @@ const octaTree = function (boundary: Iparallelepiped, capacity: number) {
           let subcx = boundary.x + (boundary.w / 4) * (2 * i - 1);
           let subcy = boundary.y + (boundary.h / 4) * (2 * j - 1);
           let subcz = boundary.z + (boundary.d / 4) * (2 * k - 1);
-          let subcenter = new THREE.Vector3(subcx, subcy, subcz);
+          let subcenter = vec(subcx, subcy, subcz);
           subBoundaries[id] = parallelepiped(subcenter, subW, subH, subD);
           self.subTrees[id] = octaTree(subBoundaries[id], self.capacity);
         }
