@@ -4,11 +4,13 @@ import Particles from "./components/particles";
 import Buttons from "./components/buttons";
 import OctaTreeBox from "./components/octaTreeBox";
 import { usePconfig } from "../context/context";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import createParticleSystem from "../particlePhysics/particleSystem";
 import { TparticleSystem } from "../particlePhysics/types";
 import CameraControls from "./components/cameraControls";
 import Tracers, { SingleFieldTrace } from "./components/tracers";
+import InfoBox from "./components/informationBox";
+import DescBox from "./components/descriptionBox";
 
 const Home: NextPage = () => {
   const { pconfig, setPconfig } = usePconfig();
@@ -23,8 +25,18 @@ const Home: NextPage = () => {
     return undefined;
   }, [pconfig]);
 
+  const [toggleInfo, setToggleInfo] = useState(false);
+  const handleToggleInfo = () => {
+    setToggleInfo((toggle) => !toggle);
+  };
+
+  const [toggleDesc, setToggleDesc] = useState(false);
+  const handleToggleDesc = () => {
+    setToggleDesc((toggle) => !toggle);
+  };
+
   return (
-    <>
+    <div className="w-full h-full flex">
       <p className="text-1xl w-full text-center absolute"></p>
       <Canvas
         className="h-full w-full absolute bg-black"
@@ -37,8 +49,12 @@ const Home: NextPage = () => {
           <Tracers {...{ particleSystem, pconfig }} />
         )}
       </Canvas>
-      <Buttons />
-    </>
+      <Buttons {...{ handleToggleInfo, handleToggleDesc }} />
+      {toggleInfo && <InfoBox />}
+      {toggleDesc && particleSystem !== undefined && (
+        <DescBox {...particleSystem} />
+      )}
+    </div>
   );
 };
 

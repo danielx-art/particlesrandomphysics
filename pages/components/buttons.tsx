@@ -1,7 +1,10 @@
 import { usePconfig } from "../../context/context";
 import { pickRandomConfig } from "../../particlePhysics/randomConfig";
 
-const Buttons = () => {
+const Buttons = (props: {
+  handleToggleInfo: () => void;
+  handleToggleDesc: () => void;
+}) => {
   const { pconfig, setPconfig } = usePconfig();
   const handleRandomConfig = () => {
     if (pconfig.num !== 0) {
@@ -13,7 +16,10 @@ const Buttons = () => {
   return (
     <>
       <div className="text-2xl w-full text-center z-10 absolute bottom-5 p-2 flex flex-row justify-center items-center gap-x-1 ">
-        <button className="bg-black p-1 border border-white active:opacity-50 transition-transform duration-500 ease-in-out rounded-full hover:scale-105">
+        <button
+          onClick={props.handleToggleDesc}
+          className="bg-black p-1 border border-white active:opacity-50 transition-transform duration-500 ease-in-out rounded-full hover:scale-105"
+        >
           <p className=" text-2xl w-8 h-8 text-white leading-5"> ... </p>
         </button>
 
@@ -32,7 +38,10 @@ const Buttons = () => {
           </svg>
         </button>
 
-        <button className="bg-black p-1 border border-white active:opacity-50 transition-transform duration-500 ease-in-out rounded-full text-3xl hover:scale-105">
+        <button
+          onClick={props.handleToggleInfo}
+          className="bg-black p-1 border border-white active:opacity-50 transition-transform duration-500 ease-in-out rounded-full text-3xl hover:scale-105"
+        >
           <p className="font-mochiy w-8 h-8 text-white"> i </p>
         </button>
       </div>

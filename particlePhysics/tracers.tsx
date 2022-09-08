@@ -37,9 +37,9 @@ const trace = function (
 
     let totalField = vec();
     agents.forEach((particle) => {
-      let field = particle["physics"][physics].field(
-        lastPosition
-      ) as THREE.Vector3;
+      let field = particle["physics"][physics]
+        ? (particle["physics"][physics].field(lastPosition) as THREE.Vector3)
+        : vec(0, 0, 0);
       totalField.add(field);
     });
 
