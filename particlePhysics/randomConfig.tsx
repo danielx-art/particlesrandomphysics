@@ -27,16 +27,16 @@ function pickRandomGenerator<Type>(importedGeneratorsObj: {
   return importedGeneratorsObj[randomGenerator];
 }
 
-function pickRandomBehaviour<Type>(importedBehavioursObjList: {
-  [char: string]: Type;
-}) {
-  let allBehaviours = importedBehavioursObjList.behaviours as Array<any>;
+function pickRandomBehaviour<T>(importedBehavioursObjList: {
+  behaviours: T[];
+}): T[] {
+  let allBehaviours = importedBehavioursObjList.behaviours as T[];
   let randomNum = 1 + Math.floor(Math.random() * 2);
   let picked =
     randomNum === 1
       ? [pickRandomItemsFromArray(allBehaviours, 1)]
       : pickRandomItemsFromArray(allBehaviours, randomNum);
-  return picked;
+  return picked as T[];
 }
 
 export function pickRandomConfig(
