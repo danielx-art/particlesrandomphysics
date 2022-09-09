@@ -4,9 +4,12 @@ import vec from "../vetores";
 
 export default function gravity(particle: TparticlePreBody) {
   let metadata = {
-    G: 1,
-    title: "gravity",
-    description: "Newton's universal law of gravity between all particles",
+    G: 0.01,
+    title: { en: "gravity", ptbr: "gravidade" },
+    description: {
+      en: "Newton's universal law of gravity between the particles.",
+      ptbr: "Lei da Gravitação Universal de Newton entre as partículas.",
+    },
     fieldTraceable: true,
     trajectoryTraceable: true,
   };
@@ -54,7 +57,7 @@ export default function gravity(particle: TparticlePreBody) {
         //mass merges by itself
       };
 
-      particle.physics[metadata.title] = self;
+      particle.physics[metadata.title.en] = self;
     },
   };
 }

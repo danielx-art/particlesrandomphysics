@@ -9,9 +9,11 @@ export default function rgbDynamic(particle: TparticlePreBody) {
   let color = vec(randomR, randomG, randomB).setLength(1);
 
   let metadata = {
-    title: "rgbDynamic",
-    description:
-      "inspired in color dynamics, but much simpler, particles are atracted to those with complementary 'color' - represented by a 3 vector with length 1 - and repelled by same color",
+    title: { en: "rgbDynamic", ptbr: "dinânima RGB" },
+    description: {
+      en: "Inspired in chromodynamics, but much simpler, particles are atracted to those with complementary 'color' (represented by a 3 vector with length 1) and repelled by same color",
+      ptbr: "Insparada em cromodinâmica, porém muito mais simples, as particulas são atraídas por aquelas que possuem uma 'cor' (representada por um vetor de 3 dimensões com norma 1) complementar, e são repelidas por cores semelhantes.",
+    },
     color,
     fieldTraceable: false,
     tracetoryTraceable: true,
@@ -58,7 +60,7 @@ export default function rgbDynamic(particle: TparticlePreBody) {
         self.color.add(c2); //test this keyword here too
       };
 
-      particle.physics[metadata.title] = self;
+      particle.physics[metadata.title.en] = self;
     },
   };
 }

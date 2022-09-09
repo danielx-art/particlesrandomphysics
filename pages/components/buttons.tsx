@@ -2,6 +2,10 @@ import { usePconfig } from "../../context/context";
 import { pickRandomConfig } from "../../particlePhysics/randomConfig";
 
 const Buttons = (props: {
+  toggleInfo: boolean;
+  setToggleInfo: React.Dispatch<React.SetStateAction<boolean>>;
+  toggleDesc: boolean;
+  setToggleDesc: React.Dispatch<React.SetStateAction<boolean>>;
   handleToggleInfo: () => void;
   handleToggleDesc: () => void;
 }) => {
@@ -10,6 +14,8 @@ const Buttons = (props: {
     if (pconfig.num !== 0) {
       const newConfig = pickRandomConfig(pconfig.boundary);
       setPconfig(newConfig);
+      if (props.toggleInfo) props.setToggleInfo(false);
+      if (props.toggleDesc) props.setToggleDesc(false);
     }
   };
 

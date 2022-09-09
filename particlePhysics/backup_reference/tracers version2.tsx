@@ -25,7 +25,7 @@ type Ttracersprops = {
 export default function Tracers({ particleSystem, pconfig }: Ttracersprops) {
   const randomConfigs = useMemo(() => {
     let allSystemBehaviours = particleSystem.physics.map(
-      (item: { title: string }) => item.title
+      (item: { title: { en: string } }) => item.title.en
     );
     let randomPhysics = pickRandomItemsFromArray(
       allSystemBehaviours,

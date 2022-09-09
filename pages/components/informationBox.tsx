@@ -3,16 +3,14 @@ import { usePconfig } from "../../context/context";
 import { pickRandomConfig } from "../../particlePhysics/randomConfig";
 
 const InfoBox = () => {
-  const { pconfig, setPconfig } = usePconfig();
-  const [lang, setLang] = useState("pt-br");
+  const { pconfig, setPconfig, lang, setLang } = usePconfig();
   const handleLangToggle = () => {
     switch (lang) {
-      case "pt-br":
-        console.log("here"); //test
+      case "ptbr":
         setLang("en");
         break;
       case "en":
-        setLang("pt-br");
+        setLang("ptbr");
         break;
     }
   };
@@ -24,7 +22,7 @@ const InfoBox = () => {
           <p>
             Hit refresh (the big button) to randomize the particles count,
             overall physical behaviour and other visual effects. You can use
-            your mouse or touch to rotate or zoom view.
+            your mouse/scroll or touch to rotate or zoom view.
           </p>
           <p className="text-gray-400">
             This is a particle system simulation made using react-three-fiber
@@ -38,28 +36,20 @@ const InfoBox = () => {
             </a>
             .
           </p>
-          <button
-            onClick={handleLangToggle}
-            className="flex absolute top-1 right-2 text-xs"
-          >
-            <div className="text-gray-500">PT-BR</div>
-            <div className="px-2 text-gray-300"> / </div>
-            <div className="text-gray-300">EN</div>
-          </button>
         </>
       )}
-      {lang === "pt-br" && (
+      {lang === "ptbr" && (
         <>
           <p>
             Clique em "refresh" (o botão grande no meio) para escolher
             aleatoriamente novos número de partículas, física e outros efeitos
-            visuais. Use os mouse ou os dedos para rotacionar ou dar zoom na
-            visão.
+            visuais. Use os mouse/scroll ou os dedos para rotacionar ou dar zoom
+            na visão.
           </p>
           <p className="text-gray-400">
             Essa é uma simulação de um sistema de partículas feita usando
-            reac-three-fiber dentro outras bibliotecas. Para saber mais sobre
-            como isso foi feito visite seu código no{" "}
+            reac-three-fiber e mais. Para saber mais sobre como isso foi feito
+            visite o código no{" "}
             <a
               href="https://github.com/danielx-art/particlesrandomphysics"
               target={"_blank"}
@@ -69,16 +59,20 @@ const InfoBox = () => {
             </a>
             .
           </p>
-          <button
-            onClick={handleLangToggle}
-            className="flex absolute top-1 right-2 text-xs"
-          >
-            <div className="text-gray-300">PT-BR</div>
-            <div className="px-2 tex-gray-300"> / </div>
-            <div className="text-gray-500">EN</div>
-          </button>
         </>
       )}
+      <button
+        onClick={handleLangToggle}
+        className="flex absolute top-1 right-2 text-xs"
+      >
+        <div className={lang === "ptbr" ? "text-gray-300" : "text-gray-500"}>
+          PT-BR
+        </div>
+        <div className="px-2 tex-gray-300"> / </div>
+        <div className={lang === "en" ? "text-gray-300" : "text-gray-500"}>
+          EN
+        </div>
+      </button>
     </div>
   );
 };

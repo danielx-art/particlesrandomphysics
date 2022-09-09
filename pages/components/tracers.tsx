@@ -23,7 +23,9 @@ export default function Tracers({ particleSystem, pconfig }: Ttracersprops) {
         (physicsMetadata: { fieldTraceable: boolean }) =>
           physicsMetadata.fieldTraceable === true
       )
-      .map((physicsMetadata: { title: string }) => physicsMetadata.title);
+      .map(
+        (physicsMetadata: { title: { en: string } }) => physicsMetadata.title.en
+      );
     fieldTraceableSystemBehaviours;
 
     let randomPhysics = pickRandomItemsFromArray(

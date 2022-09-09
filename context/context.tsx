@@ -4,43 +4,18 @@ import { parallelepiped } from "../particlePhysics/shapes";
 import { parametersType } from "../particlePhysics/types";
 import vec from "../particlePhysics/vetores";
 
-export type psystConfigType = {
+export type configType = {
   pconfig: parametersType;
   setPconfig: React.Dispatch<React.SetStateAction<parametersType>>;
+  lang: string;
+  setLang: React.Dispatch<React.SetStateAction<string>>;
 };
 
-// const initialPsystConfig: psystConfigType = {
-//   pconfig: {
-//     num: 0,
-//     boundary: parallelepiped(vec(0, 0, 0), 10, 10, 10),
-//     posGenerator: () => [vec()],
-//     dirGenerator: () => [vec()],
-//     inertialMassGenerator: () => [0],
-//     momentInertiaGenerator: () => [0],
-//     movementGenerator: () => true,
-//     initialVelocityGenerator: () => [vec()],
-//     initialAngularVelocityGenerator: () => [vec()],
-//     maxForceGenerator: () => [1],
-//     maxTorqueGenerator: () => [1],
-//     maxSpeedGenerator: () => [1],
-//     maxAngVelGenerator: () => [1],
-//     translationDampingGenerator: () => [1],
-//     rotationDampingGenerator: () => [1],
-//     wrap: () => [vec()],
-//     queryRadius: 10,
-//     safeRadius: 10,
-//     merge: false,
-//     behaviours: [],
-//     displayGenerator: null,
-//   },
-//   setPconfig: () => {},
-// };
-
 const initialPsystConfig = pickRandomConfig(
-  parallelepiped(vec(0, 0, 0), 10, 10, 10)
+  parallelepiped(vec(0, 0, 0), 20, 20, 20)
 );
 
-const PContext = createContext<psystConfigType>({} as psystConfigType);
+const PContext = createContext<configType>({} as configType);
 
 type Props = {
   children: ReactNode;
@@ -48,11 +23,12 @@ type Props = {
 
 export function PContextProvider({ children }: Props) {
   const [pconfig, setPconfig] = useState(initialPsystConfig);
-  const value = { pconfig, setPconfig };
+  const [lang, setLang] = useState("ptbr");
+  const value = { pconfig, setPconfig, lang, setLang };
 
   return <PContext.Provider value={value}>{children}</PContext.Provider>;
 }
 
 export function usePconfig() {
-  return useContext(PContext) as psystConfigType;
+  return useContext(PContext) as configType;
 }

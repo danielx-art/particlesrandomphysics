@@ -61,7 +61,7 @@ export function pickRandomConfig(
     translationDampingGenerator: pickRandomGenerator(TDAMP_GENERATORS),
     rotationDampingGenerator: pickRandomGenerator(RDAMP_GENERATORS),
     wrap: pickRandomGenerator(WRAP_GENERATORS),
-    queryRadius: 5,
+    queryRadius: 100,
     safeRadius: 0.05,
     merge: false,
     behaviours: pickRandomBehaviour(BEHAVIOURS),

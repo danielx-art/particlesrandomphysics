@@ -72,7 +72,11 @@ export type TparticleSystem = {
   safeRadius: number;
   merge: boolean;
   particles: Tparticle[];
-  physics: { title: string; description: string; [key: string]: any };
+  physics: {
+    title: { en: string; ptbr: string };
+    description: { en: string; ptbr: string };
+    [key: string]: any;
+  };
   collisionDetection: Ttree;
   update: () => {};
   move: () => {};

@@ -49,7 +49,16 @@ const Home: NextPage = () => {
           <Tracers {...{ particleSystem, pconfig }} />
         )}
       </Canvas>
-      <Buttons {...{ handleToggleInfo, handleToggleDesc }} />
+      <Buttons
+        {...{
+          toggleInfo,
+          setToggleInfo,
+          toggleDesc,
+          setToggleDesc,
+          handleToggleInfo,
+          handleToggleDesc,
+        }}
+      />
       {toggleInfo && <InfoBox />}
       {toggleDesc && particleSystem !== undefined && (
         <DescBox {...particleSystem} />
