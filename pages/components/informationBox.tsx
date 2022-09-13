@@ -16,7 +16,7 @@ const InfoBox = () => {
   };
 
   return (
-    <div className="absolute bottom-1/2 right-1/2 translate-x-1/2 translate-y-1/2 p-6 text-white cursor-default border-2 border-gray-800 bg-gray-900 bg-opacity-50 rounded backdrop-blur-sm max-h-[80vh] max-w-[80vw]">
+    <div className="absolute bottom-1/2 right-1/2 translate-x-1/2 translate-y-1/2 p-6 text-white cursor-default border-2 border-gray-800 bg-gray-900 bg-opacity-50 rounded backdrop-blur-sm max-h-[55vh] max-w-[90vw] overflow-scroll">
       {lang === "en" && (
         <>
           <p>
