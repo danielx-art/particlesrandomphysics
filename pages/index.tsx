@@ -35,6 +35,8 @@ const Home: NextPage = () => {
     setToggleDesc((toggle) => !toggle);
   };
 
+  const [descData, setDescData] = useState({} as { [key: string]: any });
+
   return (
     <div className="w-full h-full flex">
       <p className="text-1xl w-full text-center absolute"></p>
@@ -46,7 +48,7 @@ const Home: NextPage = () => {
         {particleSystem !== undefined && <Particles {...particleSystem} />}
         {particleSystem !== undefined && <OctaTreeBox {...particleSystem} />}
         {particleSystem !== undefined && (
-          <Tracers {...{ particleSystem, pconfig }} />
+          <Tracers {...{ particleSystem, pconfig, setDescData }} />
         )}
       </Canvas>
       <Buttons
@@ -61,8 +63,14 @@ const Home: NextPage = () => {
       />
       {toggleInfo && <InfoBox />}
       {toggleDesc && particleSystem !== undefined && (
-        <DescBox {...particleSystem} />
+        <DescBox {...{ particleSystem, descData }} />
       )}
+      <button
+        className="absolute text-xs top-1 right-2 text-zinc-200"
+        onClick={() => console.log(particleSystem)}
+      >
+        l
+      </button>
     </div>
   );
 };

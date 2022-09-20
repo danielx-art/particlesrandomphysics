@@ -1,5 +1,4 @@
 import vec from "./vetores";
-import gravity from "./behaviours/gravity";
 import { Tparticle, TparticlePreBody } from "./types";
 
 /* --------------------------------------------------------------
@@ -104,7 +103,7 @@ export default function createParticle({
       self.angvel.multiplyScalar(rotationDamping);
       self.angvel.clampLength(0, maxAngVel);
       let deltadir = self.angvel.cross(self.dir);
-      self.dir.add(deltadir).clampLength(0, 1);
+      self.dir.add(deltadir).setLength(1);
       self.angacl.multiplyScalar(0);
 
       //notify all behaviours

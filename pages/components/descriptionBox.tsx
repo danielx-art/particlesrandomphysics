@@ -3,13 +3,18 @@ import { usePconfig } from "../../context/context";
 import { pickRandomConfig } from "../../particlePhysics/randomConfig";
 import { TparticleSystem } from "../../particlePhysics/types";
 
-const DescBox = (particleSystem: TparticleSystem) => {
+const DescBox = ({
+  particleSystem,
+  descData,
+}: {
+  particleSystem: TparticleSystem;
+  descData: { [key: string]: any };
+}) => {
   const { lang, setLang } = usePconfig();
 
   const handleLangToggle = () => {
     switch (lang) {
       case "ptbr":
-        console.log("here"); //test
         setLang("en");
         break;
       case "en":
@@ -25,6 +30,13 @@ const DescBox = (particleSystem: TparticleSystem) => {
           {" "}
           <p className="text-lg px-2 pb-1 w-fit rounded border-2 border-emerald-400 border-opacity-70">
             {item.title[lang]}
+          </p>{" "}
+          <p className="text-sm italic px-2 pt-1 pb-1 text-yellow-100">
+            {descData.tracingField === item.title.en
+              ? lang === "en"
+                ? "(and its field lines)"
+                : "(e suas linhas de campo)"
+              : ""}
           </p>{" "}
           <p className="px-2 pt-1 pb-5">{item.description[lang]}</p>{" "}
         </div>

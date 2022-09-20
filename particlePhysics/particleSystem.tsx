@@ -172,9 +172,6 @@ export default function createParticleSystem(args: parametersType) {
         }
       }
     } //particle loop
-
-    //after going trought all the particles, I should recreate the tree again, or should I?
-    //repopulateTree();
   };
 
   return self as TparticleSystem;

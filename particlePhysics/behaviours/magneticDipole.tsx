@@ -32,7 +32,7 @@ export default function magneticDipole(particle: TparticlePreBody) {
             safeRadius as worked on the particleSystem and collisionDetection themselves
             */
           let B = vec().copy(versorr);
-          B.multiplyScalar(3 * m.dot(versorr));
+          B.multiplyScalar(3 * vec().copy(m).dot(versorr));
           B.sub(m);
           B.divideScalar(r * r * r);
           return B;
@@ -76,7 +76,7 @@ export default function magneticDipole(particle: TparticlePreBody) {
           Fmagres.add(Fmag);
 
           //rotation, alignment, torque
-          Tmagres.add(vec().copy(m).cross(B));
+          Tmagres.add(vec().copy(m).cross(B)).multiplyScalar(100);
         });
 
         particle.acl.add(Fmagres.divideScalar(particle.inertialMass));

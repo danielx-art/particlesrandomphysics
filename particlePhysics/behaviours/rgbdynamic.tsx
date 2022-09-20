@@ -27,9 +27,7 @@ export default function rgbDynamic(particle: TparticlePreBody) {
       self["color"] = color;
 
       self["field"] = (pointInSpace: Vector3) => {
-        let r = vec().copy(pointInSpace).sub(particle.pos);
-        let f = vec().multiplyVectors(vec().copy(self.color), vec().copy(r));
-        return f;
+        return vec();
       };
 
       self["forces"] = (agents: Tparticle[]) => {
@@ -42,12 +40,15 @@ export default function rgbDynamic(particle: TparticlePreBody) {
             return;
           }
 
-          let C = agent.physics.rgbDynamic.field(particle.pos);
-
           //translation, force
-          let colorDifference = vec().copy(C).sub(vec().copy(self.color)); //test with this keyword here
-
-          Fres.add(vec().copy(C).setLength(colorDifference.length()));
+          let colorDifference = vec()
+            .copy(agent.physics.rgbDynamic.color)
+            .sub(vec().copy(self.color))
+            .lengthSq();
+          let r = vec().copy(agent.pos).sub(vec().copy(particle.pos));
+          let rmag = r.length() + 0.001;
+          r.setLength(1).multiplyScalar(((colorDifference - 1.5) * 10) / rmag);
+          Fres.add(r);
         });
 
         particle.acl.add(Fres.divideScalar(particle.inertialMass));

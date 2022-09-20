@@ -8,7 +8,8 @@ export function randomDir(args: {
   boundary: Iparallelepiped;
   positions: Vector3[];
 }) {
-  return vec().randomDirection();
+  let dir = vec().randomDirection();
+  return dir;
 }
 
 export function dirPointInOut(args: {
@@ -22,5 +23,9 @@ export function dirPointInOut(args: {
   let y = pos.y;
   let z = pos.z;
   let invert = Math.random() < 0.5 ? -1 : 1;
-  return vec(x, y, z).normalize().multiplyScalar(invert);
+  let dir =
+    pos.x === 0 && pos.y === 0 && pos.z === 0
+      ? vec().randomDirection()
+      : vec(x, y, z).normalize().multiplyScalar(invert);
+  return dir;
 }

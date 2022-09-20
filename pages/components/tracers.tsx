@@ -1,10 +1,9 @@
 import * as THREE from "three";
-import React, { useRef, useMemo, useState, useEffect } from "react";
+import React, { useRef, useMemo } from "react";
 import { useFrame, extend } from "@react-three/fiber";
 
 import { parametersType, TparticleSystem } from "../../particlePhysics/types";
 import { pickRandomItemsFromArray } from "../../particlePhysics/helpers";
-import vec from "../../particlePhysics/vetores";
 import trace from "../../particlePhysics/tracers";
 import { MeshLine } from "../../MeshLine/meshLine";
 import { MeshLineMaterial } from "../../MeshLine/material";
@@ -14,10 +13,29 @@ extend({ MeshLine, MeshLineMaterial });
 type Ttracersprops = {
   particleSystem: TparticleSystem;
   pconfig: parametersType;
+  setDescData: React.Dispatch<
+    React.SetStateAction<{
+      [key: string]: any;
+    }>
+  >;
 };
 
-export default function Tracers({ particleSystem, pconfig }: Ttracersprops) {
+export default function Tracers({
+  particleSystem,
+  pconfig,
+  setDescData,
+}: Ttracersprops) {
   const randomConfigs = useMemo(() => {
+    if (Math.random() < 0.5) {
+      setDescData((state) => {
+        return {
+          ...state,
+          tracingField: "none",
+        };
+      });
+      return undefined;
+    }
+
     let fieldTraceableSystemBehaviours = particleSystem.physics
       .filter(
         (physicsMetadata: { fieldTraceable: boolean }) =>
@@ -26,29 +44,38 @@ export default function Tracers({ particleSystem, pconfig }: Ttracersprops) {
       .map(
         (physicsMetadata: { title: { en: string } }) => physicsMetadata.title.en
       );
-    fieldTraceableSystemBehaviours;
 
     let randomPhysics = pickRandomItemsFromArray(
       fieldTraceableSystemBehaviours,
       1
     ) as string;
 
+    setDescData((state) => {
+      return {
+        ...state,
+        tracingField: randomPhysics ? randomPhysics : "none",
+      };
+    });
+
     let randomCount =
-      Math.random() > 0.5 ? 20 + Math.floor(Math.random() * 20) : 0;
-    let randomBaseWidth = 0.008;
-    let randomWidth =
-      randomBaseWidth + (Math.random() > 0.5 ? randomBaseWidth * 0.1 : 0);
+      Math.random() > 0.5 ? 20 + Math.floor(Math.random() * 20) : 20;
+    let randomBaseWidth = Math.random() > 0.5 ? 0.05 : 0.02;
     let configs = Array(randomCount)
       .fill(0)
       .map(() => {
         let randomNumber = Math.random();
 
+        let randomWidth =
+          Math.random() > 0.5 ? randomBaseWidth - 0.01 : randomBaseWidth + 0.01;
+
         return {
           particleSystem,
           physics: randomPhysics,
-          steps: 10 + Math.ceil(randomNumber * 50),
+          steps: 20 + Math.ceil(randomNumber * 80),
           detail: 0.1 * (1 + randomNumber / 4),
-          width: randomWidth * (2 - randomNumber),
+          //width: randomWidth * (2 - randomNumber),
+          width: randomWidth,
+
           color: "hotpink", //pick from a list later
         };
       });
@@ -57,9 +84,10 @@ export default function Tracers({ particleSystem, pconfig }: Ttracersprops) {
 
   return (
     <>
-      {randomConfigs.map((props, index) => (
-        <SingleFieldTrace key={index} {...props} />
-      ))}
+      {randomConfigs !== undefined &&
+        randomConfigs.map((props, index) => (
+          <SingleFieldTrace key={index} {...props} />
+        ))}
     </>
   );
 }
