@@ -1,17 +1,16 @@
 import { Vector3 } from "three";
 import { Iparallelepiped } from "../shapes";
-import vec from "../vetores";
 
-export function momentInertiaConst1000(args: {
+export function momentInertiaSmall(args: {
   index: number;
   num: number;
   boundary: Iparallelepiped;
   positions: Array<Vector3>;
 }) {
-  return 1000;
+  return 0.001;
 }
 
-export function momentInertia1(args: {
+export function momentInertiaBig(args: {
   index: number;
   num: number;
   boundary: Iparallelepiped;
@@ -20,13 +19,13 @@ export function momentInertia1(args: {
   return 1;
 }
 
-export function momentInertiaConst10000(args: {
+export function momentInertiaConstMedium(args: {
   index: number;
   num: number;
   boundary: Iparallelepiped;
   positions: Vector3[];
 }) {
-  return 10000;
+  return 0.05;
 }
 
 export function momentInertiaRandom(args: {
@@ -35,5 +34,5 @@ export function momentInertiaRandom(args: {
   boundary: Iparallelepiped;
   positions: Vector3[];
 }) {
-  return Math.random() * 5000 + 5000;
+  return Math.random() + 0.1;
 }

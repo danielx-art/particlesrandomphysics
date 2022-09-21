@@ -1,6 +1,5 @@
 import { Vector3 } from "three";
 import { Iparallelepiped } from "../shapes";
-import vec from "../vetores";
 
 export function maxTorqueConstOne(args: {
   index: number;
@@ -20,11 +19,11 @@ export function maxTorqueConstSmall(args: {
   return 0.1;
 }
 
-export function maxTorqueConst100(args: {
+export function maxTorqueConstMedium(args: {
   index: number;
   num: number;
   boundary: Iparallelepiped;
   positions: Vector3[];
 }) {
-  return 100;
+  return 0.5;
 }

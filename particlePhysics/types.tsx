@@ -39,7 +39,7 @@ export type parametersType = {
   safeRadius: number;
   merge: boolean;
   behaviours: any[];
-  displayGenerator: null; //todo
+  displayGenerator: any;
 };
 
 export type TparticlePreBody = {

@@ -43,9 +43,12 @@ const Home: NextPage = () => {
       <Canvas
         className="h-full w-full absolute bg-black"
         camera={{ position: [0, 0, 5] }}
+        //linear={true}
       >
         <CameraControls {...{ pconfig, setPconfig }} />
-        {particleSystem !== undefined && <Particles {...particleSystem} />}
+        {particleSystem !== undefined && (
+          <Particles {...{ particleSystem, pconfig }} />
+        )}
         {particleSystem !== undefined && <OctaTreeBox {...particleSystem} />}
         {particleSystem !== undefined && (
           <Tracers {...{ particleSystem, pconfig, setDescData }} />

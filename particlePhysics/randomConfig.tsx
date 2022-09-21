@@ -15,6 +15,7 @@ import * as TDAMP_GENERATORS from "../particlePhysics/generators/translationDamp
 import * as RDAMP_GENERATORS from "../particlePhysics/generators/rotationDampingGenerators";
 import * as WRAP_GENERATORS from "../particlePhysics/generators/wrapGenerators";
 import * as BEHAVIOURS from "./generators/behaviours";
+import * as CUSTOM_PARTICLE_GEOM from "./generators/particleGeometries";
 import { Iparallelepiped, parallelepiped } from "./shapes";
 import vec from "./vetores";
 //import * as DISPLAY_GENERATORS from "../particlePhysics/generators/displayGenerators"
@@ -65,13 +66,13 @@ export function pickRandomConfig(
     safeRadius: 0.05,
     merge: false,
     behaviours: pickRandomBehaviour(BEHAVIOURS),
-    displayGenerator: /*pickRandomGenerator(DISPLAY_GENERATORS)*/ null,
+    displayGenerator: CUSTOM_PARTICLE_GEOM.sqPyramid,
   };
 
   return self;
 }
 
-/* TESTING */
+// /* TESTING */
 // export function pickRandomConfig(
 //   argsboundary: Iparallelepiped | undefined
 // ): parametersType {
@@ -83,14 +84,14 @@ export function pickRandomConfig(
 //     posGenerator: (num, boundary) => [vec(1, 0.5, 0), vec(-1, -0.5, 0)],
 //     dirGenerator: () => [vec(0, 1, 0), vec(0, 1, 0)],
 //     inertialMassGenerator: () => 1,
-//     momentInertiaGenerator: () => 0.01,
+//     momentInertiaGenerator: () => 1,
 //     movementGenerator: () => true,
 //     initialVelocityGenerator: () => vec(0, 0, 0),
 //     initialAngularVelocityGenerator: () => vec(0, 0, 0),
-//     maxForceGenerator: () => 1,
-//     maxTorqueGenerator: () => 1,
-//     maxSpeedGenerator: () => 1,
-//     maxAngVelGenerator: () => 1,
+//     maxForceGenerator: () => 0.5,
+//     maxTorqueGenerator: () => 0.5,
+//     maxSpeedGenerator: () => 0.5,
+//     maxAngVelGenerator: () => 0.06,
 //     translationDampingGenerator: () => 1,
 //     rotationDampingGenerator: () => 1,
 //     wrap: pickRandomGenerator(WRAP_GENERATORS),
@@ -98,7 +99,7 @@ export function pickRandomConfig(
 //     safeRadius: 0.05,
 //     merge: false,
 //     behaviours: pickRandomBehaviour(BEHAVIOURS),
-//     displayGenerator: /*pickRandomGenerator(DISPLAY_GENERATORS)*/ null,
+//     displayGenerator: CUSTOM_PARTICLE_GEOM.sqPyramid, //create more
 //   };
 
 //   return self;

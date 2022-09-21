@@ -76,7 +76,7 @@ export default function Tracers({
           //width: randomWidth * (2 - randomNumber),
           width: randomWidth,
 
-          color: "hotpink", //pick from a list later
+          color: "hotpink", //pick from a list ?
         };
       });
     return configs;

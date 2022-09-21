@@ -1,22 +1,27 @@
 import * as THREE from "three";
-import React, { useRef, useMemo, useState } from "react";
+import React, { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 
-import { Tparticle, TparticleSystem } from "../../particlePhysics/types";
+import {
+  parametersType,
+  Tparticle,
+  TparticleSystem,
+} from "../../particlePhysics/types";
 import vec from "../../particlePhysics/vetores";
 
-const Particles = (particleSystem: TparticleSystem) => {
+const Particles = ({
+  particleSystem,
+  pconfig,
+}: {
+  particleSystem: TparticleSystem;
+  pconfig: parametersType;
+}) => {
   const mesh = useRef<THREE.InstancedMesh>(null);
   const light = useRef<THREE.PointLight>(null);
 
   const dummy = useMemo(() => new THREE.Object3D(), []);
 
-  const pyramid = useMemo(() => {
-    return {
-      vertices: [1, 0, 0, 0, 1, 0, -1, 0, 0, 0, -1, 0, 0, 0, 1],
-      indices: [0, 1, 2, 2, 3, 0, 0, 4, 1, 1, 4, 2, 2, 4, 3, 3, 4, 0],
-    };
-  }, []);
+  const particleGeometry = useMemo(() => pconfig.displayGenerator, [pconfig]);
 
   useFrame(() => {
     if (particleSystem !== undefined) {
@@ -25,8 +30,8 @@ const Particles = (particleSystem: TparticleSystem) => {
       particleSystem.particles.forEach((particle: Tparticle, index: number) => {
         dummy.position.set(particle.pos.x, particle.pos.y, particle.pos.z);
         dummy.lookAt(vec().copy(particle.dir).add(particle.pos));
-
-        dummy.scale.set(1, 1, 2);
+        const size = 0.25;
+        dummy.scale.set(1 * size, 1 * size, 2 * size);
         dummy.updateMatrix();
         // And apply the matrix to the instanced item
         if (mesh.current) mesh.current.setMatrixAt(index, dummy.matrix);
@@ -39,14 +44,45 @@ const Particles = (particleSystem: TparticleSystem) => {
     <>
       <pointLight ref={light} distance={40} intensity={3} color="lightblue" />
 
-      {particleSystem !== undefined && (
+      {/* {particleSystem !== undefined && (
         <instancedMesh ref={mesh} args={[, , particleSystem.num]}>
           <polyhedronBufferGeometry
-            args={[pyramid.vertices, pyramid.indices, 0.15, 0]}
+            args={[pyramid.vertices, pyramid.indices, 0.8, 0]}
           />
           <meshBasicMaterial
+            //vertexColors={true}
             color="#2596be"
             wireframe={Math.random() > 0.5 ? true : false}
+          />
+        </instancedMesh>
+      )} */}
+
+      {particleSystem !== undefined && (
+        <instancedMesh ref={mesh} args={[, , particleSystem.num]}>
+          <bufferGeometry attach={"geometry"}>
+            <bufferAttribute
+              attach={"attributes-position"}
+              count={particleGeometry.vertices.length / 3}
+              array={particleGeometry.vertices}
+              itemSize={3}
+            />
+            <bufferAttribute
+              attach={"index"}
+              count={particleGeometry.indices.length}
+              array={particleGeometry.indices}
+              itemSize={1}
+            />
+            <bufferAttribute
+              attach={"attributes-color"}
+              count={particleGeometry.colors.length / 3}
+              array={particleGeometry.colors}
+              itemSize={3}
+            />
+          </bufferGeometry>
+          <meshBasicMaterial
+            attach="material"
+            color="#2596be"
+            vertexColors={true}
           />
         </instancedMesh>
       )}

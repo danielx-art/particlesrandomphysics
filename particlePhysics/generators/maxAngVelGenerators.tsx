@@ -1,6 +1,5 @@
 import { Vector3 } from "three";
 import { Iparallelepiped } from "../shapes";
-import vec from "../vetores";
 
 export function maxAngVelRandom(args: {
   index: number;
@@ -8,7 +7,7 @@ export function maxAngVelRandom(args: {
   boundary: Iparallelepiped;
   positions: Vector3[];
 }) {
-  return Math.random() * 1000;
+  return Math.random() / 10 + 0.001;
 }
 
 export function maxAngVelConst(args: {
@@ -17,5 +16,5 @@ export function maxAngVelConst(args: {
   boundary: Iparallelepiped;
   positions: Vector3[];
 }) {
-  return 10;
+  return 0.2;
 }

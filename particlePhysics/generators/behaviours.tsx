@@ -5,7 +5,7 @@ import { default as rgbDynamic } from "../behaviours/rgbdynamic";
 const behaviours = [];
 
 behaviours.push(magneticdipole);
-behaviours.push(gravity);
-behaviours.push(rgbDynamic);
+// behaviours.push(gravity);
+// behaviours.push(rgbDynamic);
 
 export { behaviours };
