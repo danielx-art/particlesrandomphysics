@@ -16,5 +16,5 @@ export function maxAngVelConst(args: {
   boundary: Iparallelepiped;
   positions: Vector3[];
 }) {
-  return 0.2;
+  return 0.08;
 }

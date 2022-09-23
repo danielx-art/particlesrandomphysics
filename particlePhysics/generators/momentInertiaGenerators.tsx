@@ -7,7 +7,7 @@ export function momentInertiaSmall(args: {
   boundary: Iparallelepiped;
   positions: Array<Vector3>;
 }) {
-  return 0.001;
+  return 0.01;
 }
 
 export function momentInertiaBig(args: {
@@ -26,13 +26,4 @@ export function momentInertiaConstMedium(args: {
   positions: Vector3[];
 }) {
   return 0.05;
-}
-
-export function momentInertiaRandom(args: {
-  index: number;
-  num: number;
-  boundary: Iparallelepiped;
-  positions: Vector3[];
-}) {
-  return Math.random() + 0.1;
 }

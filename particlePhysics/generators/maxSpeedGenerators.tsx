@@ -1,13 +1,13 @@
 import { Vector3 } from "three";
 import { Iparallelepiped } from "../shapes";
 
-export function maxSpeedConstOne(args: {
+export function maxSpeedConst03(args: {
   index: number;
   num: number;
   boundary: Iparallelepiped;
   positions: Vector3[];
 }) {
-  return 0.2;
+  return 0.3;
 }
 
 export function maxSpeedConstSmall(args: {

@@ -16,5 +16,14 @@ export function maxForceConstMedium(args: {
   boundary: Iparallelepiped;
   positions: Vector3[];
 }) {
-  return 0.5;
+  return 0.45;
+}
+
+export function maxForceConst08(args: {
+  index: number;
+  num: number;
+  boundary: Iparallelepiped;
+  positions: Vector3[];
+}) {
+  return 0.8;
 }
