@@ -20,7 +20,7 @@ import { Iparallelepiped, parallelepiped } from "./shapes";
 import vec from "./vetores";
 //import * as DISPLAY_GENERATORS from "../particlePhysics/generators/displayGenerators"
 
-console.log(BEHAVIOURS); //test & debugg
+console.log(DIR_GENERATORS); //test & debugg
 
 function pickRandomGenerator<Type>(importedGeneratorsObj: {
   [char: string]: Type; // is this char already the name of the generator?
