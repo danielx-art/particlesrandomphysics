@@ -49,8 +49,6 @@ export default function createParticleSystem(args: parametersType) {
   //Collision Detection
   self.collisionDetection = octaTree(boundary, 8);
 
-
-
   let HANDLE_GENERATOR = function (generator: Tgenerator, args: any) {
     //make generators only spit arrays
     if (typeof generator.function === "number") return generator.function;
