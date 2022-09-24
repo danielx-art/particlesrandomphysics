@@ -20,7 +20,7 @@ import { Iparallelepiped, parallelepiped } from "./shapes";
 import vec from "./vetores";
 //import * as DISPLAY_GENERATORS from "../particlePhysics/generators/displayGenerators"
 
-type NamedFunction = Funtion & {name: string}
+type NamedFunction = Function & {name: string}
 
 function pickRandomGenerator<NamedFunction>(importedGeneratorsObj: {
   [name: string]: NamedFunction;
