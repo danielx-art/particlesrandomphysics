@@ -51,7 +51,7 @@ export type parametersType = {
   maxAngVelGenerator: Tgenerator;
   translationDampingGenerator: Tgenerator;
   rotationDampingGenerator: Tgenerator;
-  wrap: Twrap;
+  wrapGenerator: Twrap;
   queryRadius: number;
   safeRadius: number;
   merge: boolean;
