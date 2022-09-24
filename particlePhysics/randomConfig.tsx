@@ -27,7 +27,7 @@ function pickRandomGenerator(importedGeneratorsObj: {
   let generators = Object.keys(importedGeneratorsObj);
   let randomGenerator = pickRandomItemsFromArray(generators, 1) as string;
   let chosen = importedGeneratorsObj[randomGenerator];
-  let chosenName = generators[randomGenerator];
+  let chosenName = generators[generators.indexOf(randomGenerator)];
   return {function: chosen, name: chosenName};
 }
 
