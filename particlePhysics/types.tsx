@@ -20,7 +20,10 @@ export type Tposgenerator = {
 
 export type Tgeneratorfunction = ({}: IdefaultGenArgs) => any;
 
-export type Tgenerator = {function: Tgeneratorfunction, name: string}
+export type Tgenerator = {
+  function: Tgeneratorfunction, 
+  name: string
+}
 
 export type parametersType = {
   num: number;

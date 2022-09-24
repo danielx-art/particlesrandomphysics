@@ -18,12 +18,11 @@ import * as BEHAVIOURS from "./generators/behaviours";
 import * as CUSTOM_PARTICLE_GEOM from "./generators/particleGeometries";
 import { Iparallelepiped, parallelepiped } from "./shapes";
 import vec from "./vetores";
-import { Tgeneratorfunction } from "./types";
 //import * as DISPLAY_GENERATORS from "../particlePhysics/generators/displayGenerators"
 
 function pickRandomGenerator(importedGeneratorsObj: {
   [name: string]: any;
-}):{function: Tgeneratorfunction, name: string} {
+}):{function: any , name: string} {
   let generators = Object.keys(importedGeneratorsObj);
   let randomGenerator = pickRandomItemsFromArray(generators, 1) as string;
   let chosen = importedGeneratorsObj[randomGenerator];
