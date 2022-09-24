@@ -75,43 +75,43 @@ export function totalRandomConfig(
   return self;
 }
 
-/* TESTING */
-export function testConfig(
-  argsboundary: Iparallelepiped | undefined
-): parametersType {
-  let self: parametersType = {
-    num: 2,
-    boundary: argsboundary
-      ? argsboundary
-      : parallelepiped(vec(0, 0, 0), 100, 100, 100),
-    posGenerator: (num, boundary) => [vec(1, 0.5, 0), vec(-1, -0.5, 0)],
-    dirGenerator: () => [vec(0, 1, 0), vec(0, 1, 0)],
-    inertialMassGenerator: () => 1,
-    momentInertiaGenerator: () => 1,
-    movementGenerator: () => true,
-    initialVelocityGenerator: () => vec(0, 0, 0),
-    initialAngularVelocityGenerator: () => vec(0, 0, 0),
-    maxForceGenerator: () => 0.8,
-    maxTorqueGenerator: () => 0.5,
-    maxSpeedGenerator: () => 1,
-    maxAngVelGenerator: () => 0.1,
-    translationDampingGenerator: () => 1,
-    rotationDampingGenerator: () => 1,
-    wrapGenerator: pickRandomGenerator(WRAP_GENERATORS),
-    queryRadius: 100,
-    safeRadius: 0.05,
-    merge: false,
-    behaviours: pickRandomBehaviour(BEHAVIOURS),
-    displayGenerator: CUSTOM_PARTICLE_GEOM.sqPyramid, //create more
-  };
+// /* TESTING */
+// export function testConfig(
+//   argsboundary: Iparallelepiped | undefined
+// ): parametersType {
+//   let self: parametersType = {
+//     num: 2,
+//     boundary: argsboundary
+//       ? argsboundary
+//       : parallelepiped(vec(0, 0, 0), 100, 100, 100),
+//     posGenerator: (num, boundary) => [vec(1, 0.5, 0), vec(-1, -0.5, 0)],
+//     dirGenerator: () => [vec(0, 1, 0), vec(0, 1, 0)],
+//     inertialMassGenerator: () => 1,
+//     momentInertiaGenerator: () => 1,
+//     movementGenerator: () => true,
+//     initialVelocityGenerator: () => vec(0, 0, 0),
+//     initialAngularVelocityGenerator: () => vec(0, 0, 0),
+//     maxForceGenerator: () => 0.8,
+//     maxTorqueGenerator: () => 0.5,
+//     maxSpeedGenerator: () => 1,
+//     maxAngVelGenerator: () => 0.1,
+//     translationDampingGenerator: () => 1,
+//     rotationDampingGenerator: () => 1,
+//     wrapGenerator: pickRandomGenerator(WRAP_GENERATORS),
+//     queryRadius: 100,
+//     safeRadius: 0.05,
+//     merge: false,
+//     behaviours: pickRandomBehaviour(BEHAVIOURS),
+//     displayGenerator: CUSTOM_PARTICLE_GEOM.sqPyramid, //create more
+//   };
 
-  return self;
-}
+//   return self;
+// }
 
 export function pickRandomConfig(
   argsboundary: Iparallelepiped | undefined
 ): parametersType {
-  const configsList = [testConfig, totalRandomConfig];
+  const configsList = [totalRandomConfig];
 
   let chosenConfig =
     configsList[Math.floor(Math.max(Math.random() * configsList.length, 0))];
