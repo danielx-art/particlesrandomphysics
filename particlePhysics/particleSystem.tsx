@@ -49,11 +49,13 @@ export default function createParticleSystem(args: parametersType) {
   //Collision Detection
   self.collisionDetection = octaTree(boundary, 8);
 
+
+
   let HANDLE_GENERATOR = function (generator: Tgenerator, args: any) {
     //make generators only spit arrays
-    if (typeof generator === "number") return generator;
+    if (typeof generator.function === "number") return generator.function;
 
-    let arrOrValue = generator(args);
+    let arrOrValue = generator.function(args);
     return Array.isArray(arrOrValue)
       ? arrOrValue[args.index] //pre calculated generator[i] wich is a Vector3 or number
       : arrOrValue; //just single calculated Vector3 or number thats possibly different for each i

@@ -70,7 +70,7 @@ const Home: NextPage = () => {
       )}
       <button
         className="absolute text-xs top-1 right-2 text-zinc-200"
-        onClick={() => console.log(particleSystem)}
+        onClick={() => {console.log("config: "); console.log(pconfig); console.log("particle system: "); console.log(particleSystem)}}
       >
         l
       </button>

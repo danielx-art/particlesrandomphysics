@@ -13,7 +13,9 @@ export type Tposgenerator = (
   boundary: Iparallelepiped
 ) => Vector3[];
 
-export type Tgenerator = ({}: IdefaultGenArgs) => any;
+export type Tgeneratorfunction = ({}: IdefaultGenArgs) => any;
+
+export type Tgenerator = {function: Tgeneratorfunction, name: string}
 
 export type parametersType = {
   num: number;
