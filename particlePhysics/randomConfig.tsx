@@ -26,7 +26,8 @@ function pickRandomGenerator<Type>(importedGeneratorsObj: {
   let generators = Object.keys(importedGeneratorsObj);
   let randomGenerator = pickRandomItemsFromArray(generators, 1) as string;
   let chosen = importedGeneratorsObj[randomGenerator];
-  console.log(chosen); //test and debugg
+  console.log(importedGeneratorsObj); //debugg
+  console.log(generators);  //debugg
   return chosen;
 }
 
