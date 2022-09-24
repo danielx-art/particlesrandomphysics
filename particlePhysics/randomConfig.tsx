@@ -20,10 +20,10 @@ import { Iparallelepiped, parallelepiped } from "./shapes";
 import vec from "./vetores";
 //import * as DISPLAY_GENERATORS from "../particlePhysics/generators/displayGenerators"
 
-//console.log(BEHAVIOURS); //test & debugg
+console.log(BEHAVIOURS); //test & debugg
 
 function pickRandomGenerator<Type>(importedGeneratorsObj: {
-  [char: string]: Type;
+  [char: string]: Type; // is this char already the name of the generator?
 }) {
   let generators = Object.keys(importedGeneratorsObj);
   let randomGenerator = pickRandomItemsFromArray(generators, 1) as string;
