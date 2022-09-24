@@ -61,7 +61,7 @@ export default function createParticleSystem(args: parametersType) {
       : arrOrValue; //just single calculated Vector3 or number thats possibly different for each i
   };
 
-  let positions = posGenerator(num, boundary);
+  let positions = posGenerator.function(num, boundary);
 
   for (let i = 0; i < num; i++) {
     let defaultGenArgs = {
