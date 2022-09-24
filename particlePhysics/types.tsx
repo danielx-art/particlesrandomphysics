@@ -8,10 +8,15 @@ export interface IdefaultGenArgs {
   positions: Vector3[];
 }
 
-export type Tposgenerator = (
+export type Tposgeneratorfunction = (
   num: number,
   boundary: Iparallelepiped
 ) => Vector3[];
+
+export type Tposgenerator = {
+  function: Tposgeneratorfunction,
+  name: string
+}
 
 export type Tgeneratorfunction = ({}: IdefaultGenArgs) => any;
 
