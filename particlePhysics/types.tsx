@@ -25,6 +25,16 @@ export type Tgenerator = {
   name: string
 }
 
+export type Twrapfunction = (
+  particle: Tparticle,
+  boundary: Iparallelepiped
+) => void;
+
+export type Twrap = {
+  function: Twrapfunction, 
+  name: string
+}
+
 export type parametersType = {
   num: number;
   boundary: Iparallelepiped;
@@ -41,10 +51,7 @@ export type parametersType = {
   maxAngVelGenerator: Tgenerator;
   translationDampingGenerator: Tgenerator;
   rotationDampingGenerator: Tgenerator;
-  wrap: (
-    particle: Tparticle,
-    boundary: Iparallelepiped /*this in the future should be any shape*/
-  ) => void;
+  wrap: Twrap;
   queryRadius: number;
   safeRadius: number;
   merge: boolean;

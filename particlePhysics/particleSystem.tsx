@@ -21,7 +21,7 @@ export default function createParticleSystem(args: parametersType) {
     maxAngVelGenerator,
     translationDampingGenerator,
     rotationDampingGenerator,
-    wrap,
+    wrapGenerator,
     queryRadius,
     safeRadius,
     merge,
@@ -36,7 +36,7 @@ export default function createParticleSystem(args: parametersType) {
   const self: { [key: string]: any } = {
     num,
     boundary,
-    wrap,
+    wrap: wrapGenerator.function,
     queryRadius,
     safeRadius,
     merge,
