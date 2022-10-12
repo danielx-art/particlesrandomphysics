@@ -20,6 +20,8 @@ import { Iparallelepiped, parallelepiped } from "./shapes";
 import vec from "./vetores";
 import { Tgenerator } from "./types";
 
+//console.log(POS_GENERATORS.pointsOnA3dGrid); //test
+
 function constantGenerator(a: any): Tgenerator {
   return {
     function: () => a,
@@ -83,39 +85,6 @@ export function totalRandomConfig(
   return self;
 }
 
-// export function totalRandomConfig(
-//   argsboundary: Iparallelepiped | undefined
-// ): parametersType {
-//   let self: parametersType = {
-//     num: 1 + Math.round(Math.random() * 29),
-//     boundary: argsboundary
-//       ? argsboundary
-//       : parallelepiped(vec(0, 0, 0), 100, 100, 100),
-//     posGenerator: pickRandomGenerator(POS_GENERATORS),
-//     dirGenerator: pickRandomGenerator(DIR_GENERATORS),
-//     inertialMassGenerator: pickRandomGenerator(INERTIALMASS_GENERATORS),
-//     momentInertiaGenerator: pickRandomGenerator(MOMINERTIA_GENERATORS),
-//     movementGenerator: pickRandomGenerator(MOVEMENT_GENERATORS),
-//     initialVelocityGenerator: pickRandomGenerator(VEL_GENERATORS),
-//     initialAngularVelocityGenerator: pickRandomGenerator(ANGVEL_GENERATORS),
-//     maxForceGenerator: pickRandomGenerator(MAXFORCE_GENERATORS),
-//     maxTorqueGenerator: pickRandomGenerator(MAXTORQUE_GENERATORS),
-//     maxSpeedGenerator: pickRandomGenerator(MAXSPEED_GENERATORS),
-//     maxAngVelGenerator: pickRandomGenerator(MAXANGVEL_GENERATORS),
-//     translationDampingGenerator: pickRandomGenerator(TDAMP_GENERATORS),
-//     rotationDampingGenerator: pickRandomGenerator(RDAMP_GENERATORS),
-//     wrapGenerator: pickRandomGenerator(WRAP_GENERATORS),
-//     queryRadius: 100,
-//     safeRadius: 0.05,
-//     merge: false,
-//     behaviours: pickRandomBehaviour(BEHAVIOURS),
-//     tracingFields: true,
-//     displayGenerator: CUSTOM_PARTICLE_GEOM.sqPyramid,
-//   };
-
-//   return self;
-// }
-
 export function twoMagnetDipoles(
   argsboundary: Iparallelepiped | undefined
 ): parametersType {
@@ -155,11 +124,47 @@ export function twoMagnetDipoles(
   return self;
 }
 
+export function testConfig(
+  argsboundary: Iparallelepiped | undefined
+): parametersType {
+  let self: parametersType = {
+    num: 1 + Math.round(Math.random() * 29),
+    boundary: argsboundary
+      ? argsboundary
+      : parallelepiped(vec(0, 0, 0), 100, 100, 100),
+    posGenerator: {
+      function: POS_GENERATORS.pointsOn2dCircle,
+      name: "testing",
+    },
+    dirGenerator: pickRandomGenerator(DIR_GENERATORS),
+    inertialMassGenerator: pickRandomGenerator(INERTIALMASS_GENERATORS),
+    momentInertiaGenerator: pickRandomGenerator(MOMINERTIA_GENERATORS),
+    movementGenerator: pickRandomGenerator(MOVEMENT_GENERATORS),
+    initialVelocityGenerator: pickRandomGenerator(VEL_GENERATORS),
+    initialAngularVelocityGenerator: pickRandomGenerator(ANGVEL_GENERATORS),
+    maxForceGenerator: pickRandomGenerator(MAXFORCE_GENERATORS),
+    maxTorqueGenerator: pickRandomGenerator(MAXTORQUE_GENERATORS),
+    maxSpeedGenerator: pickRandomGenerator(MAXSPEED_GENERATORS),
+    maxAngVelGenerator: pickRandomGenerator(MAXANGVEL_GENERATORS),
+    translationDampingGenerator: constantGenerator(0),
+    rotationDampingGenerator: pickRandomGenerator(RDAMP_GENERATORS),
+    wrapGenerator: pickRandomGenerator(WRAP_GENERATORS),
+    queryRadius: 100,
+    safeRadius: 0.05,
+    merge: false,
+    behaviours: pickRandomBehaviour(BEHAVIOURS),
+    tracingFields: (() => (Math.random() < 0.5 ? true : false))(),
+    displayGenerator: CUSTOM_PARTICLE_GEOM.sqPyramid,
+  };
+
+  return self;
+}
+
 export function pickRandomConfig(
   argsboundary: Iparallelepiped | undefined
 ): parametersType {
+  //const configsList = [testConfig];
   const configsList = [totalRandomConfig, twoMagnetDipoles];
-
   let chosenConfig =
     configsList[Math.floor(Math.max(Math.random() * configsList.length, 0))];
 

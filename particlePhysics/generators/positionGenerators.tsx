@@ -18,73 +18,38 @@ import { Iparallelepiped } from "../shapes";
 
 //   let order = Math.floor(Math.random() * 6 + 4);
 
-//   // set up an icosahedron (12 vertices / 20 triangles)
+//   // set up an icosahedron (12 vertices / 20 triangles) - HAVE TO SUBDIVE IN CASE total>12
 //   const f = (1 + Math.sqrt(5)) / 2;
 //   const T = Math.pow(4, order);
 
 //   const numVertices = 10 * T + 2;
 
 //   const vertices = new Float32Array(numVertices * 3);
+
+//   //prettier-ignore
 //   vertices.set(
 //     Float32Array.of(
-//       -1,
-//       f,
-//       0,
-//       1,
-//       f,
-//       0,
-//       -1,
-//       -f,
-//       0,
-//       1,
-//       -f,
-//       0,
-//       0,
-//       -1,
-//       f,
-//       0,
-//       1,
-//       f,
-//       0,
-//       -1,
-//       -f,
-//       0,
-//       1,
-//       -f,
-//       f,
-//       0,
-//       -1,
-//       f,
-//       0,
-//       1,
-//       -f,
-//       0,
-//       -1,
-//       -f,
-//       0,
-//       1
+//       -1, f, 0, 1, f, 0, -1, -f, 0, 1, -f, 0, 0, -1, f, 0, 1, f, 0, -1, -f, 0, 1, -f, f, 0, -1, f, 0, 1, -f, 0, -1, -f, 0, 1
 //     )
 //   );
 
 //   // normalize vertices and convert to a Vector3[]
 //   let vec3vertices = [];
+//   let randomRadius = ((Math.random() + 1) * 0.8 * Math.min(w, h, d)) / 4;
 //   for (let i = 0; i < numVertices * 3; i += 3) {
 //     const v1 = vertices[i + 0];
 //     const v2 = vertices[i + 1];
 //     const v3 = vertices[i + 2];
-//     const m = 1 / Math.sqrt(v1 * v1 + v2 * v2 + v3 * v3);
-//     vertices[i + 0] *= m;
-//     vertices[i + 1] *= m;
-//     vertices[i + 2] *= m;
-//     vec3vertices.push(vec(vertices[i], vertices[i + 1], vertices[i + 2]));
+
+//     i / 3 > total
+//       ? null
+//       : vec3vertices.push(
+//           vec(vertices[i], vertices[i + 1], vertices[i + 2]).setLength(
+//             randomRadius
+//           )
+//         );
 //   }
 
-//   //scale randomly based on maximum dimension
-//   let randomScale =
-//     (Math.random() * Math.max(w, h, d)) / 3 + Math.min(w, h, d) / 3;
-//   vec3vertices.forEach((item) => item.multiplyScalar(randomScale));
-
-//   //theres a problem when total < vertices.lenght or vice-versa
 //   return vec3vertices;
 // }
 
@@ -96,29 +61,22 @@ export function pointsOnA3dGrid(
   let w = boundary.width;
   let h = boundary.height;
   let d = boundary.depth;
+  let n = Math.round(Math.cbrt(total));
   let vertices = [];
-  let rows = Math.ceil((0.8 * w) / (Math.random() * 100 + 1));
-  let cols = Math.ceil((0.8 * h) / (Math.random() * 50 + 1));
-  let layers = Math.ceil(total / (rows * cols));
-  let spacingx = Math.max(Math.floor(w / cols), 2);
-  let spacingy = Math.max(Math.floor(h / rows), 2);
-  let spacingz = Math.max(Math.floor(d / layers), 2);
+  let rows = n;
+  let cols = n;
+  let layers = Math.ceil(total / (n * n));
+  let spacingx = Math.round((0.8 * w) / cols);
+  let spacingy = Math.round((0.8 * h) / rows);
+  let spacingz = Math.round((0.8 * d) / layers);
 
   for (let i = 0; i < cols; i++) {
     for (let j = 0; j < rows; j++) {
       for (let k = 0; k < layers; k++) {
-        let x = i * spacingx - w / 4;
-        let y = j * spacingy - h / 4;
-        let z = k * spacingz - d / 4;
-        if (!boundary.contains(vec(x, y, z))) {
-          //default to randomPositions
-          let x = 0.8 * (Math.random() * w - w / 2) + boundary.x;
-          let y = 0.8 * (Math.random() * h - h / 2) + boundary.y;
-          let z = 0.8 * (Math.random() * d - d / 2) + boundary.z;
-          vertices.push(vec(x, y, z));
-        } else {
-          vertices.push(vec(x, y, z).add(vec().copy(boundary.center)));
-        }
+        let x = i * spacingx;
+        let y = j * spacingy;
+        let z = k * spacingz;
+        vertices.push(vec(x, y, z).sub(vec(w / 4, h / 4, d / 4)));
       }
     }
   }
@@ -153,8 +111,7 @@ export function pointsWithinSphere(
   let w = boundary.width;
   let h = boundary.height;
   let d = boundary.depth;
-  let randomRadius =
-    (Math.random() * Math.max(w, h, d)) / 4 + Math.min(w, h, d) / 4;
+  let randomRadius = ((Math.random() + 1) * 0.8 * Math.min(w, h, d)) / 4;
   let vertices = [];
   for (let i = 0; i < total; i++) {
     vertices.push(
@@ -175,28 +132,27 @@ export function pointsOn2dGrid(
 
   let w = boundary.width;
   let h = boundary.height;
+  let d = boundary.depth;
+  let n = Math.round(Math.sqrt(total));
 
   let vertices = [];
-  let rows = Math.ceil(w / Math.floor(Math.random() * (total / 2) + 1));
-  let cols = Math.ceil(total / rows);
-  let spcx = w / cols;
-  let spcy = h / rows;
-  let basis1 = vec()
-    .randomDirection()
-    .setLength(spcx)
-    .sub(vec(-w / 2, -h / 2, 0));
-  let basis2 = vec()
-    .randomDirection()
-    .setLength(spcy)
-    .sub(vec(-w / 2, -h / 2, 0));
+  let rows = n;
+  let cols = Math.ceil(total / n);
+  let spcx = (0.8 * 0.5 * Math.min(w, h, d)) / cols;
+  let spcy = (0.8 * 0.5 * Math.min(w, h, d)) / rows;
+  let randomDir = vec().randomDirection();
+  let basis1 = vec().copy(randomDir).setLength(spcx);
+  let basis2 = vec(-randomDir.y, randomDir.x, randomDir.z).setLength(spcy);
 
   for (let i = 0; i < rows; i++) {
     for (let j = 0; j < cols; j++) {
-      let componentx = vec().copy(basis1).multiplyScalar(i);
-      let componenty = vec().copy(basis2).multiplyScalar(j);
-      vertices.push(
-        componentx.add(componenty).add(vec().copy(boundary.center))
-      );
+      let componentx = vec()
+        .copy(basis1)
+        .multiplyScalar(i - rows / 2);
+      let componenty = vec()
+        .copy(basis2)
+        .multiplyScalar(j - cols / 2);
+      vertices.push(componentx.add(componenty));
     }
   }
   return vertices;
@@ -213,8 +169,7 @@ export function pointsOn2dCircle(
   let d = boundary.depth;
   let vertices = [];
   let angleSpacing = (2 * Math.PI) / total;
-  let randomRadius =
-    (Math.random() * Math.max(w, h, d)) / 3 + Math.min(w, h, d) / 3;
+  let randomRadius = ((Math.random() + 1) * 0.8 * Math.min(w, h, d)) / 4;
   let rotatingAxis = vec().randomDirection();
   for (let i = 0; i < total; i++) {
     let newVertex = vec(1, 0, 0)
@@ -262,8 +217,7 @@ export function pointsWithin2dCircle(
   let angleSpacing = (2 * Math.PI) / total;
   let rotatingAxis = vec().randomDirection();
   for (let i = 0; i < total; i++) {
-    let randomRadius =
-      (Math.random() * Math.max(w, h, d)) / 3 + Math.min(w, h, d) / 3;
+    let randomRadius = ((Math.random() + 1) * 0.8 * Math.min(w, h, d)) / 4;
     let newVertex = vec(1, 0, 0)
       .setLength(randomRadius)
       .applyAxisAngle(rotatingAxis, i * angleSpacing * Math.random());
