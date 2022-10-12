@@ -18,24 +18,16 @@ type Ttracersprops = {
       [key: string]: any;
     }>
   >;
+  pause: boolean;
 };
 
 export default function Tracers({
   particleSystem,
   pconfig,
   setDescData,
+  pause,
 }: Ttracersprops) {
   const randomConfigs = useMemo(() => {
-    if (Math.random() < 0.5) {
-      setDescData((state) => {
-        return {
-          ...state,
-          tracingField: "none",
-        };
-      });
-      return undefined;
-    }
-
     let fieldTraceableSystemBehaviours = particleSystem.physics
       .filter(
         (physicsMetadata: { fieldTraceable: boolean }) =>
@@ -69,18 +61,18 @@ export default function Tracers({
           Math.random() > 0.5 ? randomBaseWidth - 0.01 : randomBaseWidth + 0.01;
 
         return {
+          pause,
           particleSystem,
           physics: randomPhysics,
           steps: 20 + Math.ceil(randomNumber * 80),
           detail: 0.1 * (1 + randomNumber / 4),
-          //width: randomWidth * (2 - randomNumber),
           width: randomWidth,
 
           color: "hotpink", //pick from a list ?
         };
       });
     return configs;
-  }, [pconfig]);
+  }, [pconfig, pause]);
 
   return (
     <>
@@ -93,6 +85,7 @@ export default function Tracers({
 }
 
 export function SingleFieldTrace({
+  pause,
   particleSystem,
   physics,
   steps,
@@ -100,6 +93,7 @@ export function SingleFieldTrace({
   width,
   color,
 }: {
+  pause: boolean;
   particleSystem: TparticleSystem;
   physics: string;
   steps: number;
@@ -115,6 +109,10 @@ export function SingleFieldTrace({
   }, [physics]);
 
   useFrame(() => {
+    if (pause === true) {
+      return;
+    }
+
     //check if last two positions are equal
     if (positions.length > 2) {
       let lastPosition = positions[positions.length - 1];

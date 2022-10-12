@@ -13,7 +13,7 @@ import InfoBox from "./components/informationBox";
 import DescBox from "./components/descriptionBox";
 
 const Home: NextPage = () => {
-  const { pconfig, setPconfig } = usePconfig();
+  const { pconfig, setPconfig, pause } = usePconfig();
 
   const particleSystem: TparticleSystem | undefined = useMemo(() => {
     /* this will create a new particle system everytime
@@ -39,6 +39,17 @@ const Home: NextPage = () => {
 
   return (
     <div className="w-full h-full flex">
+      <button
+        className="absolute z-10 text-xs top-1 left-2 text-zinc-200 opacity-0 cursor-default focus:opacity-100"
+        onClick={() => {
+          console.log("config: ");
+          console.log(pconfig);
+          console.log("particle system: ");
+          console.log(particleSystem);
+        }}
+      >
+        log configs
+      </button>
       <p className="text-1xl w-full text-center absolute"></p>
       <Canvas
         className="h-full w-full absolute bg-black"
@@ -47,11 +58,11 @@ const Home: NextPage = () => {
       >
         <CameraControls {...{ pconfig, setPconfig }} />
         {particleSystem !== undefined && (
-          <Particles {...{ particleSystem, pconfig }} />
+          <Particles {...{ particleSystem, pconfig, pause }} />
         )}
         {particleSystem !== undefined && <OctaTreeBox {...particleSystem} />}
-        {particleSystem !== undefined && (
-          <Tracers {...{ particleSystem, pconfig, setDescData }} />
+        {particleSystem !== undefined && pconfig.tracingFields && (
+          <Tracers {...{ particleSystem, pconfig, setDescData, pause }} />
         )}
       </Canvas>
       <Buttons
@@ -68,12 +79,6 @@ const Home: NextPage = () => {
       {toggleDesc && particleSystem !== undefined && (
         <DescBox {...{ particleSystem, descData }} />
       )}
-      <button
-        className="absolute text-xs top-1 right-2 text-zinc-200"
-        onClick={() => {console.log("config: "); console.log(pconfig); console.log("particle system: "); console.log(particleSystem)}}
-      >
-        l
-      </button>
     </div>
   );
 };

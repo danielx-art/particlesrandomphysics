@@ -12,9 +12,11 @@ import vec from "../../particlePhysics/vetores";
 const Particles = ({
   particleSystem,
   pconfig,
+  pause,
 }: {
   particleSystem: TparticleSystem;
   pconfig: parametersType;
+  pause: boolean;
 }) => {
   const mesh = useRef<THREE.InstancedMesh>(null);
   const light = useRef<THREE.PointLight>(null);
@@ -24,6 +26,8 @@ const Particles = ({
   const particleGeometry = useMemo(() => pconfig.displayGenerator, [pconfig]);
 
   useFrame(() => {
+    if (pause === true) return;
+
     if (particleSystem !== undefined) {
       particleSystem.update();
       particleSystem.move();

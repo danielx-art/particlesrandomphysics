@@ -154,7 +154,7 @@ export function pointsWithinSphere(
   let h = boundary.height;
   let d = boundary.depth;
   let randomRadius =
-    (Math.random() * Math.max(w, h, d)) / 3 + Math.min(w, h, d) / 3;
+    (Math.random() * Math.max(w, h, d)) / 4 + Math.min(w, h, d) / 4;
   let vertices = [];
   for (let i = 0; i < total; i++) {
     vertices.push(
@@ -181,8 +181,14 @@ export function pointsOn2dGrid(
   let cols = Math.ceil(total / rows);
   let spcx = w / cols;
   let spcy = h / rows;
-  let basis1 = vec().randomDirection().setLength(spcx);
-  let basis2 = vec().randomDirection().setLength(spcy);
+  let basis1 = vec()
+    .randomDirection()
+    .setLength(spcx)
+    .sub(vec(-w / 2, -h / 2, 0));
+  let basis2 = vec()
+    .randomDirection()
+    .setLength(spcy)
+    .sub(vec(-w / 2, -h / 2, 0));
 
   for (let i = 0; i < rows; i++) {
     for (let j = 0; j < cols; j++) {

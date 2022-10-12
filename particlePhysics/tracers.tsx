@@ -16,7 +16,7 @@ const trace = function (
 
   let tracing = [...from] as THREE.Vector3[];
 
-  let randomVectorInBounbdary = () => {
+  let randomVectorInBoundary = () => {
     let randomX = ((Math.random() - 1 / 2) * particleSystem.boundary.w +
       particleSystem.boundary.x) as number;
     let randomY = ((Math.random() - 1 / 2) * particleSystem.boundary.h +
@@ -27,7 +27,7 @@ const trace = function (
   };
 
   if (tracing.length === 0) {
-    tracing = [randomVectorInBounbdary()];
+    tracing = [randomVectorInBoundary()];
   }
 
   let stepsToGo = steps - tracing.length;

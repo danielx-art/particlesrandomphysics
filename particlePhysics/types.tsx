@@ -14,16 +14,16 @@ export type Tposgeneratorfunction = (
 ) => Vector3[];
 
 export type Tposgenerator = {
-  function: Tposgeneratorfunction,
-  name: string
-}
+  function: Tposgeneratorfunction;
+  name: string;
+};
 
 export type Tgeneratorfunction = ({}: IdefaultGenArgs) => any;
 
 export type Tgenerator = {
-  function: Tgeneratorfunction, 
-  name: string
-}
+  function: Tgeneratorfunction;
+  name: string;
+};
 
 export type Twrapfunction = (
   particle: Tparticle,
@@ -31,9 +31,9 @@ export type Twrapfunction = (
 ) => void;
 
 export type Twrap = {
-  function: Twrapfunction, 
-  name: string
-}
+  function: Twrapfunction;
+  name: string;
+};
 
 export type parametersType = {
   num: number;
@@ -56,6 +56,7 @@ export type parametersType = {
   safeRadius: number;
   merge: boolean;
   behaviours: any[];
+  tracingFields: any;
   displayGenerator: any;
 };
 

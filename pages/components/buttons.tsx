@@ -1,5 +1,6 @@
 import { usePconfig } from "../../context/context";
 import { pickRandomConfig } from "../../particlePhysics/randomConfig";
+import PlayPause from "./playPause";
 
 const Buttons = (props: {
   toggleInfo: boolean;
@@ -9,7 +10,7 @@ const Buttons = (props: {
   handleToggleInfo: () => void;
   handleToggleDesc: () => void;
 }) => {
-  const { pconfig, setPconfig } = usePconfig();
+  const { pconfig, setPconfig, pause, setPause } = usePconfig();
   const handleRandomConfig = () => {
     if (pconfig.num !== 0) {
       const newConfig = pickRandomConfig(pconfig.boundary);
@@ -44,13 +45,14 @@ const Buttons = (props: {
           </svg>
         </button>
 
-        <button
-          onClick={props.handleToggleInfo}
-          className="bg-black p-1 border border-white active:opacity-50 transition-transform duration-500 ease-in-out rounded-full text-3xl hover:scale-105"
-        >
-          <p className="font-mochiy w-8 h-8 text-white"> i </p>
-        </button>
+        <PlayPause {...{ pause, setPause }} />
       </div>
+      <button
+        onClick={props.handleToggleInfo}
+        className="bg-[#111111] p-1 active:opacity-50 transition-transform duration-500 ease-in-out rounded-full text-3xl hover:scale-105 overflow-hidden absolute right-1"
+      >
+        <p className="font-mochiy w-5 h-5 text-white"> i </p>
+      </button>
     </>
   );
 };

@@ -9,6 +9,8 @@ export type configType = {
   setPconfig: React.Dispatch<React.SetStateAction<parametersType>>;
   lang: string;
   setLang: React.Dispatch<React.SetStateAction<string>>;
+  pause: boolean;
+  setPause: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const initialPsystConfig = pickRandomConfig(
@@ -24,7 +26,8 @@ type Props = {
 export function PContextProvider({ children }: Props) {
   const [pconfig, setPconfig] = useState(initialPsystConfig);
   const [lang, setLang] = useState("ptbr");
-  const value = { pconfig, setPconfig, lang, setLang };
+  const [pause, setPause] = useState(false);
+  const value = { pconfig, setPconfig, lang, setLang, pause, setPause };
 
   return <PContext.Provider value={value}>{children}</PContext.Provider>;
 }

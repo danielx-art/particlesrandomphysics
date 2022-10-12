@@ -26,7 +26,7 @@ export default function createParticleSystem(args: parametersType) {
     safeRadius,
     merge,
     behaviours,
-    displayGenerator,
+    tracingFields,
   } = { ...args };
 
   //Initialize all the particles

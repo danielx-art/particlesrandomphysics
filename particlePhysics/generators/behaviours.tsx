@@ -1,11 +1,11 @@
 import { default as magneticdipole } from "../behaviours/magneticDipole";
 import { default as gravity } from "../behaviours/gravity";
-import { default as rgbDynamic } from "../behaviours/rgbdynamic";
+//import { default as rgbDynamic } from "../behaviours/rgbdynamic";
 
 const behaviours = [];
 
 behaviours.push(magneticdipole);
 behaviours.push(gravity);
-behaviours.push(rgbDynamic);
+//behaviours.push(rgbDynamic);
 
 export { behaviours };
