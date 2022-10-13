@@ -20,7 +20,7 @@ import { Iparallelepiped, parallelepiped } from "./shapes";
 import vec from "./vetores";
 import { Tgenerator } from "./types";
 
-//console.log(POS_GENERATORS.pointsOnA3dGrid); //test
+//console.log(BEHAVIOURS.behaviours); //test
 
 function constantGenerator(a: any): Tgenerator {
   return {
@@ -52,6 +52,9 @@ function pickRandomBehaviour<T>(importedBehavioursObjList: {
   return picked as T[];
 }
 
+/*---------------------------------------------------------------------
+--------------------------RANDOM CONFIG--------------------------------
+----------------------------------------------------------------------*/
 export function totalRandomConfig(
   argsboundary: Iparallelepiped | undefined
 ): parametersType {
@@ -85,6 +88,9 @@ export function totalRandomConfig(
   return self;
 }
 
+/*---------------------------------------------------------------------
+--------------------------TWO MAGNETS----------------------------------
+----------------------------------------------------------------------*/
 export function twoMagnetDipoles(
   argsboundary: Iparallelepiped | undefined
 ): parametersType {
@@ -124,18 +130,19 @@ export function twoMagnetDipoles(
   return self;
 }
 
+/*---------------------------------------------------------------------
+----------------------------TEST CONFIG--------------------------------
+----------------------------------------------------------------------*/
+
 export function testConfig(
   argsboundary: Iparallelepiped | undefined
 ): parametersType {
   let self: parametersType = {
-    num: 1 + Math.round(Math.random() * 29),
+    num: 20,
     boundary: argsboundary
       ? argsboundary
       : parallelepiped(vec(0, 0, 0), 100, 100, 100),
-    posGenerator: {
-      function: POS_GENERATORS.pointsOn2dCircle,
-      name: "testing",
-    },
+    posGenerator: pickRandomGenerator(POS_GENERATORS),
     dirGenerator: pickRandomGenerator(DIR_GENERATORS),
     inertialMassGenerator: pickRandomGenerator(INERTIALMASS_GENERATORS),
     momentInertiaGenerator: pickRandomGenerator(MOMINERTIA_GENERATORS),
@@ -146,25 +153,73 @@ export function testConfig(
     maxTorqueGenerator: pickRandomGenerator(MAXTORQUE_GENERATORS),
     maxSpeedGenerator: pickRandomGenerator(MAXSPEED_GENERATORS),
     maxAngVelGenerator: pickRandomGenerator(MAXANGVEL_GENERATORS),
-    translationDampingGenerator: constantGenerator(0),
+    translationDampingGenerator: constantGenerator(1),
     rotationDampingGenerator: pickRandomGenerator(RDAMP_GENERATORS),
     wrapGenerator: pickRandomGenerator(WRAP_GENERATORS),
     queryRadius: 100,
     safeRadius: 0.05,
     merge: false,
-    behaviours: pickRandomBehaviour(BEHAVIOURS),
-    tracingFields: (() => (Math.random() < 0.5 ? true : false))(),
+    behaviours: [BEHAVIOURS.behaviours[2]],
+    tracingFields: false,
     displayGenerator: CUSTOM_PARTICLE_GEOM.sqPyramid,
   };
 
   return self;
 }
 
+/*---------------------------------------------------------------------
+----------------------------LORENTZ FORCE------------------------------
+----------------------------------------------------------------------*/
+
+/*---------------------------------------------------------------------
+-------------------------------BOIDS-----------------------------------
+----------------------------------------------------------------------*/
+
+export function boidsConfig(
+  argsboundary: Iparallelepiped | undefined
+): parametersType {
+  let self: parametersType = {
+    num: 20 + Math.round(Math.random() * 80),
+    boundary: argsboundary
+      ? argsboundary
+      : parallelepiped(vec(0, 0, 0), 100, 100, 100),
+    posGenerator: pickRandomGenerator(POS_GENERATORS),
+    dirGenerator: pickRandomGenerator(DIR_GENERATORS),
+    inertialMassGenerator: constantGenerator(1),
+    momentInertiaGenerator: constantGenerator(1),
+    movementGenerator: constantGenerator(true),
+    initialVelocityGenerator: pickRandomGenerator(VEL_GENERATORS),
+    initialAngularVelocityGenerator: constantGenerator(vec()),
+    maxForceGenerator: constantGenerator(0.05),
+    maxTorqueGenerator: constantGenerator(0.5),
+    maxSpeedGenerator: constantGenerator(0.1),
+    maxAngVelGenerator: constantGenerator(0.5),
+    translationDampingGenerator: constantGenerator(1),
+    rotationDampingGenerator: constantGenerator(1),
+    wrapGenerator: { function: WRAP_GENERATORS.wrapAround, name: "" },
+    queryRadius: 50,
+    safeRadius: 0.02,
+    merge: false,
+    behaviours: [BEHAVIOURS.behaviours[2]],
+    tracingFields: false,
+    displayGenerator: CUSTOM_PARTICLE_GEOM.sqPyramid,
+  };
+
+  return self;
+}
+
+/*---------------------------------------------------------------------
+-----------------------------SOFT BODY---------------------------------
+----------------------------------------------------------------------*/
+
+/*---------------------------------------------------------------------
+--------------------------CONFIG CHOOSING------------------------------
+----------------------------------------------------------------------*/
 export function pickRandomConfig(
   argsboundary: Iparallelepiped | undefined
 ): parametersType {
-  //const configsList = [testConfig];
-  const configsList = [totalRandomConfig, twoMagnetDipoles];
+  //const configsList = [boidsConfig];
+  const configsList = [totalRandomConfig, twoMagnetDipoles, boidsConfig];
   let chosenConfig =
     configsList[Math.floor(Math.max(Math.random() * configsList.length, 0))];
 

@@ -114,7 +114,7 @@ export type Ttree = {
 };
 
 export type Tbehaviour = {
-  field: (pointInSpace: Vector3) => Vector3;
+  field: (pointInSpace: Vector3) => any;
   forces: (agents: Tparticle[]) => void;
   hasMoved: (newState: TparticlePreBody) => void;
   merge: (otherThis: Tbehaviour) => void;
