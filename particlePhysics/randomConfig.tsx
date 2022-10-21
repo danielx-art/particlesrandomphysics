@@ -54,7 +54,7 @@ function pickRandomGenerator<T>(importedGeneratorsObj: { [name: string]: T }) {
   return chosen;
 }
 
-function pickRandomBehaviours<TPrebehaviour>(importedBehavioursObjList: {
+function pickRandomBehaviours(importedBehavioursObjList: {
   behaviours: { [name: string]: behavioursFunction };
 }): TPrebehaviour[] {
   let allBehaviours = Object.keys(importedBehavioursObjList.behaviours);
@@ -69,7 +69,7 @@ function pickRandomBehaviours<TPrebehaviour>(importedBehavioursObjList: {
     importedBehavioursObjList.behaviours[item]()
   );
 
-  return callPicked as TPrebehaviour[];
+  return callPicked;
 }
 
 /*---------------------------------------------------------------------
