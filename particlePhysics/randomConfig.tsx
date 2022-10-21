@@ -346,13 +346,13 @@ export function softBodiesConfig(
 export function pickRandomConfig(
   argsboundary: Iparallelepiped | undefined
 ): parametersType {
-  const configsList = [boidsConfig]; //test
-  // const configsList = [
-  //   totalRandomConfig,
-  //   twoMagnetDipoles,
-  //   boidsConfig,
-  //   softBodiesConfig,
-  // ];
+  //const configsList = [boidsConfig]; //test
+  const configsList = [
+    totalRandomConfig,
+    twoMagnetDipoles,
+    boidsConfig,
+    softBodiesConfig,
+  ];
   let chosenConfig =
     configsList[Math.floor(Math.max(Math.random() * configsList.length, 0))];
 
