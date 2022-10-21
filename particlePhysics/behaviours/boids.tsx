@@ -2,14 +2,14 @@ import { Vector3 } from "three";
 import { Tbehaviour, Tparticle, TparticlePreBody } from "../types";
 import vec from "../vetores";
 
-export default function boids(particle: TparticlePreBody) {
+export default function boids() {
   let metadata = {
     title: { en: "boids", ptbr: "boids" },
     description: {
       en: "Simulates flocking behaviours (such as birds) with laws of cohesion, separation and alignment",
       ptbr: "Simula comportamento de formação de aglomerados (como em pássaros) com leis de coesão, separação e alinhamento",
     },
-    intensity: [0.001, 0.01, 0.01, (2 * Math.PI) / 3, 0.00005],
+    intensity: [0.001, 0.001, 0.01, (2 * Math.PI) / 3, 0.00005],
     fieldTraceable: false,
     trajectoryTraceable: true,
   };

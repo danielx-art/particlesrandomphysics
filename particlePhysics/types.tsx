@@ -27,7 +27,8 @@ export type Tgenerator = {
 
 export type Twrapfunction = (
   particle: Tparticle,
-  boundary: Iparallelepiped
+  boundary: Iparallelepiped,
+  ...other: any
 ) => void;
 
 export type Twrap = {
@@ -61,6 +62,7 @@ export type parametersType = {
 };
 
 export type TparticlePreBody = {
+  index: number;
   pos: Vector3;
   dir: Vector3;
   inertialMass: number;
@@ -98,6 +100,7 @@ export type TparticleSystem = {
   collisionDetection: Ttree;
   update: () => {};
   move: () => {};
+  statistics?: any;
 };
 
 export type Ttree = {
@@ -120,3 +123,19 @@ export type Tbehaviour = {
   merge: (otherThis: Tbehaviour) => void;
   [otherProperties: string]: any;
 };
+
+export type TPrebehaviour = {
+  metadata: {
+    title: { en: string; ptbr: string };
+    description: {
+      en: string;
+      ptbr: string;
+    };
+    fieldTraceable: boolean;
+    trajectoryTraceable: boolean;
+    [other: string]: any;
+  };
+  attach: (...args: any) => void;
+};
+
+export type behavioursFunction = (...args: any) => TPrebehaviour;

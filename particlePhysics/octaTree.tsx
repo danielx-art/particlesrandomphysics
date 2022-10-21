@@ -44,20 +44,21 @@ const octaTree = function (boundary: Iparallelepiped, capacity: number) {
 
     if (!self.divided) {
       self.subdivide();
-
-      if (
-        self.subTrees[0].insert(point) ||
-        self.subTrees[1].insert(point) ||
-        self.subTrees[2].insert(point) ||
-        self.subTrees[3].insert(point) ||
-        self.subTrees[4].insert(point) ||
-        self.subTrees[5].insert(point) ||
-        self.subTrees[6].insert(point) ||
-        self.subTrees[7].insert(point)
-      ) {
-        return true;
-      }
     }
+
+    if (
+      self.subTrees[0].insert(point) ||
+      self.subTrees[1].insert(point) ||
+      self.subTrees[2].insert(point) ||
+      self.subTrees[3].insert(point) ||
+      self.subTrees[4].insert(point) ||
+      self.subTrees[5].insert(point) ||
+      self.subTrees[6].insert(point) ||
+      self.subTrees[7].insert(point)
+    ) {
+      return true;
+    }
+
     return false;
   };
 

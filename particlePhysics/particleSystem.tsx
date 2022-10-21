@@ -1,8 +1,16 @@
-import { parametersType, Tgenerator, TparticleSystem } from "./types";
+import {
+  parametersType,
+  Tgenerator,
+  Tparticle,
+  TparticleSystem,
+} from "./types";
 import createParticle from "./particle";
 import octaTree from "./octaTree";
 import { sphere } from "./shapes";
 import vec from "./vetores";
+import { wrap } from "module";
+import Particles from "../pages/components/particles";
+import { setFlagsFromString } from "v8";
 
 export default function createParticleSystem(args: parametersType) {
   const {
@@ -31,8 +39,6 @@ export default function createParticleSystem(args: parametersType) {
 
   //Initialize all the particles
 
-  let particleBehaviours = behaviours.map((behaviour) => behaviour());
-
   const self: { [key: string]: any } = {
     num,
     boundary,
@@ -41,9 +47,7 @@ export default function createParticleSystem(args: parametersType) {
     safeRadius,
     merge,
     particles: [],
-    physics: particleBehaviours.map(
-      (behaviour) => behaviour.metadata
-    ) as unknown,
+    physics: behaviours.map((behaviour) => behaviour.metadata) as unknown,
   };
 
   //Collision Detection
@@ -70,6 +74,7 @@ export default function createParticleSystem(args: parametersType) {
     };
 
     let newParticle = createParticle({
+      index: i,
       position: positions[i],
       direction: HANDLE_GENERATOR(dirGenerator, defaultGenArgs),
       inertialMass: HANDLE_GENERATOR(inertialMassGenerator, defaultGenArgs),
@@ -99,8 +104,7 @@ export default function createParticleSystem(args: parametersType) {
         rotationDampingGenerator,
         defaultGenArgs
       ),
-      particleBehaviours,
-      //display: HANDLE_GENERATOR(displayGenerator, defaultGenArgs),
+      behaviours,
     });
 
     self.particles.push(newParticle);
@@ -172,6 +176,17 @@ export default function createParticleSystem(args: parametersType) {
         }
       }
     } //particle loop
+    repopulateTree();
+  };
+
+  self.statistics = {
+    get kineticEnergy() {
+      let E = 0;
+      self.particles.forEach((particle: Tparticle) => {
+        E += (particle.inertialMass * particle.vel.lengthSq()) / 2;
+      });
+      return E;
+    },
   };
 
   return self as TparticleSystem;

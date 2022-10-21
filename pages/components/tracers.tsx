@@ -37,15 +37,14 @@ export default function Tracers({
         (physicsMetadata: { title: { en: string } }) => physicsMetadata.title.en
       );
 
-    let randomPhysics = pickRandomItemsFromArray(
-      fieldTraceableSystemBehaviours,
-      1
-    ) as string;
+    let randomPhysics = Array.isArray(fieldTraceableSystemBehaviours)
+      ? (pickRandomItemsFromArray(fieldTraceableSystemBehaviours, 1) as string)
+      : "none";
 
     setDescData((state) => {
       return {
         ...state,
-        tracingField: randomPhysics ? randomPhysics : "none",
+        tracingField: randomPhysics,
       };
     });
 

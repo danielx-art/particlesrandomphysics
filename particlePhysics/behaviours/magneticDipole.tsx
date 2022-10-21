@@ -2,7 +2,7 @@ import { Vector3 } from "three";
 import { Tbehaviour, Tparticle, TparticlePreBody } from "../types";
 import vec from "../vetores";
 
-export default function magneticDipole(particle: TparticlePreBody) {
+export default function magneticDipole() {
   let metadata = {
     title: { en: "magnet", ptbr: "dipolo magnético" },
     description: {

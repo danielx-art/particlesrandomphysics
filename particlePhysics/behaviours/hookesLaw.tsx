@@ -1,17 +1,28 @@
 import { Vector3 } from "three";
-import { Tbehaviour, Tparticle, TparticlePreBody } from "../types";
+import {
+  TPrebehaviour,
+  Tbehaviour,
+  Tparticle,
+  TparticlePreBody,
+} from "../types";
 import vec from "../vetores";
 
-export default function magneticDipole(particle: TparticlePreBody) {
+export default function hookesLawSoftBody(
+  K: number = 1,
+  Damp: number = 0,
+  adjacencyList: number[][]
+): TPrebehaviour {
   let metadata = {
-    title: { en: "magnet", ptbr: "dipolo magnético" },
+    title: { en: "soft body", ptbr: "corpo macio" },
     description: {
-      en: "Each particle behaves as it had a magnetic dipole moment, meaning a regular magnet with a north and south pole regardless of any electrical effects.",
-      ptbr: "As partículas possuem um dipolo magnético, agindo como se fossem um imã comum com pólos norte e sul, sem nenhum efeito elétrico.",
+      en: "Simulation of a soft body using hookes law to keep it together.",
+      ptbr: "Simulação de um corpo macio usando a lei de hooke molas para conectar as partículas.",
     },
-    intensity: 1,
-    fieldTraceable: true,
-    trajectoryTraceable: true,
+    K,
+    Damp,
+    adjacencyList,
+    fieldTraceable: false,
+    trajectoryTraceable: false,
   };
 
   return {
@@ -19,80 +30,57 @@ export default function magneticDipole(particle: TparticlePreBody) {
     attach: function (particle: TparticlePreBody) {
       let self = {} as Tbehaviour;
 
-      self["m"] = vec().copy(particle.dir).setLength(0.01);
+      //save neighboors and rest lengths (x0) at the moment of attachment
+      let index = particle.index;
+      //find the neighboors
+      let neighboors = adjacencyList[index];
 
-      self["field"] = (pointInSpace: Vector3) => {
-        let m = particle.physics.magnet.m;
-        let vecr = vec().copy(pointInSpace).sub(vec().copy(particle.pos));
-        let versorr = vec().copy(vecr).setLength(1);
-        let r = vecr.length();
-        if (r > 0) {
-          /*note
-            this is redundant since particle will only act on particles outside a "tooClose" or
-            safeRadius as worked on the particleSystem and collisionDetection themselves
-            */
-          let B = vec().copy(versorr);
-          B.multiplyScalar(3 * vec().copy(m).dot(versorr));
-          B.sub(m);
-          B.divideScalar(r * r * r);
-          return B;
-        }
-        return vec();
+      type Tneighboor = {
+        id: number;
+        x0: number;
+        neighboor?: Tparticle;
       };
+
+      self["neighboors"] = neighboors.map((neigh) => {
+        return { id: neigh, x0: -1 } as Tneighboor;
+      });
+
+      self["field"] = (pointInSpace: Vector3) => {};
       self["forces"] = (agents: Tparticle[]) => {
         Array.isArray(agents) ? true : (agents = [agents]); //if only one is passed
+        //calculate x0s for the first time
+        if (self.neighboors[0].x0 == -1) {
+          self.neighboors.forEach((neigh: Tneighboor) => {
+            let particleNeigh = agents.find(
+              (agent) => agent.index === neigh.id
+            ) as Tparticle; //its guaranteed since it is on the neighboors list
+            let x0 = vec().copy(particle.pos).sub(particleNeigh.pos).length();
+            neigh["x0"] = x0;
+            neigh["neighboor"] = particleNeigh;
+          });
+        }
 
-        let Fmagres = vec();
-        let Tmagres = vec();
+        let Fres = vec();
 
-        let m = particle.physics.magnet.m;
-
-        agents.forEach(function (agent, i) {
-          if (!agent.physics.magnet) {
-            return;
+        self.neighboors.forEach((neigh: Tneighboor) => {
+          if (neigh.neighboor !== undefined) {
+            let x = vec().copy(neigh.neighboor.pos).sub(particle.pos);
+            let x0vec = vec().copy(x).setLength(neigh.x0);
+            let dx = vec().copy(x).sub(x0vec);
+            let f = vec().copy(dx).multiplyScalar(metadata.K);
+            //dampening
+            let dvfac =
+              vec().copy(particle.vel).sub(neigh.neighboor.vel).length() * Damp;
+            f.multiplyScalar(2 - 1 / (dvfac + 1));
+            Fres.add(f);
           }
-
-          let B = agent.physics.magnet.field(particle.pos);
-
-          //translation, force
-          //approximation of partial derivatives
-          let dinf = 0.000000001;
-          let Bx = agent.physics.magnet
-            .field(vec(particle.pos.x + dinf, particle.pos.y, particle.pos.z))
-            .sub(B)
-            .divideScalar(dinf)
-            .multiplyScalar(m.x);
-          let By = agent.physics.magnet
-            .field(vec(particle.pos.x, particle.pos.y + dinf, particle.pos.z))
-            .sub(B)
-            .divideScalar(dinf)
-            .multiplyScalar(m.y);
-          let Bz = agent.physics.magnet
-            .field(vec(particle.pos.x, particle.pos.y, particle.pos.z + dinf))
-            .sub(B)
-            .divideScalar(dinf)
-            .multiplyScalar(m.z);
-          let Fmag = Bx.add(By).add(Bz);
-          Fmagres.add(Fmag);
-
-          //rotation, alignment, torque
-          Tmagres.add(vec().copy(m).cross(B)).multiplyScalar(100);
         });
-
-        particle.acl.add(Fmagres.divideScalar(particle.inertialMass));
-        particle.angacl.add(Tmagres.divideScalar(particle.momentInertia));
-      };
-      self["hasMoved"] = (newState: TparticlePreBody) => {
-        let m = particle.physics.magnet.m;
-        let mmag = m.length();
-        m.copy(newState.dir).setLength(mmag);
+        particle.acl.add(Fres.divideScalar(particle.inertialMass));
       };
 
-      self["merge"] = (otherMagnet: any) => {
-        let m = particle.physics.magnet.m;
-        let m2 = vec().copy(otherMagnet.m);
-        m.add(m2);
-      };
+      self["hasMoved"] = (newState: TparticlePreBody) => {};
+
+      self["merge"] = (otherVertice: any) => {};
 
       particle.physics[metadata.title.en] = self;
     },

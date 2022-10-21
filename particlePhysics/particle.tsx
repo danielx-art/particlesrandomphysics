@@ -1,5 +1,5 @@
 import vec from "./vetores";
-import { Tparticle, TparticlePreBody } from "./types";
+import { Tparticle, TparticlePreBody, TPrebehaviour } from "./types";
 
 /* --------------------------------------------------------------
 -----------------------------------------------------------------
@@ -8,6 +8,7 @@ import { Tparticle, TparticlePreBody } from "./types";
 -----------------------------------------------------------------*/
 
 export default function createParticle({
+  index = 0,
   position = vec(),
   direction = vec(0, -1),
   inertialMass = 1,
@@ -24,11 +25,12 @@ export default function createParticle({
   translationDamping = 0.9,
   rotationDamping = 0.8,
 
-  particleBehaviours = [
+  behaviours = [
     { metadata: {}, attach: (particle: TparticlePreBody) => {} },
-  ],
+  ] as TPrebehaviour[],
 }): Tparticle {
   const self: any = {
+    index,
     pos: position,
     dir: direction,
     inertialMass,
@@ -65,7 +67,7 @@ export default function createParticle({
   BEHAVIOURS ASSIGNMENT
   */
 
-  for (const behaviour of particleBehaviours) {
+  for (const behaviour of behaviours) {
     behaviour.attach(self as TparticlePreBody);
     /*note:
     "behaviour(self)" is not a pure function, we need to assign, or "attach", to the physics 

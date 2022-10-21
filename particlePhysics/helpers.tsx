@@ -1,7 +1,7 @@
-export function pickRandomItemsFromArray<Type>(array: Type[], num: number): Type | Type[] | undefined {
-  if (!Array.isArray(array) || num <= 0) {
-    return undefined;
-  }
+export function pickRandomItemsFromArray<Type>(
+  array: Type[],
+  num: number
+): Type | Type[] {
   let copy = [...array];
   if (num == 1) {
     return copy[Math.floor(Math.random() * copy.length)];
@@ -16,7 +16,13 @@ export function pickRandomItemsFromArray<Type>(array: Type[], num: number): Type
   }
 }
 
-export function lerpStretchClamp(value: number, fromMin: number, fromMax: number, min: number, max: number):number {
+export function lerpStretchClamp(
+  value: number,
+  fromMin: number,
+  fromMax: number,
+  min: number,
+  max: number
+): number {
   if (value < fromMin) {
     return min;
   }

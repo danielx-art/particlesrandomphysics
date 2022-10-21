@@ -2,7 +2,7 @@ import { Vector3 } from "three";
 import { Tbehaviour, Tparticle, TparticlePreBody } from "../types";
 import vec from "../vetores";
 
-export default function gravity(particle: TparticlePreBody) {
+export default function gravity() {
   let metadata = {
     G: 0.01,
     title: { en: "gravity", ptbr: "gravidade" },

@@ -2,7 +2,7 @@ import { Vector3 } from "three";
 import { Tbehaviour, Tparticle, TparticlePreBody } from "../types";
 import vec from "../vetores";
 
-export default function rgbDynamic(particle: TparticlePreBody) {
+export default function rgbDynamic() {
   let randomR = Math.random() < 0.5 ? 0 : 1;
   let randomG = Math.random() < 0.5 ? 0 : 1;
   let randomB = Math.random() < 0.5 ? 0 : 1;

@@ -1,6 +1,7 @@
 import vec from "../vetores";
 import { Vector3 } from "three";
 import { Iparallelepiped } from "../shapes";
+import { setQuaternionFromProperEuler } from "three/src/math/MathUtils";
 
 // export function pointsOnRandomIcosphereSurface(
 //   total: number,
@@ -52,36 +53,6 @@ import { Iparallelepiped } from "../shapes";
 
 //   return vec3vertices;
 // }
-
-export function pointsOnA3dGrid(
-  total: number,
-  boundary: Iparallelepiped
-): Vector3[] {
-  //console.log("pointsOnA3dGrid"); // test
-  let w = boundary.width;
-  let h = boundary.height;
-  let d = boundary.depth;
-  let n = Math.round(Math.cbrt(total));
-  let vertices = [];
-  let rows = n;
-  let cols = n;
-  let layers = Math.ceil(total / (n * n));
-  let spacingx = Math.round((0.8 * w) / cols);
-  let spacingy = Math.round((0.8 * h) / rows);
-  let spacingz = Math.round((0.8 * d) / layers);
-
-  for (let i = 0; i < cols; i++) {
-    for (let j = 0; j < rows; j++) {
-      for (let k = 0; k < layers; k++) {
-        let x = i * spacingx;
-        let y = j * spacingy;
-        let z = k * spacingz;
-        vertices.push(vec(x, y, z).sub(vec(w / 4, h / 4, d / 4)));
-      }
-    }
-  }
-  return vertices;
-}
 
 export function randomPositions(
   total: number,
@@ -223,6 +194,46 @@ export function pointsWithin2dCircle(
       .applyAxisAngle(rotatingAxis, i * angleSpacing * Math.random());
     vertices.push(newVertex);
   }
+  return vertices;
+}
+
+export function pointsOnA3DCubicGrid(
+  total: number,
+  boundary: Iparallelepiped,
+  otherSize?: number,
+  center?: Vector3
+): Vector3[] {
+  //console.log("pointsOnA3DCubicGrid"); //test
+
+  let w = otherSize ? otherSize : boundary.width;
+  let h = otherSize ? otherSize : boundary.height;
+  let d = otherSize ? otherSize : boundary.depth;
+
+  let minDim = Math.min(w, h, d);
+  let cubeDim = minDim / 2; //to be exact this 2 can be replaced by sqrt(3)~1.72, it just means the cube wont get out the boundary
+  let randomAxis = vec().randomDirection();
+  let randomAngle = (Math.random() * Math.PI) / 2;
+  let cubeCenter = center ? center : vec();
+
+  let vertices = [];
+  let n = Math.ceil(Math.cbrt(total));
+
+  let spc = cubeDim / (n - 1);
+
+  loop: for (let k = 0; k < n; k++) {
+    for (let i = 0; i < n; i++) {
+      for (let j = 0; j < n; j++) {
+        if (j + i * n + k * n * n > total) break loop;
+        let x = -cubeDim / 2 + i * spc;
+        let y = -cubeDim / 2 + j * spc;
+        let z = -cubeDim / 2 + k * spc;
+        let newVertex = vec(x, y, z).applyAxisAngle(randomAxis, randomAngle);
+        newVertex.add(cubeCenter);
+        vertices.push(newVertex);
+      }
+    }
+  }
+
   return vertices;
 }
 
